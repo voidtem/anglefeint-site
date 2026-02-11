@@ -9,8 +9,25 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<link href="https://db.onlinewebfonts.com/c/ff2a407fe06752facf8828a86955e988?family=Matrix+Code+NFI" rel="stylesheet" />
+		<style>
+			:global(body.page-home header),
+			:global(body.page-home footer) {
+				background: rgba(0, 0, 0, 0.6) !important;
+			}
+			#matrix-bg {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: -1;
+				pointer-events: none;
+			}
+		</style>
 	</head>
-	<body>
+	<body class="page-home">
+		<canvas id="matrix-bg" aria-hidden="true"></canvas>
 		<Header />
 		<main>
 			<h1>🧑‍🚀 Hello, Astronaut!</h1>
@@ -46,4 +63,95 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		</main>
 		<Footer />
 	</body>
+		<script>
+		const chars = '!"#$%&\'()*+,-./:;<=>?[\\]^_{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		const canvas = document.getElementById('matrix-bg') as HTMLCanvasElement;
+		if (!canvas) throw new Error('Matrix canvas not found');
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			canvas.style.display = 'none';
+		} else {
+			let animationId: number;
+			let lastTime = 0;
+			const ctx = canvas.getContext('2d')!;
+			type Col = { y: number; drops: { y: number; c: string }[] };
+			const cols: Col[] = [];
+			const fontSize = 22;
+			const speed = 80;
+			const trailLen = 18;
+			let w = 0;
+			let h = 0;
+
+			function resize() {
+				const dpr = window.devicePixelRatio || 1;
+				w = window.innerWidth;
+				h = window.innerHeight;
+				canvas.width = Math.round(w * dpr);
+				canvas.height = Math.round(h * dpr);
+				canvas.style.width = w + 'px';
+				canvas.style.height = h + 'px';
+				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+				cols.length = 0;
+				for (let i = 0; i < Math.ceil(w / fontSize); i++) {
+					const y = Math.random() * h;
+					const row = Math.floor(y / fontSize);
+					cols[i] = {
+						y,
+						drops: [{ y: row * fontSize, c: chars[Math.floor(Math.random() * chars.length)] }],
+					};
+				}
+			}
+
+			function draw(now: number) {
+				const dt = lastTime ? (now - lastTime) / 200 : 0;
+				lastTime = now;
+
+				ctx.fillStyle = '#000';
+				ctx.fillRect(0, 0, w, h);
+				ctx.font = `${fontSize}px "Matrix Code NFI", monospace`;
+
+				for (let i = 0; i < cols.length; i++) {
+					const col = cols[i];
+					const x = Math.round(i * fontSize);
+
+					const prevRow = Math.floor(col.y / fontSize);
+					col.y += speed * dt;
+					const currRow = Math.floor(col.y / fontSize);
+
+					for (let r = prevRow + 1; r <= currRow; r++) {
+						const dropY = r * fontSize;
+						col.drops.unshift({
+							y: dropY,
+							c: chars[Math.floor(Math.random() * chars.length)],
+						});
+					}
+					while (col.drops.length > trailLen) col.drops.pop();
+
+					for (let j = col.drops.length - 1; j >= 0; j--) {
+						const opacity = j === 0 ? 1 : 0.2 + 0.6 * (1 - j / trailLen);
+						ctx.fillStyle = `rgba(0, 255, 65, ${opacity})`;
+						ctx.fillText(col.drops[j].c, x, col.drops[j].y);
+					}
+
+					if (col.y > h && Math.random() > 0.975) {
+						col.y = 0;
+						col.drops = [{ y: 0, c: chars[Math.floor(Math.random() * chars.length)] }];
+					}
+				}
+				animationId = requestAnimationFrame(draw);
+			}
+
+			resize();
+			animationId = requestAnimationFrame(draw);
+			window.addEventListener('resize', resize);
+
+			document.addEventListener('visibilitychange', () => {
+				if (document.hidden) {
+					cancelAnimationFrame(animationId);
+				} else {
+					lastTime = 0;
+					animationId = requestAnimationFrame(draw);
+				}
+			});
+		}
+	</script>
 </html>

@@ -797,27 +797,39 @@ body.mesh-page::-webkit-scrollbar-thumb {
   animation: mesh-glow-shift 25s ease-in-out infinite;
 }
 @keyframes mesh-glow-shift {
-  0%, 100% { filter: brightness(1) saturate(1); }
-  33% { filter: brightness(1.02) saturate(1.1) hue-rotate(5deg); }
-  66% { filter: brightness(0.99) saturate(1.05) hue-rotate(-3deg); }
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+  }
+  33% {
+    filter: brightness(1.02) saturate(1.1) hue-rotate(5deg);
+  }
+  66% {
+    filter: brightness(0.99) saturate(1.05) hue-rotate(-3deg);
+  }
 }
 /* 柔和光晕：中心径向青蓝光 */
 .mesh-haze {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 50% 40%,
-      rgba(80, 180, 220, 0.08) 0%,
-      rgba(60, 140, 200, 0.04) 35%,
-      transparent 65%
-    );
+  background: radial-gradient(
+    ellipse 90% 70% at 50% 40%,
+    rgba(80, 180, 220, 0.08) 0%,
+    rgba(60, 140, 200, 0.04) 35%,
+    transparent 65%
+  );
   animation: mesh-haze-drift 18s ease-in-out infinite alternate;
   pointer-events: none;
 }
 @keyframes mesh-haze-drift {
-  0% { opacity: 0.8; transform: translate(2%, 1%) scale(1.02); }
-  100% { opacity: 1; transform: translate(-2%, -1%) scale(0.98); }
+  0% {
+    opacity: 0.8;
+    transform: translate(2%, 1%) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-2%, -1%) scale(0.98);
+  }
 }
 /* 边缘暗角 */
 .mesh-vignette {
@@ -888,10 +900,23 @@ body.mesh-page::-webkit-scrollbar-thumb {
   background: rgba(160, 255, 200, 0.45);
 }
 @keyframes mesh-particle-float {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-  25% { transform: translate(8px, -12px) scale(1.2); opacity: 0.8; }
-  50% { transform: translate(-6px, 6px) scale(0.9); opacity: 0.6; }
-  75% { transform: translate(4px, 8px) scale(1.1); opacity: 0.7; }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(8px, -12px) scale(1.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-6px, 6px) scale(0.9);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(4px, 8px) scale(1.1);
+    opacity: 0.7;
+  }
 }
 .mesh-network {
   position: absolute;
@@ -919,7 +944,9 @@ body.mesh-page::-webkit-scrollbar-thumb {
 }
 .mesh-network .mesh-dots circle {
   transform-origin: center;
-  animation: mesh-dot-float 8s ease-in-out infinite, mesh-dot-breathe 5s ease-in-out infinite;
+  animation:
+    mesh-dot-float 8s ease-in-out infinite,
+    mesh-dot-breathe 5s ease-in-out infinite;
 }
 .mesh-network .mesh-dots circle:nth-child(odd) {
   animation-delay: -3s;
@@ -941,19 +968,32 @@ body.mesh-page::-webkit-scrollbar-thumb {
   animation-delay: -2s;
 }
 @keyframes mesh-line-pulse {
-  to { stroke-dashoffset: -18; }
+  to {
+    stroke-dashoffset: -18;
+  }
 }
 @keyframes mesh-dot-float {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(1.5px, -2px); }
-  66% { transform: translate(-1px, 1.5px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(1.5px, -2px);
+  }
+  66% {
+    transform: translate(-1px, 1.5px);
+  }
 }
 @keyframes mesh-dot-breathe {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.75; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
 }
 body.mesh-page .mesh-content,
-body.mesh-page header,
 body.mesh-page footer {
   position: relative;
   z-index: 10;
@@ -974,8 +1014,15 @@ body.mesh-page .mesh-content .prose {
 }
 /* 呼吸式微动 */
 @keyframes mesh-breathe {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.98; transform: scale(1.001); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.98;
+    transform: scale(1.001);
+  }
 }
 /* 加载扫描线 */
 .mesh-load-scan {
@@ -983,15 +1030,27 @@ body.mesh-page .mesh-content .prose {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(100, 255, 180, 0.6), rgba(120, 180, 255, 0.6), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(100, 255, 180, 0.6),
+    rgba(120, 180, 255, 0.6),
+    transparent
+  );
   box-shadow: 0 0 12px rgba(100, 255, 180, 0.5);
   animation: mesh-scan 0.8s ease-out forwards;
   pointer-events: none;
   z-index: 20;
 }
 @keyframes mesh-scan {
-  0% { top: 0; opacity: 1; }
-  100% { top: 100vh; opacity: 0.2; }
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    opacity: 0.2;
+  }
 }
 /* 文章区域渐显 */
 .mesh-article {
@@ -999,25 +1058,33 @@ body.mesh-page .mesh-content .prose {
   opacity: 0;
 }
 @keyframes mesh-article-in {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 .mesh-title {
   animation: mesh-title-in 0.5s ease-out 0.15s forwards;
   opacity: 0;
 }
 @keyframes mesh-title-in {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 .mesh-prose-body {
   animation: mesh-prose-in 0.6s ease-out 0.35s forwards;
   opacity: 0;
 }
 @keyframes mesh-prose-in {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 /* 标题/正文区光晕 */
 body.mesh-page .mesh-content .prose .mesh-title {
-  text-shadow: 0 0 20px rgba(100, 220, 255, 0.15), 0 0 40px rgba(100, 255, 220, 0.08);
+  text-shadow:
+    0 0 20px rgba(100, 220, 255, 0.15),
+    0 0 40px rgba(100, 255, 220, 0.08);
 }
 body.mesh-page .mesh-content .prose .mesh-prose-body {
   box-shadow: inset 0 0 80px rgba(100, 220, 255, 0.03);
@@ -1029,14 +1096,20 @@ body.mesh-page .mesh-content .prose::before {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     rgba(100, 255, 180, 0.15) 0%,
     rgba(100, 220, 255, 0.12) 25%,
     rgba(120, 160, 255, 0.1) 50%,
     rgba(160, 120, 255, 0.12) 75%,
-    rgba(100, 255, 180, 0.15) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    rgba(100, 255, 180, 0.15) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -1050,11 +1123,18 @@ body.mesh-page .mesh-content .prose a {
   text-decoration: none;
   padding: 0 2px;
   border-radius: 2px;
-  transition: box-shadow 0.25s ease, text-shadow 0.25s ease, color 0.25s ease;
+  transition:
+    box-shadow 0.25s ease,
+    text-shadow 0.25s ease,
+    color 0.25s ease;
 }
 body.mesh-page .mesh-content .prose a:hover {
-  box-shadow: 0 0 12px rgba(100, 255, 180, 0.4), 0 0 24px rgba(100, 220, 255, 0.25);
-  text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3);
+  box-shadow:
+    0 0 12px rgba(100, 255, 180, 0.4),
+    0 0 24px rgba(100, 220, 255, 0.25);
+  text-shadow:
+    0 0 10px rgba(100, 255, 220, 0.6),
+    0 0 20px rgba(120, 180, 255, 0.3);
   color: rgba(150, 255, 230, 0.95);
 }
 /* 代码块：输出窗口风格 */
@@ -1085,7 +1165,9 @@ body.mesh-page .mesh-content .prose blockquote {
   border-left: 3px solid rgba(100, 255, 180, 0.5);
   padding: 1em 1.25em 1em 2.5em;
   border-radius: 4px;
-  box-shadow: 0 0 16px rgba(100, 220, 255, 0.04), inset 0 0 20px rgba(0, 40, 80, 0.2);
+  box-shadow:
+    0 0 16px rgba(100, 220, 255, 0.04),
+    inset 0 0 20px rgba(0, 40, 80, 0.2);
 }
 body.mesh-page .mesh-content .prose blockquote::before {
   content: ">";
@@ -1110,8 +1192,23 @@ body.mesh-page .mesh-content .prose pre::before {
   font-family: monospace;
 }
 body.mesh-page header {
-  background: rgba(5, 12, 22, 0.65);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(5, 12, 22, 0.65) !important;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border-bottom: 1px solid rgba(100, 220, 255, 0.08);
+}
+body.mesh-page .mesh-content {
+  padding-top: calc(3em + 56px);
+}
+@media (max-width: 720px) {
+  body.mesh-page .mesh-content {
+    padding-top: calc(1em + 56px);
+  }
 }
 body.mesh-page footer {
   background: rgba(5, 12, 22, 0.65);
@@ -1130,20 +1227,30 @@ body.mesh-page footer {
   animation: mesh-block-cursor-blink 1s step-end infinite;
 }
 @keyframes mesh-block-cursor-blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
-/* 阅读进度条 */
+/* 阅读进度条（紫色，更醒目） */
 .mesh-read-progress {
   position: fixed;
   top: 0;
   left: 0;
-  height: 2px;
+  height: 4px;
   width: calc(var(--read-progress, 0) * 100%);
-  background: linear-gradient(90deg, rgba(100, 255, 180, 0.8), rgba(120, 180, 255, 0.8));
-  box-shadow: 0 0 10px rgba(100, 255, 180, 0.5);
+  background: linear-gradient(
+    90deg,
+    rgba(160, 120, 255, 0.9),
+    rgba(200, 140, 255, 0.9)
+  );
+  box-shadow: 0 0 14px rgba(180, 140, 255, 0.6);
   z-index: 100;
-  transition: width 0.1s ease-out;
+  transition: width 0.08s ease-out;
 }
 /* 鼠标跟随光斑 */
 .mesh-mouse-glow {
@@ -1152,7 +1259,11 @@ body.mesh-page footer {
   height: 300px;
   left: calc(var(--mouse-x, -9999px) - 150px);
   top: calc(var(--mouse-y, -9999px) - 150px);
-  background: radial-gradient(circle, rgba(100, 220, 255, 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(100, 220, 255, 0.08) 0%,
+    transparent 70%
+  );
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.3s;
@@ -1166,8 +1277,20 @@ body.mesh-page:not(:hover) .mesh-mouse-glow {
   inset: 0;
   pointer-events: none;
   z-index: 15;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
   backdrop-filter: blur(0);
   transition: backdrop-filter 0.3s;
 }
@@ -1178,8 +1301,20 @@ body.mesh-page:not(:hover) .mesh-mouse-glow {
   background: transparent;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 12%, transparent 88%, black 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 12%, transparent 88%, black 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    transparent 12%,
+    transparent 88%,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    transparent 12%,
+    transparent 88%,
+    black 100%
+  );
 }
 /* 思考中三连点 */
 .mesh-thinking-dots {
@@ -1199,14 +1334,28 @@ body.mesh-page:not(:hover) .mesh-mouse-glow {
   border-radius: 50%;
   animation: mesh-dot-pulse 0.8s ease-in-out infinite;
 }
-.mesh-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
-.mesh-thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+.mesh-thinking-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.mesh-thinking-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
 @keyframes mesh-thinking-fade {
-  to { opacity: 0; visibility: hidden; }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 @keyframes mesh-dot-pulse {
-  0%, 100% { opacity: 0.4; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 /* 故障效果：链接/代码块 hover 极轻微 RGB 分离 */
 body.mesh-page .mesh-content .prose a:hover {
@@ -1216,14 +1365,41 @@ body.mesh-page .mesh-content .prose pre:hover {
   animation: mesh-glitch-pre 0.35s ease-out;
 }
 @keyframes mesh-glitch-link {
-  0%, 100% { text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3); }
-  20% { text-shadow: -0.5px 0 rgba(255,100,120,0.4), 0.5px 0 rgba(100,255,220,0.4); }
-  40% { text-shadow: 0.5px 0 rgba(255,100,120,0.3), -0.5px 0 rgba(100,255,220,0.3); }
-  60% { text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3); }
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px rgba(100, 255, 220, 0.6),
+      0 0 20px rgba(120, 180, 255, 0.3);
+  }
+  20% {
+    text-shadow:
+      -0.5px 0 rgba(255, 100, 120, 0.4),
+      0.5px 0 rgba(100, 255, 220, 0.4);
+  }
+  40% {
+    text-shadow:
+      0.5px 0 rgba(255, 100, 120, 0.3),
+      -0.5px 0 rgba(100, 255, 220, 0.3);
+  }
+  60% {
+    text-shadow:
+      0 0 10px rgba(100, 255, 220, 0.6),
+      0 0 20px rgba(120, 180, 255, 0.3);
+  }
 }
 @keyframes mesh-glitch-pre {
-  0%, 100% { box-shadow: inset 0 0 30px rgba(0, 40, 80, 0.3), 0 0 20px rgba(100, 220, 255, 0.06); }
-  30% { box-shadow: inset 0 0 30px rgba(0, 40, 80, 0.3), -1px 0 rgba(255,80,100,0.15), 1px 0 rgba(80,255,200,0.15); }
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 30px rgba(0, 40, 80, 0.3),
+      0 0 20px rgba(100, 220, 255, 0.06);
+  }
+  30% {
+    box-shadow:
+      inset 0 0 30px rgba(0, 40, 80, 0.3),
+      -1px 0 rgba(255, 80, 100, 0.15),
+      1px 0 rgba(80, 255, 200, 0.15);
+  }
 }
 /* 悬浮预览卡 */
 body.mesh-page .mesh-content .prose a.mesh-link-preview {
@@ -1244,8 +1420,10 @@ body.mesh-page .mesh-content .prose a.mesh-link-preview::after {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 body.mesh-page .mesh-content .prose a.mesh-link-preview:hover::after {
   opacity: 1;
@@ -1293,7 +1471,11 @@ body.mesh-page .mesh-content .prose a.mesh-link-preview:hover::after {
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, rgba(100, 255, 180, 0.4), rgba(100, 220, 255, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(100, 255, 180, 0.4),
+    rgba(100, 220, 255, 0.3)
+  );
   border: 1px solid rgba(100, 255, 180, 0.3);
 }
 .mesh-response-label {
@@ -1339,11 +1521,19 @@ body.mesh-page .mesh-content .prose a.mesh-link-preview:hover::after {
   animation: mesh-flash 0.6s ease-out;
 }
 @keyframes mesh-flash {
-  0% { opacity: 0.3; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 /* 首字放大 */
-body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-letter {
+body.mesh-page
+  .mesh-content
+  .prose
+  .mesh-prose-body
+  > p:first-of-type::first-letter {
   float: left;
   font-size: 3.2em;
   line-height: 0.9;
@@ -1361,7 +1551,9 @@ body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-le
 .mesh-prose-body ol {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 .mesh-prose-body .mesh-para-visible {
   opacity: 1;
@@ -1398,7 +1590,10 @@ body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-le
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 .mesh-related-card:hover {
   transform: translateY(-3px);
@@ -1416,7 +1611,11 @@ body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-le
 }
 .mesh-related-placeholder {
   aspect-ratio: 16/9;
-  background: linear-gradient(135deg, rgba(6, 20, 35, 0.9), rgba(10, 30, 50, 0.8));
+  background: linear-gradient(
+    135deg,
+    rgba(6, 20, 35, 0.9),
+    rgba(10, 30, 50, 0.8)
+  );
   border-bottom: 1px solid rgba(100, 220, 255, 0.1);
   display: flex;
   align-items: center;
@@ -1453,7 +1652,9 @@ body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-le
   color: rgba(150, 220, 255, 0.8);
   text-decoration: none;
   padding: 0.5rem 0;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
 }
 .mesh-back-to-blog a:hover {
   color: rgba(100, 255, 180, 0.95);
@@ -1461,4 +1662,50 @@ body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-le
 }
 .mesh-back-prompt {
   color: rgba(100, 255, 180, 0.7);
+}
+
+/* 回到顶部按钮：在文章右边缘与浏览器右边缘的中点，垂直 60% 处 */
+.mesh-back-to-top {
+  position: fixed;
+  /* 文章宽 720px 居中时，右半边空隙中心 = (100vw - 720px)/2 + 720px + (100vw - 720px)/4 = 75vw + 180px */
+  left: calc(75vw + 180px);
+  top: 60%;
+  transform: translate(-50%, calc(-50% + 8px));
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(180, 140, 255, 0.4);
+  border-radius: 10px;
+  background: rgba(8, 14, 28, 0.9);
+  color: rgba(200, 160, 255, 0.95);
+  font-size: 1.35em;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    border-color 0.2s,
+    box-shadow 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(180, 140, 255, 0.15);
+}
+.mesh-back-to-top.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+.mesh-back-to-top:hover {
+  border-color: rgba(200, 160, 255, 0.6);
+  box-shadow: 0 0 24px rgba(180, 140, 255, 0.35);
+}
+@media (max-width: 840px) {
+  /* 视口较窄时右侧空隙太小，改回贴右 */
+  .mesh-back-to-top {
+    left: auto;
+    right: 1rem;
+    transform: translateY(calc(-50% + 8px));
+  }
+  .mesh-back-to-top.visible {
+    transform: translateY(-50%);
+  }
 }

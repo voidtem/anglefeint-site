@@ -260,6 +260,20 @@ body.br-page .br-scanlines {
   opacity: 1;
   transition: opacity 0.3s ease;
 }
+body.br-page .br-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.12) 1px,
+    rgba(0, 0, 0, 0.12) 2px
+  );
+  pointer-events: none;
+  opacity: 0.8;
+}
 body.br-page:has(header:hover) .br-scanlines,
 body.br-page:has(footer:hover) .br-scanlines {
   opacity: 0;
@@ -280,13 +294,13 @@ body.br-page .br-spotlight-tl {
   transform-origin: 0 0;
   background: conic-gradient(
     from 180deg at 0 0,
-    transparent 0deg 303deg,
-    rgba(255, 220, 200, 0.06) 306deg,
-    rgba(255, 210, 180, 0.2) 309deg,
-    rgba(255, 200, 160, 0.35) 312deg,
-    rgba(255, 210, 180, 0.2) 315deg,
-    rgba(255, 220, 200, 0.06) 318deg,
-    transparent 321deg 360deg
+    transparent 0deg 302deg,
+    rgba(220, 240, 255, 0.08) 304deg,
+    rgba(200, 230, 255, 0.25) 307deg,
+    rgba(180, 220, 255, 0.4) 310deg,
+    rgba(200, 230, 255, 0.25) 313deg,
+    rgba(220, 240, 255, 0.08) 316deg,
+    transparent 319deg 360deg
   );
   animation: br-spotlight-sweep-tl 10s ease-in-out infinite;
 }
@@ -297,12 +311,12 @@ body.br-page .br-spotlight-tr {
   background: conic-gradient(
     from 180deg at 100% 0,
     transparent 0deg 33deg,
-    rgba(255, 220, 200, 0.06) 36deg,
-    rgba(255, 210, 180, 0.2) 39deg,
-    rgba(255, 200, 160, 0.35) 42deg,
-    rgba(255, 210, 180, 0.2) 45deg,
-    rgba(255, 220, 200, 0.06) 48deg,
-    transparent 51deg 360deg
+    rgba(220, 240, 255, 0.08) 35deg,
+    rgba(200, 230, 255, 0.25) 38deg,
+    rgba(180, 220, 255, 0.4) 41deg,
+    rgba(200, 230, 255, 0.25) 44deg,
+    rgba(220, 240, 255, 0.08) 47deg,
+    transparent 50deg 360deg
   );
   animation: br-spotlight-sweep-tr 20s ease-in-out infinite;
   animation-delay: -1.5s;
@@ -441,10 +455,10 @@ body.br-page .br-dust-particle {
   position: absolute;
   border-radius: 50%;
   will-change: transform;
-  background: rgba(255, 230, 190, 0.85);
+  background: rgba(200, 220, 235, 0.75);
   box-shadow:
-    0 0 12px rgba(255, 200, 150, 0.7),
-    0 0 24px rgba(255, 180, 120, 0.4);
+    0 0 10px rgba(180, 210, 230, 0.5),
+    0 0 20px rgba(150, 190, 220, 0.25);
   animation: br-dust-float linear infinite;
 }
 @keyframes br-dust-float {
@@ -511,7 +525,11 @@ body.br-page ul li a {
   position: relative;
   padding: 1rem;
   border-radius: 4px;
-  border: 1px solid transparent;
+  border: 1px solid rgba(100, 200, 220, 0.15);
+  box-shadow:
+    0 0 4px rgba(100, 200, 220, 0.08),
+    0 0 12px rgba(255, 150, 80, 0.04),
+    inset 0 0 8px rgba(0, 200, 255, 0.02);
   transition:
     border-color 0.2s,
     box-shadow 0.3s;
@@ -660,6 +678,48 @@ body.br-page .date {
     color 0.2s,
     text-shadow 0.2s;
 }
+/* BR2049: Las Vegas/baseline 橙色光晕点缀 */
+body.br-page footer {
+  box-shadow: 0 -4px 40px rgba(255, 140, 80, 0.1);
+}
+/* BR2049: 页面加载时轻微 glitch，可察觉但不抢眼 */
+body.br-page .br-load-glitch {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 100, 150, 0.08) 0%,
+    transparent 45%,
+    transparent 55%,
+    rgba(100, 180, 255, 0.08) 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: br-load-glitch 8s ease-out 0.5s infinite;
+}
+@keyframes br-load-glitch {
+  /* 每 8 秒一周期：前 6.5s 静默，后 1.5s 执行 glitch */
+  0%,
+  81%,
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  83% {
+    opacity: 1;
+    transform: translateX(-3px);
+  }
+  86% {
+    opacity: 0.9;
+    transform: translateX(3px);
+  }
+  90% {
+    opacity: 0.5;
+    transform: translateX(-2px);
+  }
+}
 @media (max-width: 720px) {
   body.br-page ul {
     gap: 0.5em;
@@ -684,4 +744,721 @@ body.br-page .date {
   body.br-page .br-flicker {
     animation-duration: 8s;
   }
+}
+
+/* ========== 点线网络 漂浮浮动 文章页 (body.mesh-page) ========== */
+body.mesh-page {
+  background: #03060c !important;
+  background-image: none !important;
+  min-height: 100vh;
+}
+/* 终端式滚动条 */
+body.mesh-page {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 220, 255, 0.4) transparent;
+}
+body.mesh-page::-webkit-scrollbar {
+  width: 6px;
+}
+body.mesh-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+body.mesh-page::-webkit-scrollbar-thumb {
+  background: rgba(100, 220, 255, 0.3);
+  border-radius: 3px;
+}
+body.mesh-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 255, 180, 0.5);
+  box-shadow: 0 0 8px rgba(100, 255, 180, 0.4);
+}
+body.mesh-page::-webkit-scrollbar-thumb {
+  box-shadow: 0 0 6px rgba(100, 220, 255, 0.2);
+}
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.mesh-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #020408 0%,
+    #051220 30%,
+    #062035 55%,
+    #051825 80%,
+    #03060c 100%
+  );
+}
+.mesh-glow-shift {
+  animation: mesh-glow-shift 25s ease-in-out infinite;
+}
+@keyframes mesh-glow-shift {
+  0%, 100% { filter: brightness(1) saturate(1); }
+  33% { filter: brightness(1.02) saturate(1.1) hue-rotate(5deg); }
+  66% { filter: brightness(0.99) saturate(1.05) hue-rotate(-3deg); }
+}
+/* 柔和光晕：中心径向青蓝光 */
+.mesh-haze {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 50% 40%,
+      rgba(80, 180, 220, 0.08) 0%,
+      rgba(60, 140, 200, 0.04) 35%,
+      transparent 65%
+    );
+  animation: mesh-haze-drift 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes mesh-haze-drift {
+  0% { opacity: 0.8; transform: translate(2%, 1%) scale(1.02); }
+  100% { opacity: 1; transform: translate(-2%, -1%) scale(0.98); }
+}
+/* 边缘暗角 */
+.mesh-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 75% at 50% 50%,
+    transparent 45%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+  pointer-events: none;
+}
+.mesh-stripe {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(100, 180, 255, 0.4) 1px,
+    rgba(100, 180, 255, 0.4) 2px
+  );
+}
+/* 噪点层 */
+.mesh-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+/* 六边形网格 */
+.mesh-hex-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='49'%3E%3Cpath d='M28 0L56 14.5v29L28 49L0 43.5v-29z' fill='none' stroke='rgba(100,220,255,0.5)' stroke-width='0.5'/%3E%3Cpath d='M0 14.5L28 29v14.5' fill='none' stroke='rgba(100,220,255,0.4)' stroke-width='0.4'/%3E%3C/svg%3E");
+  background-size: 56px 49px;
+  pointer-events: none;
+}
+/* 思维流粒子 */
+.mesh-thought-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.mesh-particle {
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  width: 4px;
+  height: 4px;
+  background: rgba(100, 255, 180, 0.4);
+  border-radius: 50%;
+  animation: mesh-particle-float var(--d, 4s) ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.3s);
+}
+.mesh-particle:nth-child(3n) {
+  width: 6px;
+  height: 6px;
+  background: rgba(120, 200, 255, 0.35);
+}
+.mesh-particle:nth-child(5n) {
+  width: 2px;
+  height: 2px;
+  background: rgba(160, 255, 200, 0.45);
+}
+@keyframes mesh-particle-float {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  25% { transform: translate(8px, -12px) scale(1.2); opacity: 0.8; }
+  50% { transform: translate(-6px, 6px) scale(0.9); opacity: 0.6; }
+  75% { transform: translate(4px, 8px) scale(1.1); opacity: 0.7; }
+}
+.mesh-network {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  opacity: 0.95;
+  filter: brightness(1.15);
+  animation: mesh-drift 25s ease-in-out infinite;
+}
+@keyframes mesh-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(1.2%, 0.6%) scale(1.008);
+  }
+  50% {
+    transform: translate(-0.8%, 1%) scale(0.995);
+  }
+  75% {
+    transform: translate(0.5%, -0.8%) scale(1.005);
+  }
+}
+.mesh-network .mesh-dots circle {
+  transform-origin: center;
+  animation: mesh-dot-float 8s ease-in-out infinite, mesh-dot-breathe 5s ease-in-out infinite;
+}
+.mesh-network .mesh-dots circle:nth-child(odd) {
+  animation-delay: -3s;
+}
+.mesh-network .mesh-dots circle:nth-child(3n) {
+  animation-delay: -5s;
+}
+.mesh-network .mesh-dots circle:nth-child(5n) {
+  animation-duration: 10s;
+}
+.mesh-network .mesh-dots circle:nth-child(4n) {
+  animation-delay: -1s;
+}
+.mesh-network .mesh-lines line {
+  stroke-dasharray: 6 12;
+  animation: mesh-line-pulse 4s linear infinite;
+}
+.mesh-network .mesh-lines line:nth-child(odd) {
+  animation-delay: -2s;
+}
+@keyframes mesh-line-pulse {
+  to { stroke-dashoffset: -18; }
+}
+@keyframes mesh-dot-float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(1.5px, -2px); }
+  66% { transform: translate(-1px, 1.5px); }
+}
+@keyframes mesh-dot-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+body.mesh-page .mesh-content,
+body.mesh-page header,
+body.mesh-page footer {
+  position: relative;
+  z-index: 10;
+}
+body.mesh-page .mesh-content .prose {
+  position: relative;
+  background: rgba(6, 12, 22, 0.52);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border-radius: 8px;
+  padding: 2em;
+  border: 1px solid rgba(150, 220, 255, 0.1);
+  box-shadow:
+    0 0 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(100, 220, 255, 0.06),
+    inset 0 1px 0 rgba(150, 220, 255, 0.04);
+  animation: mesh-breathe 6s ease-in-out infinite;
+}
+/* 呼吸式微动 */
+@keyframes mesh-breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.98; transform: scale(1.001); }
+}
+/* 加载扫描线 */
+.mesh-load-scan {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(100, 255, 180, 0.6), rgba(120, 180, 255, 0.6), transparent);
+  box-shadow: 0 0 12px rgba(100, 255, 180, 0.5);
+  animation: mesh-scan 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 20;
+}
+@keyframes mesh-scan {
+  0% { top: 0; opacity: 1; }
+  100% { top: 100vh; opacity: 0.2; }
+}
+/* 文章区域渐显 */
+.mesh-article {
+  animation: mesh-article-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+@keyframes mesh-article-in {
+  to { opacity: 1; }
+}
+.mesh-title {
+  animation: mesh-title-in 0.5s ease-out 0.15s forwards;
+  opacity: 0;
+}
+@keyframes mesh-title-in {
+  to { opacity: 1; }
+}
+.mesh-prose-body {
+  animation: mesh-prose-in 0.6s ease-out 0.35s forwards;
+  opacity: 0;
+}
+@keyframes mesh-prose-in {
+  to { opacity: 1; }
+}
+/* 标题/正文区光晕 */
+body.mesh-page .mesh-content .prose .mesh-title {
+  text-shadow: 0 0 20px rgba(100, 220, 255, 0.15), 0 0 40px rgba(100, 255, 220, 0.08);
+}
+body.mesh-page .mesh-content .prose .mesh-prose-body {
+  box-shadow: inset 0 0 80px rgba(100, 220, 255, 0.03);
+}
+/* 卡片边缘发光（四角青蓝+绿/紫） */
+body.mesh-page .mesh-content .prose::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(100, 255, 180, 0.15) 0%,
+    rgba(100, 220, 255, 0.12) 25%,
+    rgba(120, 160, 255, 0.1) 50%,
+    rgba(160, 120, 255, 0.12) 75%,
+    rgba(100, 255, 180, 0.15) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+body.mesh-page .mesh-content .prose:hover::before {
+  opacity: 1.4;
+}
+/* 链接 hover 光晕/脉冲 */
+body.mesh-page .mesh-content .prose a {
+  text-decoration: none;
+  padding: 0 2px;
+  border-radius: 2px;
+  transition: box-shadow 0.25s ease, text-shadow 0.25s ease, color 0.25s ease;
+}
+body.mesh-page .mesh-content .prose a:hover {
+  box-shadow: 0 0 12px rgba(100, 255, 180, 0.4), 0 0 24px rgba(100, 220, 255, 0.25);
+  text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3);
+  color: rgba(150, 255, 230, 0.95);
+}
+/* 代码块：输出窗口风格 */
+body.mesh-page .mesh-content .prose code {
+  background: rgba(6, 16, 28, 0.7);
+  border: 1px solid rgba(100, 255, 180, 0.15);
+  color: rgba(180, 255, 220, 0.9);
+}
+body.mesh-page .mesh-content .prose pre {
+  background: rgba(4, 10, 18, 0.85);
+  border: 1px solid rgba(100, 220, 255, 0.12);
+  box-shadow:
+    inset 0 0 30px rgba(0, 40, 80, 0.3),
+    0 0 20px rgba(100, 220, 255, 0.06),
+    0 0 0 1px rgba(100, 255, 180, 0.08);
+  border-radius: 6px;
+}
+body.mesh-page .mesh-content .prose pre code {
+  background: transparent;
+  border: none;
+  color: inherit;
+}
+/* 引用块：输出窗口风格 + 命令提示符 */
+body.mesh-page .mesh-content .prose blockquote {
+  position: relative;
+  background: rgba(6, 14, 24, 0.6);
+  border: 1px solid rgba(100, 220, 255, 0.1);
+  border-left: 3px solid rgba(100, 255, 180, 0.5);
+  padding: 1em 1.25em 1em 2.5em;
+  border-radius: 4px;
+  box-shadow: 0 0 16px rgba(100, 220, 255, 0.04), inset 0 0 20px rgba(0, 40, 80, 0.2);
+}
+body.mesh-page .mesh-content .prose blockquote::before {
+  content: ">";
+  position: absolute;
+  left: 0.6em;
+  top: 1em;
+  color: rgba(100, 255, 180, 0.6);
+  font-family: monospace;
+  font-weight: bold;
+}
+/* 代码块命令提示符 */
+body.mesh-page .mesh-content .prose pre {
+  position: relative;
+  padding-left: 2.5em;
+}
+body.mesh-page .mesh-content .prose pre::before {
+  content: "$";
+  position: absolute;
+  left: 1em;
+  top: 1.2em;
+  color: rgba(100, 255, 180, 0.5);
+  font-family: monospace;
+}
+body.mesh-page header {
+  background: rgba(5, 12, 22, 0.65);
+  border-bottom: 1px solid rgba(100, 220, 255, 0.08);
+}
+body.mesh-page footer {
+  background: rgba(5, 12, 22, 0.65);
+  border-top: 1px solid rgba(100, 220, 255, 0.08);
+}
+
+/* ========== 新增 AI 风格特效 ========== */
+/* 复古块状光标（正文末尾） */
+.mesh-block-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  background: rgba(100, 255, 180, 0.9);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: mesh-block-cursor-blink 1s step-end infinite;
+}
+@keyframes mesh-block-cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+/* 阅读进度条 */
+.mesh-read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: calc(var(--read-progress, 0) * 100%);
+  background: linear-gradient(90deg, rgba(100, 255, 180, 0.8), rgba(120, 180, 255, 0.8));
+  box-shadow: 0 0 10px rgba(100, 255, 180, 0.5);
+  z-index: 100;
+  transition: width 0.1s ease-out;
+}
+/* 鼠标跟随光斑 */
+.mesh-mouse-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  left: calc(var(--mouse-x, -9999px) - 150px);
+  top: calc(var(--mouse-y, -9999px) - 150px);
+  background: radial-gradient(circle, rgba(100, 220, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s;
+}
+body.mesh-page:not(:hover) .mesh-mouse-glow {
+  opacity: 0.5;
+}
+/* 深度模糊：上下边缘虚化 */
+.mesh-depth-blur {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  backdrop-filter: blur(0);
+  transition: backdrop-filter 0.3s;
+}
+.mesh-depth-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 12%, transparent 88%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 12%, transparent 88%, black 100%);
+}
+/* 思考中三连点 */
+.mesh-thinking-dots {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 6px;
+  z-index: 50;
+  opacity: 1;
+  animation: mesh-thinking-fade 0.8s ease-out 1.2s forwards;
+}
+.mesh-thinking-dots span {
+  width: 6px;
+  height: 6px;
+  background: rgba(100, 255, 180, 0.8);
+  border-radius: 50%;
+  animation: mesh-dot-pulse 0.8s ease-in-out infinite;
+}
+.mesh-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.mesh-thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes mesh-thinking-fade {
+  to { opacity: 0; visibility: hidden; }
+}
+@keyframes mesh-dot-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+/* 故障效果：链接/代码块 hover 极轻微 RGB 分离 */
+body.mesh-page .mesh-content .prose a:hover {
+  animation: mesh-glitch-link 0.4s ease-out;
+}
+body.mesh-page .mesh-content .prose pre:hover {
+  animation: mesh-glitch-pre 0.35s ease-out;
+}
+@keyframes mesh-glitch-link {
+  0%, 100% { text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3); }
+  20% { text-shadow: -0.5px 0 rgba(255,100,120,0.4), 0.5px 0 rgba(100,255,220,0.4); }
+  40% { text-shadow: 0.5px 0 rgba(255,100,120,0.3), -0.5px 0 rgba(100,255,220,0.3); }
+  60% { text-shadow: 0 0 10px rgba(100, 255, 220, 0.6), 0 0 20px rgba(120, 180, 255, 0.3); }
+}
+@keyframes mesh-glitch-pre {
+  0%, 100% { box-shadow: inset 0 0 30px rgba(0, 40, 80, 0.3), 0 0 20px rgba(100, 220, 255, 0.06); }
+  30% { box-shadow: inset 0 0 30px rgba(0, 40, 80, 0.3), -1px 0 rgba(255,80,100,0.15), 1px 0 rgba(80,255,200,0.15); }
+}
+/* 悬浮预览卡 */
+body.mesh-page .mesh-content .prose a.mesh-link-preview {
+  position: relative;
+}
+body.mesh-page .mesh-content .prose a.mesh-link-preview::after {
+  content: attr(data-preview);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 6px 12px;
+  background: rgba(6, 14, 24, 0.95);
+  border: 1px solid rgba(100, 255, 180, 0.3);
+  border-radius: 6px;
+  font-size: 0.75em;
+  color: rgba(180, 255, 220, 0.9);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+body.mesh-page .mesh-content .prose a.mesh-link-preview:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+/* 时间戳日志风格 */
+.mesh-log-date {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+}
+.mesh-log-label {
+  color: rgba(100, 255, 180, 0.7);
+  margin-right: 0.25em;
+}
+
+/* ========== AI 时代氛围增强 ========== */
+/* 元信息终端化 */
+.mesh-meta-terminal {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8em;
+  color: rgba(150, 220, 255, 0.8);
+  margin-bottom: 0.5em;
+}
+/* 提示词式标题 */
+.mesh-prompt-line {
+  font-size: 0.9em;
+  color: rgba(100, 255, 180, 0.7);
+  margin-bottom: 0.4em;
+}
+.mesh-prompt-topic {
+  color: rgba(180, 255, 220, 0.85);
+  font-style: italic;
+}
+/* 对话气泡 / Response 区域 */
+.mesh-response-wrap {
+  position: relative;
+}
+.mesh-response-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-bottom: 0.8em;
+}
+.mesh-response-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(100, 255, 180, 0.4), rgba(100, 220, 255, 0.3));
+  border: 1px solid rgba(100, 255, 180, 0.3);
+}
+.mesh-response-label {
+  font-size: 0.8em;
+  color: rgba(100, 255, 180, 0.8);
+  font-weight: 500;
+}
+/* 字数/Token 角落 */
+.mesh-stats-corner {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7em;
+  color: rgba(120, 200, 255, 0.5);
+}
+/* Regenerate 按钮 */
+.mesh-regenerate {
+  display: block;
+  margin: 2em auto 0;
+  padding: 0.5em 1.2em;
+  font-size: 0.85em;
+  font-family: ui-monospace, monospace;
+  color: rgba(100, 255, 180, 0.9);
+  background: rgba(6, 20, 35, 0.6);
+  border: 1px solid rgba(100, 255, 180, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.mesh-regenerate:hover:not(:disabled) {
+  background: rgba(100, 255, 180, 0.1);
+  box-shadow: 0 0 12px rgba(100, 255, 180, 0.2);
+}
+.mesh-regenerate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.mesh-regenerating {
+  pointer-events: none;
+}
+.mesh-regenerate-flash {
+  animation: mesh-flash 0.6s ease-out;
+}
+@keyframes mesh-flash {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+/* 首字放大 */
+body.mesh-page .mesh-content .prose .mesh-prose-body > p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.9;
+  margin-right: 0.1em;
+  color: rgba(100, 255, 180, 0.9);
+  text-shadow: 0 0 20px rgba(100, 255, 180, 0.3);
+}
+/* 段落滚动浮现 */
+.mesh-prose-body p,
+.mesh-prose-body h2,
+.mesh-prose-body h3,
+.mesh-prose-body pre,
+.mesh-prose-body blockquote,
+.mesh-prose-body ul,
+.mesh-prose-body ol {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.mesh-prose-body .mesh-para-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== 相关文章 + 返回博客 ========== */
+.mesh-related {
+  width: 720px;
+  max-width: calc(100% - 2em);
+  margin: 2.5rem auto 1.5rem;
+}
+.mesh-related-title {
+  font-size: 0.9em;
+  color: rgba(100, 255, 180, 0.8);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.mesh-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 780px) {
+  .mesh-related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.mesh-related-card {
+  display: block;
+  background: rgba(6, 14, 24, 0.6);
+  border: 1px solid rgba(100, 220, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.mesh-related-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(100, 255, 180, 0.15);
+  border-color: rgba(100, 255, 180, 0.25);
+}
+.mesh-related-img {
+  aspect-ratio: 16/9;
+  overflow: hidden;
+}
+.mesh-related-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mesh-related-placeholder {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, rgba(6, 20, 35, 0.9), rgba(10, 30, 50, 0.8));
+  border-bottom: 1px solid rgba(100, 220, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mesh-related-placeholder span {
+  font-size: 2em;
+  color: rgba(100, 255, 180, 0.5);
+  font-weight: 600;
+}
+.mesh-related-card-title {
+  padding: 0.75rem 1rem 0.25rem;
+  font-size: 0.95em;
+  margin: 0;
+  color: rgba(220, 245, 255, 0.95);
+}
+.mesh-related-card-date {
+  padding: 0 1rem 0.75rem;
+  font-size: 0.75em;
+  color: rgba(150, 210, 255, 0.6);
+  margin: 0;
+}
+.mesh-back-to-blog {
+  width: 720px;
+  max-width: calc(100% - 2em);
+  margin: 0 auto 2.5rem;
+}
+.mesh-back-to-blog a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+  color: rgba(150, 220, 255, 0.8);
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.mesh-back-to-blog a:hover {
+  color: rgba(100, 255, 180, 0.95);
+  text-shadow: 0 0 12px rgba(100, 255, 180, 0.3);
+}
+.mesh-back-prompt {
+  color: rgba(100, 255, 180, 0.7);
 }

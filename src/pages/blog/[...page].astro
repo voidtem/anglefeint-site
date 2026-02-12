@@ -21,7 +21,7 @@ const pageNums = Array.from({ length: page.lastPage }, (_, i) => i + 1);
 
 // Blade Runner: 负 delay 让雨滴首次加载即分布全屏
 const rainTypes = ['normal', 'thin', 'fog', 'skew'];
-const rainDrops = Array.from({ length: 80 }, (_, i) => {
+const rainDrops = Array.from({ length: 60 }, (_, i) => {
 	const type = rainTypes[i % 4];
 	return {
 		left: `${Math.random() * 100}%`,
@@ -31,7 +31,7 @@ const rainDrops = Array.from({ length: 80 }, (_, i) => {
 		type,
 	};
 });
-const dustParticles = Array.from({ length: 35 }, (_, i) => ({
+const dustParticles = Array.from({ length: 22 }, (_, i) => ({
 	left: `${Math.random() * 100}%`,
 	top: `${Math.random() * 100}%`,
 	size: 4 + Math.random() * 4,

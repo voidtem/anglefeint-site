@@ -12,6 +12,10 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/about">About</HeaderLink>
 		</div>
 		<div class="social-links">
+			<div class="nav-status" aria-label="System status">
+				<span class="nav-status-dot" aria-hidden="true"></span>
+				<span class="nav-status-text">system: online</span>
+			</div>
 			<a href="https://m.webtoo.ls/@astro" target="_blank">
 				<span class="sr-only">Follow Astro on Mastodon</span>
 				<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
@@ -46,8 +50,8 @@ import HeaderLink from './HeaderLink.astro';
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: var(--bg);
-		border-bottom: 1px solid rgb(var(--border));
+		background: var(--chrome-bg, var(--bg));
+		border-bottom: 1px solid var(--chrome-border, rgb(var(--border)));
 	}
 	h2 {
 		margin: 0;
@@ -65,19 +69,87 @@ import HeaderLink from './HeaderLink.astro';
 	}
 	nav a {
 		padding: 1em 0.5em;
-		color: rgb(var(--text));
+		color: var(--chrome-link, rgb(var(--text)));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
 	}
 	nav a.active {
 		text-decoration: none;
-		border-bottom-color: var(--accent);
+		border-bottom-color: var(--chrome-active, var(--accent));
+	}
+	.social-links a {
+		color: var(--chrome-link, rgb(var(--text)));
+	}
+	.social-links a:hover {
+		color: var(--chrome-link-hover, var(--chrome-link, rgb(var(--text))));
 	}
 	.social-links,
 	.social-links a {
 		display: flex;
 	}
+	.social-links {
+		align-items: center;
+		gap: 0.2rem;
+		position: relative;
+	}
+	.nav-status {
+		display: none;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.24rem 0.5rem;
+		border-radius: 999px;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.62rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: rgba(186, 232, 252, 0.86);
+		background: rgba(6, 16, 30, 0.52);
+		border: 1px solid rgba(132, 214, 255, 0.22);
+		box-shadow:
+			0 0 0 1px rgba(132, 214, 255, 0.08),
+			0 0 16px rgba(90, 180, 255, 0.16);
+		white-space: nowrap;
+		position: absolute;
+		right: calc(100% + 0.5rem);
+		top: 50%;
+		transform: translateY(-50%);
+		pointer-events: none;
+	}
+	.nav-status-dot {
+		width: 0.44rem;
+		height: 0.44rem;
+		border-radius: 50%;
+		background: rgba(150, 226, 255, 0.96);
+		box-shadow: 0 0 10px rgba(122, 210, 255, 0.72);
+		animation: nav-status-pulse 1.8s steps(1, end) infinite;
+	}
+	@keyframes nav-status-pulse {
+		0%,
+		78%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		82% {
+			opacity: 0.2;
+			transform: scale(0.7);
+		}
+		86% {
+			opacity: 1;
+			transform: scale(1.05);
+		}
+		90% {
+			opacity: 0.28;
+			transform: scale(0.78);
+		}
+	}
+	body.mesh-page .nav-status {
+		display: inline-flex;
+	}
 	@media (max-width: 720px) {
+		.nav-status {
+			display: none !important;
+		}
 		.social-links {
 			display: none;
 		}

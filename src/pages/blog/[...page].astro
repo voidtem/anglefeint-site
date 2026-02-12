@@ -21,12 +21,12 @@ const pageNums = Array.from({ length: page.lastPage }, (_, i) => i + 1);
 
 // Blade Runner: 负 delay 让雨滴首次加载即分布全屏
 const rainTypes = ['normal', 'thin', 'fog', 'skew'];
-const rainDrops = Array.from({ length: 60 }, (_, i) => {
+const rainDrops = Array.from({ length: 48 }, (_, i) => {
 	const type = rainTypes[i % 4];
 	return {
 		left: `${Math.random() * 100}%`,
 		delay: `${-5 + Math.random() * 6}s`,
-		duration: `${2.5 + Math.random() * (type === 'thin' ? 0.8 : type === 'fog' || type === 'skew' ? 1.4 : 1.2)}s`,
+		duration: `${3.3 + Math.random() * (type === 'thin' ? 1.1 : type === 'fog' || type === 'skew' ? 1.7 : 1.4)}s`,
 		opacity: type === 'fog' ? 0.12 + Math.random() * 0.1 : 0.2 + Math.random() * 0.25,
 		type,
 	};
@@ -55,24 +55,26 @@ const dustParticles = Array.from({ length: 22 }, (_, i) => ({
 			}
 			body.br-page .pagination a {
 				padding: 0.5rem 1rem;
-				color: rgb(130, 200, 205);
+				color: rgb(212, 196, 232);
 				text-decoration: none;
-				border: 1px solid rgba(100, 180, 185, 0.45);
+				border: 1px solid rgba(198, 156, 224, 0.42);
 				border-radius: 4px;
 				transition: 0.25s ease;
-				text-shadow: 0 0 10px rgba(100, 180, 185, 0.2);
+				text-shadow: 0 0 10px rgba(214, 152, 226, 0.2);
 			}
 			body.br-page .pagination a:hover {
-				border-color: rgba(100, 180, 185, 0.8);
-				text-shadow: 0 0 15px rgba(100, 180, 185, 0.4);
-				box-shadow: 0 0 15px rgba(100, 180, 185, 0.15);
+				border-color: rgba(226, 166, 236, 0.88);
+				text-shadow: 0 0 15px rgba(232, 174, 242, 0.5);
+				box-shadow: 0 0 15px rgba(222, 154, 228, 0.26);
 			}
 			body.br-page .pagination a.current {
-				background: rgba(100, 180, 185, 0.1);
-				border-color: rgb(130, 200, 205);
-				color: rgb(140, 205, 210);
-				text-shadow: 0 0 15px rgba(100, 180, 185, 0.4);
-				box-shadow: 0 0 20px rgba(100, 180, 185, 0.2);
+				background: rgba(188, 122, 214, 0.2);
+				border-color: rgb(224, 170, 236);
+				color: rgb(244, 224, 252);
+				text-shadow: 0 0 15px rgba(232, 174, 242, 0.48);
+				box-shadow:
+					0 0 20px rgba(118, 198, 255, 0.24),
+					0 0 12px rgba(220, 152, 230, 0.22);
 			}
 		</style>
 	</head>

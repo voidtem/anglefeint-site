@@ -5,21 +5,21 @@
  */
 
 :root {
-  --accent: #2337ff;
-  --accent-dark: #000d8a;
-  --black: 15, 18, 25;
-  --gray: 96, 115, 159;
-  --gray-light: 229, 233, 240;
-  --gray-dark: 34, 41, 57;
-  --gray-gradient: rgba(var(--gray-light), 50%), #fff;
-  --box-shadow:
+	--accent: #2337ff;
+	--accent-dark: #000d8a;
+	--black: 15, 18, 25;
+	--gray: 96, 115, 159;
+	--gray-light: 229, 233, 240;
+	--gray-dark: 34, 41, 57;
+	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
+	--box-shadow:
     0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
     0 16px 32px rgba(var(--gray), 33%);
-  /* Dark theme */
-  --bg: #000;
-  --text: 220, 220, 220;
-  --text-muted: 160, 160, 160;
-  --border: 60, 60, 60;
+	/* Dark theme */
+	--bg: #000;
+	--text: 220, 220, 220;
+	--text-muted: 160, 160, 160;
+	--border: 60, 60, 60;
   --chrome-bg: var(--bg);
   --chrome-border: rgb(var(--border));
   --chrome-link: rgb(var(--text));
@@ -28,36 +28,36 @@
   --chrome-text-muted: rgb(var(--text-muted));
 }
 @font-face {
-  font-family: "Atkinson";
-  src: url("/fonts/atkinson-regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+	font-family: "Atkinson";
+	src: url("/fonts/atkinson-regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
 }
 @font-face {
-  font-family: "Atkinson";
-  src: url("/fonts/atkinson-bold.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+	font-family: "Atkinson";
+	src: url("/fonts/atkinson-bold.woff") format("woff");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
 }
 body {
-  font-family: "Atkinson", sans-serif;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  background: var(--bg);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  color: rgb(var(--text));
-  font-size: 20px;
-  line-height: 1.7;
+	font-family: "Atkinson", sans-serif;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	background: var(--bg);
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	color: rgb(var(--text));
+	font-size: 20px;
+	line-height: 1.7;
 }
 main {
-  width: 720px;
-  max-width: calc(100% - 2em);
-  margin: auto;
-  padding: 3em 1em;
+	width: 720px;
+	max-width: calc(100% - 2em);
+	margin: auto;
+	padding: 3em 1em;
 }
 h1,
 h2,
@@ -65,112 +65,112 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0 0 0.5rem 0;
-  color: rgb(var(--text));
-  line-height: 1.2;
+	margin: 0 0 0.5rem 0;
+	color: rgb(var(--text));
+	line-height: 1.2;
 }
 h1 {
-  font-size: 3.052em;
+	font-size: 3.052em;
 }
 h2 {
-  font-size: 2.441em;
+	font-size: 2.441em;
 }
 h3 {
-  font-size: 1.953em;
+	font-size: 1.953em;
 }
 h4 {
-  font-size: 1.563em;
+	font-size: 1.563em;
 }
 h5 {
-  font-size: 1.25em;
+	font-size: 1.25em;
 }
 strong,
 b {
-  font-weight: 700;
+	font-weight: 700;
 }
 a {
-  color: var(--accent);
+	color: var(--accent);
 }
 a:hover {
-  color: var(--accent);
+	color: var(--accent);
 }
 p {
-  margin-bottom: 1em;
+	margin-bottom: 1em;
 }
 .prose p {
-  margin-bottom: 2em;
+	margin-bottom: 2em;
 }
 textarea {
-  width: 100%;
-  font-size: 16px;
+	width: 100%;
+	font-size: 16px;
 }
 input {
-  font-size: 16px;
+	font-size: 16px;
 }
 table {
-  width: 100%;
+	width: 100%;
 }
 img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
 }
 code {
-  padding: 2px 5px;
-  background-color: rgb(var(--border));
-  border-radius: 2px;
+	padding: 2px 5px;
+	background-color: rgb(var(--border));
+	border-radius: 2px;
 }
 pre {
-  padding: 1.5em;
-  border-radius: 8px;
-  background-color: rgb(var(--border));
+	padding: 1.5em;
+	border-radius: 8px;
+	background-color: rgb(var(--border));
 }
 pre > code {
-  all: unset;
+	all: unset;
 }
 blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 0 0 0 20px;
-  margin: 0;
-  font-size: 1.333em;
+	border-left: 4px solid var(--accent);
+	padding: 0 0 0 20px;
+	margin: 0;
+	font-size: 1.333em;
 }
 hr {
-  border: none;
-  border-top: 1px solid rgb(var(--border));
+	border: none;
+	border-top: 1px solid rgb(var(--border));
 }
 @media (max-width: 720px) {
-  body {
-    font-size: 18px;
-  }
-  main {
-    padding: 1em;
-  }
+	body {
+		font-size: 18px;
+	}
+	main {
+		padding: 1em;
+	}
 }
 
 .sr-only {
-  border: 0;
-  padding: 0;
-  margin: 0;
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-  clip: rect(1px 1px 1px 1px);
-  /* maybe deprecated but we need to support legacy browsers */
-  clip: rect(1px, 1px, 1px, 1px);
-  /* modern browsers, clip-path works inwards from each corner */
-  clip-path: inset(50%);
-  /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
-  white-space: nowrap;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+	clip: rect(1px 1px 1px 1px);
+	/* maybe deprecated but we need to support legacy browsers */
+	clip: rect(1px, 1px, 1px, 1px);
+	/* modern browsers, clip-path works inwards from each corner */
+	clip-path: inset(50%);
+	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
+	white-space: nowrap;
 }
 
 /* ========== Blade Runner 博客列表页 (body.br-page) ========== */
 body.br-page {
   background: #090b12 !important;
-  background-image: none !important;
-  background-size: auto !important;
-  min-height: 100vh !important;
+	background-image: none !important;
+	background-size: auto !important;
+	min-height: 100vh !important;
   --chrome-bg: rgba(7, 13, 24, 0.72);
   --chrome-border: rgba(112, 196, 255, 0.2);
   --chrome-link: rgba(196, 226, 255, 0.92);
@@ -180,9 +180,9 @@ body.br-page {
 }
 body.br-page::before {
   content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
+	position: fixed;
+	inset: 0;
+	z-index: -1;
   background: linear-gradient(
     180deg,
     #05070b 0%,
@@ -194,9 +194,9 @@ body.br-page::before {
 }
 body.br-page::after {
   content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
+	position: fixed;
+	inset: 0;
+	z-index: -1;
   background:
     radial-gradient(
       ellipse 82% 52% at 50% 18%,
@@ -214,7 +214,7 @@ body.br-page::after {
       transparent 45%
     );
   animation: br-fog-drift 20s ease-in-out infinite alternate;
-  pointer-events: none;
+	pointer-events: none;
 }
 @keyframes br-fog-drift {
   0% {
@@ -227,17 +227,17 @@ body.br-page::after {
   }
 }
 body.br-page .br-rain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
   z-index: 6;
-  overflow: hidden;
+	overflow: hidden;
   contain: layout paint;
 }
 /* Blade Runner: 雨滴 - 白色中脏脏的感觉，非琥珀也非冷青 */
 body.br-page .br-rain-drop {
-  position: absolute;
-  top: -20px;
+	position: absolute;
+	top: -20px;
   width: 6px;
   height: 38px;
   clip-path: polygon(1.5px 0, 4.5px 0, 6px 100%, 0 100%);
@@ -249,7 +249,7 @@ body.br-page .br-rain-drop {
     rgba(195, 190, 182, 0.52) 70%,
     transparent 100%
   );
-  animation: br-rain-fall linear infinite;
+	animation: br-rain-fall linear infinite;
 }
 @keyframes br-rain-fall {
   to {
@@ -257,8 +257,8 @@ body.br-page .br-rain-drop {
   }
 }
 body.br-page .br-scanlines {
-  position: fixed;
-  inset: 0;
+	position: fixed;
+	inset: 0;
   contain: layout paint;
   background: repeating-linear-gradient(
     0deg,
@@ -435,8 +435,8 @@ body.br-page .br-vignette {
     transparent 40%,
     rgba(0, 0, 0, 0.4) 100%
   );
-  pointer-events: none;
-  z-index: 3;
+	pointer-events: none;
+	z-index: 3;
 }
 body.br-page .br-rain-drop--thin {
   width: 4px;
@@ -496,9 +496,9 @@ body.br-page .br-dust-particle {
   }
 }
 body.br-page main {
-  position: relative;
+	position: relative;
   z-index: 7;
-  width: 960px;
+	width: 960px;
 }
 body.br-page .title,
 body.br-page .date {
@@ -508,23 +508,23 @@ body.br-page .date {
   color: rgba(150, 186, 228, 0.68);
 }
 body.br-page ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 body.br-page ul li {
-  width: calc(50% - 1rem);
+	width: calc(50% - 1rem);
 }
 body.br-page ul li * {
-  text-decoration: none;
+	text-decoration: none;
 }
 body.br-page ul li:first-child {
-  width: 100%;
-  margin-bottom: 1rem;
-  text-align: center;
+	width: 100%;
+	margin-bottom: 1rem;
+	text-align: center;
 }
 body.br-page ul li:first-child img {
   width: 100%;
@@ -533,9 +533,9 @@ body.br-page ul li:first-child .title {
   font-size: 2.369rem;
 }
 body.br-page ul li a {
-  display: block;
-  position: relative;
-  padding: 1rem;
+	display: block;
+	position: relative;
+	padding: 1rem;
   border-radius: 4px;
   border: 1px solid rgba(116, 194, 255, 0.24);
   box-shadow:
@@ -612,18 +612,18 @@ body.br-page ul li a:hover .date {
     0 0 20px rgba(218, 148, 210, 0.26);
 }
 body.br-page .img-wrapper {
-  position: relative;
+	position: relative;
   margin-bottom: 0.5rem;
   border-radius: 4px;
-  overflow: hidden;
+	overflow: hidden;
 }
 /* 水平扫线 - 日式樱花+赛博蓝 */
 body.br-page .img-wrapper::before {
   content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -20px;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -20px;
   height: 10px;
   z-index: 3;
   background: linear-gradient(
@@ -649,11 +649,11 @@ body.br-page .img-wrapper::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 2;
+	z-index: 2;
   box-shadow:
     inset 0 0 25px rgba(108, 190, 255, 0.16),
     inset 0 0 50px rgba(224, 148, 212, 0.1);
-  pointer-events: none;
+	pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -661,9 +661,9 @@ body.br-page ul li a:hover .img-wrapper::after {
   opacity: 1;
 }
 body.br-page ul li img {
-  display: block;
-  width: 100%;
-  height: auto;
+	display: block;
+	width: 100%;
+	height: auto;
   filter: saturate(0.75) contrast(1.05) brightness(0.88) sepia(0.15)
     hue-rotate(-2deg);
   transition:
@@ -1021,25 +1021,40 @@ body.mesh-page footer {
   position: relative;
   z-index: 10;
 }
+/* GPU 风格：散热鳍片 + PCB 底 + 金属边框 */
 body.mesh-page .mesh-content .prose {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(10, 16, 28, 0.88), rgba(10, 12, 22, 0.74)),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 19px,
+      rgba(50, 90, 70, 0.03) 19px,
+      rgba(50, 90, 70, 0.03) 20px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 2px,
+      rgba(55, 65, 80, 0.14) 2px,
+      rgba(55, 65, 80, 0.14) 4px
+    ),
+    linear-gradient(135deg, rgba(14, 18, 24, 0.97) 0%, rgba(10, 14, 20, 0.95) 50%, rgba(6, 10, 16, 0.97) 100%),
     radial-gradient(
-      circle at 88% 16%,
-      rgba(118, 176, 214, 0.14),
-      transparent 44%
+      ellipse 80% 50% at 50% 0%,
+      rgba(70, 110, 150, 0.06),
+      transparent 60%
     );
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  border-radius: 10px;
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border-radius: 8px;
   padding: 2em;
-  border: 1px solid rgba(127, 167, 199, 0.34);
+  border: 1px solid rgba(140, 155, 175, 0.35);
   box-shadow:
-    0 0 60px rgba(0, 0, 0, 0.56),
-    0 0 0 1px rgba(174, 231, 255, 0.14),
-    inset 0 1px 0 rgba(198, 230, 255, 0.09),
-    inset 0 0 56px rgba(8, 22, 36, 0.44);
+    0 0 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(200, 210, 225, 0.12),
+    inset 0 -1px 0 rgba(40, 50, 65, 0.4),
+    inset 0 0 0 1px rgba(100, 120, 150, 0.15);
   animation: mesh-breathe 6s ease-in-out infinite;
 }
 /* 呼吸式微动 */
@@ -1119,7 +1134,7 @@ body.mesh-page .mesh-content .prose .mesh-title {
 body.mesh-page .mesh-content .prose .mesh-prose-body {
   box-shadow: inset 0 0 80px rgba(124, 206, 255, 0.035);
 }
-/* 卡片边缘发光（四角青蓝+绿/紫） */
+/* GPU 金属边框：铝银质感 */
 body.mesh-page .mesh-content .prose::before {
   content: "";
   position: absolute;
@@ -1127,11 +1142,12 @@ body.mesh-page .mesh-content .prose::before {
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(
-    132deg,
-    rgba(174, 231, 255, 0.28) 0%,
-    rgba(127, 167, 199, 0.2) 36%,
-    rgba(142, 212, 250, 0.2) 68%,
-    rgba(172, 236, 255, 0.24) 100%
+    135deg,
+    rgba(200, 210, 225, 0.4) 0%,
+    rgba(140, 155, 180, 0.25) 25%,
+    rgba(100, 115, 140, 0.2) 50%,
+    rgba(140, 155, 180, 0.28) 75%,
+    rgba(180, 195, 215, 0.35) 100%
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -1145,7 +1161,7 @@ body.mesh-page .mesh-content .prose::before {
   transition: opacity 0.3s ease;
 }
 body.mesh-page .mesh-content .prose:hover::before {
-  opacity: 1.4;
+  opacity: 1.3;
 }
 /* 链接 hover 光晕/脉冲 */
 body.mesh-page .mesh-content .prose a {
@@ -1770,7 +1786,7 @@ body.mesh-page
   color: rgba(154, 218, 246, 0.78);
 }
 
-/* 回到顶部按钮：在文章右边缘与浏览器右边缘的中点，垂直 68% 处 */
+/* 回到顶部按钮：芯片电路图风格 */
 .mesh-back-to-top {
   position: fixed;
   /* 文章宽 720px 居中时，右半边空隙中心 = (100vw - 720px)/2 + 720px + (100vw - 720px)/4 = 75vw + 180px */
@@ -1783,7 +1799,11 @@ body.mesh-page
   padding: 0;
   border: 1px solid rgba(126, 192, 224, 0.44);
   border-radius: 10px;
-  background: rgba(10, 18, 28, 0.88);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='rgba(80,160,220,0.5)'/%3E%3Cstop offset='1' stop-color='rgba(100,180,240,0.35)'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='32' height='32' rx='2' fill='none' stroke='url(%23g)' stroke-width='0.8'/%3E%3Cpath d='M6 8 Q6 6 8 6' fill='none' stroke='url(%23g)' stroke-width='0.8'/%3E%3Crect x='18' y='18' width='8' height='8' fill='rgba(124,206,246,0.08)' stroke='rgba(100,180,220,0.5)' stroke-width='0.6'/%3E%3Crect x='10' y='4' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='17' y='4' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='24' y='4' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='31' y='4' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='10' y='38' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='17' y='38' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='24' y='38' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='31' y='38' width='3' height='2' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='4' y='10' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='4' y='17' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='4' y='24' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='4' y='31' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='38' y='10' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='38' y='17' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='38' y='24' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Crect x='38' y='31' width='2' height='3' fill='rgba(100,180,220,0.5)'/%3E%3Cline x1='12' y1='6' x2='12' y2='18' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='19' y1='6' x2='19' y2='18' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='26' y1='6' x2='26' y2='18' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='33' y1='6' x2='33' y2='18' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='6' y1='12' x2='18' y2='12' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='6' y1='19' x2='18' y2='19' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='26' y1='12' x2='38' y2='12' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3Cline x1='26' y1='19' x2='38' y2='19' stroke='rgba(100,180,220,0.35)' stroke-width='0.5'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(12, 22, 36, 0.95), rgba(8, 16, 28, 0.98));
+  background-size: 100% 100%, 100% 100%;
+  background-position: 0 0, 0 0;
   color: rgba(190, 236, 255, 0.95);
   font-size: 1.35em;
   cursor: pointer;

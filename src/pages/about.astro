@@ -1,11 +1,21 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { getCollection } from 'astro:content';
 
 const pageTitle = 'About — Hacker Ethos';
 const pageDescription = 'Who I am, what I build, and the hacker ethos behind my work.';
+const blogPosts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.map((p) => ({ slug: p.id, title: p.data.title ?? p.id }));
+
+const scriptsFoldersHtml = blogPosts
+	.map(
+		(p) =>
+			`<a href="/blog/${p.slug}" class="term-script-folder"><svg class="term-script-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h8l2 2h10v12H2V4z"/></svg><span class="term-script-folder-label">${String(p.title).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')}</span></a>`
+	)
+	.join('');
 ---
 
 <html lang="en">
@@ -13,25 +23,24 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 		<BaseHead title={pageTitle} description={pageDescription} />
 		<style is:global>
 			body.term-page {
-				background: #0a0a0a !important;
+				background: #000 !important;
 				background-image: none !important;
-				color: rgba(0, 255, 65, 0.88);
+				color: rgba(255, 255, 255, 0.88);
 				min-height: 100vh;
 				scrollbar-width: thin;
-				scrollbar-color: rgba(0, 255, 65, 0.3) transparent;
-				/* header: amber gold */
-				--chrome-bg: rgba(0, 0, 0, 0.85);
-				--chrome-border: rgba(255, 184, 0, 0.2);
-				--chrome-link: rgba(255, 200, 60, 0.88);
-				--chrome-link-hover: rgba(255, 220, 100, 1);
-				--chrome-active: rgba(255, 184, 0, 0.8);
-				/* footer: dim cyan */
-				--chrome-text-muted: rgba(0, 200, 220, 0.5);
+				scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+				/* header: Anonymous 黑白灰 + 黄点缀 */
+				--chrome-bg: rgba(0, 0, 0, 0.42);
+				--chrome-border: rgba(255, 255, 255, 0.2);
+				--chrome-link: rgba(255, 255, 255, 0.9);
+				--chrome-link-hover: rgba(0, 255, 100, 0.95);
+				--chrome-active: rgba(0, 255, 100, 0.8);
+				--chrome-text-muted: rgba(255, 255, 255, 0.5);
 			}
 			body.term-page::-webkit-scrollbar { width: 6px; }
 			body.term-page::-webkit-scrollbar-track { background: transparent; }
 			body.term-page::-webkit-scrollbar-thumb {
-				background: rgba(0, 255, 65, 0.24);
+				background: rgba(255, 255, 255, 0.22);
 				border-radius: 3px;
 			}
 			/* fixed header + content offset (mirrors mesh-page in global.css) */
@@ -52,18 +61,18 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				position: relative;
 				z-index: 10;
 			}
-			/* footer: dim cyan */
+			/* footer: Anonymous 灰白 */
 			body.term-page footer {
 				--chrome-bg: rgba(0, 0, 0, 0.85);
-				--chrome-border: rgba(0, 200, 220, 0.18);
-				border-top-color: rgba(0, 200, 220, 0.18) !important;
-				color: rgba(0, 200, 220, 0.5);
+				--chrome-border: rgba(255, 255, 255, 0.15);
+				border-top-color: rgba(255, 255, 255, 0.15) !important;
+				color: rgba(255, 255, 255, 0.55);
 			}
 			body.term-page footer a {
-				color: rgba(0, 200, 220, 0.55) !important;
+				color: rgba(255, 255, 255, 0.7) !important;
 			}
 			body.term-page footer a:hover {
-				color: rgba(0, 220, 240, 0.85) !important;
+				color: rgba(0, 255, 100, 0.9) !important;
 			}
 			@media (max-width: 720px) {
 				body.term-page .term-content {
@@ -87,12 +96,13 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 			.term-scanlines {
 				position: absolute;
 				inset: 0;
+				/* 浅色扫描线：在深色背景上可见，全屏 CRT 感 */
 				background: repeating-linear-gradient(
 					180deg,
-					rgba(0, 0, 0, 0.06) 0px,
-					rgba(0, 0, 0, 0.06) 1px,
-					transparent 1px,
-					transparent 3px
+					transparent 0px,
+					transparent 2px,
+					rgba(255, 255, 255, 0.03) 2px,
+					rgba(255, 255, 255, 0.03) 3px
 				);
 				pointer-events: none;
 			}
@@ -112,18 +122,17 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				inset: 0;
 				background: transparent;
 				animation: term-flicker-anim 0.08s infinite;
-				opacity: 0.012;
 				pointer-events: none;
 			}
 			@keyframes term-flicker-anim {
-				0% { background: rgba(0, 255, 65, 0.015); }
+				0% { background: rgba(255, 255, 255, 0.012); }
 				50% { background: transparent; }
-				100% { background: rgba(0, 255, 65, 0.01); }
+				100% { background: rgba(255, 255, 255, 0.005); }
 			}
 			.term-glow {
 				position: absolute;
 				inset: 0;
-				box-shadow: inset 0 0 120px rgba(0, 255, 65, 0.04);
+				box-shadow: inset 0 0 120px rgba(255, 255, 255, 0.03);
 				pointer-events: none;
 			}
 			/* ── content ── */
@@ -134,117 +143,18 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 			.term-content .prose {
 				position: relative;
 				background:
-					linear-gradient(180deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)),
-					linear-gradient(180deg, rgba(0, 20, 5, 0.3), rgba(0, 10, 3, 0.4));
-				border: 1px solid rgba(0, 255, 65, 0.08);
+					linear-gradient(180deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.92)),
+					linear-gradient(180deg, rgba(30, 30, 30, 0.1), rgba(15, 15, 15, 0.15));
+				border: 1px solid rgba(255, 255, 255, 0.2);
 				border-radius: 8px;
 				box-shadow:
-					0 0 0 1px rgba(0, 255, 65, 0.04),
-					0 16px 48px rgba(0, 0, 0, 0.5);
+					0 0 0 1px rgba(255, 255, 255, 0.06),
+					0 16px 48px rgba(0, 0, 0, 0.6);
 			}
 			.about-shell {
 				width: 720px;
 				max-width: calc(100% - 2em);
 				margin: 0 auto 2rem;
-			}
-			.hero-shell {
-				width: min(1020px, 100%);
-				margin: 0 auto;
-				position: relative;
-				box-sizing: border-box;
-			}
-			.hero-pane {
-				position: relative;
-				border-radius: 12px;
-				overflow: hidden;
-				border: 1px solid rgba(0, 255, 65, 0.2);
-				box-shadow:
-					0 0 0 1px rgba(0, 255, 65, 0.08),
-					0 24px 48px rgba(0, 0, 0, 0.68),
-					0 0 34px rgba(0, 0, 0, 0.64);
-			}
-			.hero-image {
-				width: 100%;
-				margin: 0;
-				position: relative;
-				box-sizing: border-box;
-				border-radius: 0;
-				overflow: hidden;
-			}
-			.hero-stack {
-				position: relative;
-				aspect-ratio: 1020 / 510;
-				background: #050505;
-			}
-			.hero-canvas-wrap {
-				position: absolute;
-				inset: 0;
-				z-index: 1;
-				opacity: 0;
-				transition: opacity 260ms ease;
-			}
-			.hero-canvas-wrap.ready { opacity: 1; }
-			.hero-canvas {
-				position: absolute;
-				inset: 0;
-				width: 100%;
-				height: 100%;
-				display: block;
-			}
-			.hero-frame {
-				position: absolute;
-				top: 0.65rem;
-				left: 0.8rem;
-				display: inline-flex;
-				align-items: center;
-				gap: 0.52rem;
-				padding: 0.26rem 0.62rem;
-				border: 1px solid rgba(0, 255, 65, 0.3);
-				background: rgba(0, 0, 0, 0.8);
-				border-radius: 6px;
-				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-				font-size: 0.65rem;
-				letter-spacing: 0.14em;
-				color: rgba(0, 255, 65, 0.9);
-				text-transform: uppercase;
-				pointer-events: none;
-				z-index: 2;
-				box-shadow:
-					0 0 0 1px rgba(0, 255, 65, 0.08),
-					0 0 14px rgba(0, 80, 30, 0.4);
-			}
-			.hero-frame-dot {
-				width: 6px;
-				height: 6px;
-				border-radius: 50%;
-				background: rgba(0, 255, 65, 0.98);
-				box-shadow: 0 0 10px rgba(0, 255, 65, 0.72);
-				animation: hero-frame-alert 1.1s ease-in-out infinite;
-			}
-			@keyframes hero-frame-alert {
-				0%, 100% { opacity: 1; transform: scale(1); }
-				50% { opacity: 0.35; transform: scale(0.82); }
-			}
-			.hero-threat-bar {
-				width: 100%;
-				margin: 0;
-				display: flex;
-				justify-content: space-between;
-				gap: 0.6rem;
-				padding: 0.24rem 0.5rem;
-				box-sizing: border-box;
-				border-top: 1px solid rgba(0, 255, 65, 0.15);
-				background: linear-gradient(90deg, rgba(0, 8, 2, 0.7), rgba(0, 4, 1, 0.76));
-				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-				font-size: 0.58rem;
-				letter-spacing: 0.12em;
-				color: rgba(0, 255, 65, 0.72);
-				text-transform: uppercase;
-				pointer-events: none;
-			}
-			@media (max-width: 720px) {
-				.hero-frame { font-size: 0.6rem; letter-spacing: 0.1em; }
-				.hero-threat-bar { font-size: 0.52rem; letter-spacing: 0.08em; }
 			}
 			/* ── toast ── */
 			.term-toast {
@@ -257,13 +167,13 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				font-size: 0.7rem;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
-				color: rgba(0, 255, 65, 0.98);
+				color: rgba(255, 255, 255, 0.95);
 				background: rgba(0, 0, 0, 0.94);
-				border: 1px solid rgba(0, 255, 65, 0.4);
+				border: 1px solid rgba(255, 255, 255, 0.25);
 				border-radius: 6px;
 				box-shadow:
-					0 0 0 1px rgba(0, 255, 65, 0.12),
-					0 0 24px rgba(0, 255, 65, 0.18);
+					0 0 0 1px rgba(255, 255, 255, 0.08),
+					0 0 24px rgba(0, 255, 100, 0.12);
 				opacity: 0;
 				transform: translateY(8px);
 				pointer-events: none;
@@ -280,8 +190,8 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				left: 0;
 				height: 3px;
 				width: calc(var(--read-progress, 0) * 100%);
-				background: linear-gradient(90deg, rgba(0, 255, 65, 0.7), rgba(0, 255, 65, 0.95));
-				box-shadow: 0 0 12px rgba(0, 255, 65, 0.4);
+				background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(0, 255, 100, 0.9));
+				box-shadow: 0 0 12px rgba(0, 255, 100, 0.25);
 				z-index: 100;
 				pointer-events: none;
 			}
@@ -292,10 +202,10 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				bottom: 3.5rem;
 				width: 40px;
 				height: 40px;
-				border: 1px solid rgba(0, 255, 65, 0.3);
+				border: 1px solid rgba(255, 255, 255, 0.25);
 				border-radius: 8px;
 				background: rgba(0, 0, 0, 0.88);
-				color: rgba(0, 255, 65, 0.9);
+				color: rgba(255, 255, 255, 0.9);
 				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 				font-size: 1.1rem;
 				cursor: pointer;
@@ -304,7 +214,7 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				transform: translateY(8px);
 				transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 				pointer-events: none;
-				box-shadow: 0 0 14px rgba(0, 255, 65, 0.1);
+				box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
 			}
 			.term-back-to-top.visible {
 				opacity: 1;
@@ -312,8 +222,9 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				pointer-events: auto;
 			}
 			.term-back-to-top:hover {
-				box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-				border-color: rgba(0, 255, 65, 0.5);
+				box-shadow: 0 0 20px rgba(0, 255, 100, 0.25);
+				border-color: rgba(0, 255, 100, 0.5);
+				color: rgba(0, 255, 100, 0.95);
 			}
 			/* ── title ── */
 			.about-title {
@@ -322,7 +233,7 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 			.term-meta {
 				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 				font-size: 0.78em;
-				color: rgba(0, 255, 65, 0.6);
+				color: rgba(255, 255, 255, 0.55);
 				margin-bottom: 0.62em;
 				letter-spacing: 0.04em;
 			}
@@ -334,11 +245,11 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				overflow: hidden;
 				background: linear-gradient(
 					90deg,
-					rgba(0, 255, 65, 0.12),
-					rgba(0, 255, 65, 0.22),
-					rgba(0, 255, 65, 0.12)
+					rgba(255, 255, 255, 0.1),
+					rgba(255, 255, 255, 0.2),
+					rgba(255, 255, 255, 0.1)
 				);
-				box-shadow: 0 0 14px rgba(0, 255, 65, 0.15);
+				box-shadow: 0 0 14px rgba(255, 255, 255, 0.1);
 			}
 			.term-title-bar::after {
 				content: "";
@@ -349,46 +260,59 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				width: 35%;
 				background: linear-gradient(
 					90deg,
-					rgba(0, 255, 65, 0),
-					rgba(0, 255, 65, 0.8),
-					rgba(0, 255, 65, 0)
+					rgba(255, 255, 255, 0),
+					rgba(0, 255, 100, 0.6),
+					rgba(255, 255, 255, 0)
 				);
 				animation: term-bar-sweep 3.8s linear infinite;
 			}
 			@keyframes term-bar-sweep {
 				to { left: 100%; }
 			}
-			/* ── response panel ── */
+			/* ── response panel: Anonymous 窗口风格 (白标题栏 + 黑内容区) ── */
 			.term-response {
-				border: 1px solid rgba(200, 210, 220, 0.12);
-				background: rgba(0, 0, 0, 0.4);
-				border-radius: 8px;
-				padding: 0.75rem 0.9rem 0.45rem;
+				border: 1px solid rgba(255, 255, 255, 0.25);
+				background: #000;
+				border-radius: 0;
+				padding: 0;
+				overflow: hidden;
 				box-shadow:
-					inset 0 0 0 1px rgba(200, 210, 220, 0.05),
-					0 8px 26px rgba(0, 0, 0, 0.32);
+					0 0 0 1px rgba(255, 255, 255, 0.1),
+					0 8px 32px rgba(0, 0, 0, 0.6);
 			}
 			.term-response-header {
 				display: flex;
 				align-items: center;
-				gap: 0.6em;
-				margin-bottom: 0.8em;
+				gap: 0.5em;
+				padding: 0.5rem 0.9rem;
+				background: #fff;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 			}
-			.term-response-dot {
-				width: 28px;
-				height: 28px;
+			.term-window-dots {
+				display: flex;
+				gap: 6px;
+				align-items: center;
+			}
+			.term-window-dots span {
+				width: 10px;
+				height: 10px;
 				border-radius: 50%;
-				background: linear-gradient(145deg, rgba(220, 230, 240, 0.3), rgba(180, 195, 210, 0.2));
-				border: 1px solid rgba(200, 210, 220, 0.25);
-				box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.64), 0 0 14px rgba(200, 210, 220, 0.12);
+				flex-shrink: 0;
 			}
+			.term-window-dots span:nth-child(1) { background: #ff5f57; }
+			.term-window-dots span:nth-child(2) { background: #febc2e; }
+			.term-window-dots span:nth-child(3) { background: #28c840; }
 			.term-response-label {
 				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-				font-size: 0.8em;
-				color: rgba(200, 210, 220, 0.7);
+				font-size: 0.75em;
+				color: #000;
 				font-weight: 600;
-				letter-spacing: 0.08em;
+				letter-spacing: 0.1em;
 				text-transform: uppercase;
+			}
+			.term-body {
+				padding: 1rem 0.9rem 1.2rem;
+				background: #000;
 			}
 			/* ── prose body ── */
 			.term-body p,
@@ -404,18 +328,19 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				transform: translateY(0);
 			}
 			.term-body a {
-				color: rgba(0, 255, 65, 0.95);
-				text-decoration-color: rgba(0, 255, 65, 0.3);
+				color: rgba(255, 255, 255, 0.9);
+				text-decoration-color: rgba(255, 255, 255, 0.35);
 			}
 			.term-body a:hover {
-				text-decoration-color: rgba(0, 255, 65, 0.7);
+				color: rgba(0, 255, 100, 0.95);
+				text-decoration-color: rgba(0, 255, 100, 0.6);
 			}
 			/* ── cursor ── */
 			.term-cursor {
 				display: inline-block;
 				width: 0.6em;
 				height: 1.1em;
-				background: rgba(0, 255, 65, 0.9);
+				background: rgba(0, 255, 100, 0.9);
 				margin-left: 2px;
 				vertical-align: text-bottom;
 				animation: term-cursor-blink 1s step-end infinite;
@@ -430,14 +355,14 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				font-size: 0.78rem;
 				letter-spacing: 0.12em;
 				text-transform: uppercase;
-				color: rgba(0, 255, 65, 0.88);
+				color: rgba(255, 255, 255, 0.82);
 				margin: 1.7rem 0 0.45rem;
 			}
 			/* ── manifest box ── */
 			.about-manifest {
 				margin: 1rem 0 1.4rem;
 				padding: 0.8rem 0.95rem;
-				border: 1px solid rgba(0, 255, 65, 0.16);
+				border: 1px solid rgba(255, 255, 255, 0.18);
 				border-radius: 8px;
 				background: rgba(0, 0, 0, 0.4);
 			}
@@ -449,14 +374,14 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				margin: 0.38rem 0;
 			}
 			.about-manifest li::marker {
-				color: rgba(0, 255, 65, 0.5);
+				color: rgba(255, 255, 255, 0.5);
 			}
 			/* ── signature ── */
 			.about-signature {
 				margin-top: 1.2rem;
 				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 				font-size: 0.8rem;
-				color: rgba(0, 255, 65, 0.7);
+				color: rgba(255, 255, 255, 0.6);
 			}
 			/* ── regenerate ── */
 			.term-regenerate {
@@ -465,9 +390,9 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				padding: 0.5em 1.2em;
 				font-size: 0.85em;
 				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-				color: rgba(0, 255, 65, 0.9);
+				color: rgba(255, 255, 255, 0.88);
 				background: rgba(0, 0, 0, 0.68);
-				border: 1px solid rgba(0, 255, 65, 0.28);
+				border: 1px solid rgba(255, 255, 255, 0.25);
 				border-radius: 4px;
 				cursor: pointer;
 				letter-spacing: 0.06em;
@@ -475,30 +400,27 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				transition: all 0.2s ease;
 			}
 			.term-regenerate:hover:not(:disabled) {
-				background: rgba(0, 255, 65, 0.08);
-				box-shadow: 0 0 14px rgba(0, 255, 65, 0.2);
+				color: rgba(0, 255, 100, 0.95);
+				border-color: rgba(0, 255, 100, 0.4);
+				background: rgba(0, 255, 100, 0.06);
+				box-shadow: 0 0 14px rgba(0, 255, 100, 0.15);
 			}
-			/* ── prose container ── */
+			/* ── prose container: Anonymous 全等宽 ── */
 			.prose {
 				width: 720px;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
-				color: rgba(0, 255, 65, 0.82);
+				color: rgba(255, 255, 255, 0.88);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 0.9rem;
+				line-height: 1.6;
 			}
 			.prose p {
-				color: rgba(0, 255, 65, 0.78);
+				color: rgba(255, 255, 255, 0.82);
 			}
 			.prose hr {
-				border-color: rgba(0, 255, 65, 0.15);
-			}
-			.hero-shell + .prose {
-				margin-top: 1.1rem;
-			}
-			@media (max-width: 720px) {
-				.hero-shell + .prose {
-					margin-top: 0.85rem;
-				}
+				border-color: rgba(255, 255, 255, 0.15);
 			}
 			.title {
 				margin-bottom: 1em;
@@ -508,7 +430,9 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
-				color: rgba(0, 255, 65, 0.95);
+				color: rgba(255, 255, 255, 0.92);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				letter-spacing: 0.04em;
 			}
 			/* ── mouse glow (green) ── */
 			.term-mouse-glow {
@@ -517,7 +441,7 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				height: 300px;
 				left: calc(var(--mouse-x, -9999px) - 150px);
 				top: calc(var(--mouse-y, -9999px) - 150px);
-				background: radial-gradient(circle, rgba(0, 255, 65, 0.06) 0%, transparent 70%);
+				background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
 				pointer-events: none;
 				z-index: 1;
 				border-radius: 50%;
@@ -528,8 +452,8 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				left: 0;
 				right: 0;
 				height: 2px;
-				background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.6), rgba(0, 200, 50, 0.6), transparent);
-				box-shadow: 0 0 12px rgba(0, 255, 65, 0.5);
+				background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), rgba(0, 255, 100, 0.5), transparent);
+				box-shadow: 0 0 12px rgba(0, 255, 100, 0.3);
 				animation: term-scan 0.8s ease-out forwards;
 				pointer-events: none;
 				z-index: 20;
@@ -546,10 +470,312 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 				0% { filter: brightness(2) saturate(0.5); }
 				100% { filter: none; }
 			}
+			/* ── 右侧文件夹 (Anonymous) ── */
+			.term-sidebar {
+				position: fixed;
+				top: 20%;
+				right: 1rem;
+				z-index: 50;
+				display: flex;
+				flex-direction: column;
+				gap: 0.6rem;
+			}
+			.term-folder {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.4rem 0.6rem;
+				background: rgba(0, 0, 0, 0.6);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				border-radius: 8px;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				text-decoration: none;
+				color: rgba(255, 255, 255, 0.9);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 0.72rem;
+				letter-spacing: 0.06em;
+			}
+			.term-folder:hover {
+				background: rgba(0, 0, 0, 0.85);
+				border-color: rgba(0, 255, 100, 0.5);
+				color: rgba(0, 255, 100, 0.95);
+				box-shadow: 0 0 12px rgba(0, 255, 100, 0.15);
+			}
+			.term-folder-icon {
+				width: 24px;
+				height: 20px;
+				flex-shrink: 0;
+				opacity: 0.9;
+			}
+			/* ── 弹窗 (Anonymous 窗口) ── */
+			.term-modal-overlay {
+				position: fixed;
+				inset: 0;
+				z-index: 200;
+				background: rgba(0, 0, 0, 0.7);
+				backdrop-filter: blur(4px);
+				display: none;
+				align-items: center;
+				justify-content: center;
+				padding: 2rem;
+			}
+			.term-modal-overlay.open {
+				display: flex;
+			}
+			.term-modal {
+				width: min(420px, 100%);
+				max-height: 80vh;
+			}
+			.term-modal.term-modal-wide {
+				width: min(900px, calc(100vw - 2rem));
+				overflow: visible;
+			}
+			.term-modal-header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.5rem 0.9rem;
+				background: #fff;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+			}
+			.term-modal-dots {
+				display: flex;
+				gap: 6px;
+			}
+			.term-modal-dots span {
+				width: 10px;
+				height: 10px;
+				border-radius: 50%;
+			}
+			.term-modal-dots span:nth-child(1) { background: #ff5f57; }
+			.term-modal-dots span:nth-child(2) { background: #febc2e; }
+			.term-modal-dots span:nth-child(3) { background: #28c840; }
+			.term-modal-title {
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 0.75em;
+				color: #000;
+				font-weight: 600;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+			}
+			.term-modal-close {
+				margin-left: auto;
+				width: 28px;
+				height: 28px;
+				border: none;
+				background: transparent;
+				color: #000;
+				font-size: 1.2rem;
+				cursor: pointer;
+				opacity: 0.7;
+				border-radius: 4px;
+			}
+			.term-modal-close:hover {
+				opacity: 1;
+				background: rgba(0, 0, 0, 0.08);
+			}
+			.term-modal-body {
+				padding: 1rem 0.9rem 1.2rem;
+				color: rgba(255, 255, 255, 0.88);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				font-size: 0.82rem;
+				line-height: 1.6;
+				max-height: 60vh;
+				overflow-y: auto;
+			}
+			.term-modal-body pre {
+				margin: 0;
+				white-space: pre-wrap;
+				word-break: break-word;
+			}
+			/* DL Data: Downloading 进度条 (Anonymous 风格) */
+			.term-modal-body.term-modal-download .modal-subtitle {
+				font-size: 0.9em;
+				color: rgba(255, 255, 255, 0.7);
+				margin-bottom: 1rem;
+			}
+			.term-modal-progress {
+				display: flex;
+				gap: 2px;
+				flex-wrap: wrap;
+				margin-top: 0.5rem;
+			}
+			.term-modal-progress span {
+				width: 10px;
+				height: 12px;
+				background: rgba(255, 255, 255, 0.2);
+				transition: background 0.12s ease;
+			}
+			.term-modal-progress span.filled {
+				background: rgba(255, 255, 255, 0.6);
+			}
+			/* All Scripts: 文件夹网格 */
+			.term-modal-scripts {
+				padding: 0.5rem 0;
+			}
+			.term-modal-scripts-path {
+				font-size: 0.9em;
+				color: rgba(255, 255, 255, 0.9);
+				letter-spacing: 0.05em;
+				margin-bottom: 1rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+				padding-bottom: 0.5rem;
+			}
+			.term-modal-scripts-grid {
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 1rem;
+			}
+			.term-script-folder {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.6rem 0.4rem;
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(255, 255, 255, 0.12);
+				border-radius: 6px;
+				color: rgba(255, 255, 255, 0.9);
+				text-decoration: none;
+				transition: all 0.15s ease;
+			}
+			.term-script-folder:hover {
+				background: rgba(255, 255, 255, 0.12);
+				border-color: rgba(0, 255, 100, 0.4);
+				box-shadow: 0 0 12px rgba(0, 255, 100, 0.15);
+			}
+			.term-script-folder-icon {
+				width: 32px;
+				height: 28px;
+				color: rgba(255, 255, 255, 0.7);
+			}
+			.term-script-folder-label {
+				font-size: 0.72rem;
+				text-align: center;
+				word-break: break-word;
+				line-height: 1.3;
+			}
+			@media (max-width: 600px) {
+				.term-modal-scripts-grid {
+					grid-template-columns: repeat(3, 1fr);
+				}
+			}
+			/* Help: 虚拟键盘 */
+			.term-vkeyboard {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+				font-size: 0.7rem;
+			}
+			.term-vkeyboard-row {
+				display: flex;
+				justify-content: center;
+				gap: 3px;
+			}
+			.term-vkey {
+				min-width: 24px;
+				height: 28px;
+				padding: 0 6px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				background: rgba(255, 255, 255, 0.08);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				border-radius: 4px;
+				color: rgba(255, 255, 255, 0.9);
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				cursor: pointer;
+				transition: all 0.1s ease;
+				user-select: none;
+			}
+			.term-vkey:hover {
+				background: rgba(255, 255, 255, 0.15);
+				border-color: rgba(255, 255, 255, 0.35);
+			}
+			.term-vkey.highlight {
+				background: rgba(0, 255, 100, 0.35);
+				border-color: rgba(0, 255, 100, 0.7);
+				box-shadow: 0 0 12px rgba(0, 255, 100, 0.3);
+			}
+			.term-vkey.wide { min-width: 36px; }
+			.term-vkey.backspace { min-width: 72px; }
+			.term-vkey.space { min-width: 120px; }
+			.term-vkey.acc { background: rgba(255, 140, 0, 0.25); border-color: rgba(255, 140, 0, 0.5); }
+			.term-vkey.acc:hover { background: rgba(255, 140, 0, 0.35); }
+			.term-vkeyboard-wrap {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 2rem;
+				align-items: stretch;
+			}
+			.term-vkeyboard-main {
+				flex: 1;
+				min-width: 0;
+			}
+			.term-vkeyboard-side {
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				flex-shrink: 0;
+				min-width: 140px;
+			}
+			.term-vkeyboard-side-block {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+				margin-bottom: 4px;
+			}
+			.term-vkeyboard-side-row {
+				display: flex;
+				gap: 3px;
+			}
+			.term-vkeyboard-side-block .term-vkey {
+				flex: 1;
+				min-width: 0;
+			}
+			.term-vkey.nav-home { background: rgba(66, 133, 244, 0.3); border-color: rgba(66, 133, 244, 0.5); }
+			.term-vkey.nav-home:hover { background: rgba(66, 133, 244, 0.4); }
+			.term-vkey.nav-end { background: rgba(234, 67, 53, 0.25); border-color: rgba(234, 67, 53, 0.5); }
+			.term-vkey.nav-end:hover { background: rgba(234, 67, 53, 0.35); }
+			.term-vkeyboard-arrows-wrap {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 6px;
+			}
+			.term-vkeyboard-arrows {
+				display: grid;
+				grid-template: ". u ." 1fr "l d r" 1fr / 1fr 1fr 1fr;
+				gap: 2px;
+				height: 56px;
+			}
+			.term-vkeyboard-arrows .arr-u { grid-area: u; }
+			.term-vkeyboard-arrows .arr-l { grid-area: l; }
+			.term-vkeyboard-arrows .arr-r { grid-area: r; }
+			.term-vkeyboard-arrows .arr-d { grid-area: d; }
+			.term-vkeyboard-arrows .term-vkey { width: 50px; height: 22px; font-size: 0.65rem; padding: 0; }
+			.term-vkeyboard-stats {
+				width: 100%;
+				margin-top: 0.2rem;
+				font-size: 0.75em;
+				color: rgba(255, 255, 255, 0.6);
+			}
+			.term-vkeyboard-stats-label {
+				font-size: 0.65rem;
+				color: rgba(255, 255, 255, 0.5);
+				letter-spacing: 0.1em;
+			}
+			.term-modal-body.term-modal-keyboard {
+				overflow: visible;
+			}
+			@media (max-width: 900px) {
+				.term-sidebar { display: none; }
+			}
 		</style>
 	</head>
 
-	<body class="term-page">
+	<body class="term-page about-page">
 		<div class="term-bg" aria-hidden="true">
 			<canvas class="term-bg-canvas"></canvas>
 			<div class="term-scanlines"></div>
@@ -562,29 +788,59 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 		<button type="button" class="term-back-to-top" aria-label="Back to top" title="Back to top">↑</button>
 		<div class="term-toast" aria-live="polite" aria-atomic="true"></div>
 		<div class="term-mouse-glow" aria-hidden="true"></div>
+		<nav class="term-sidebar" aria-label="Quick access">
+			<button type="button" class="term-folder" data-modal="dl-data" aria-label="DL Data">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>DL Data</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="ai" aria-label="AI">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>AI</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="decryptor" aria-label="Decryptor">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>Decryptor</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="help" aria-label="Help">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>Help</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="all-scripts" aria-label="All Scripts">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>All Scripts</span>
+			</button>
+		</nav>
+		<template id="term-scripts-folders-tpl">
+			<div class="term-modal-scripts">
+				<div class="term-modal-scripts-path">/root/bash/scripts</div>
+				<div class="term-modal-scripts-grid" set:html={scriptsFoldersHtml}></div>
+			</div>
+		</template>
+		<div class="term-modal-overlay" id="term-modal" aria-hidden="true">
+			<div class="term-modal" role="dialog" aria-modal="true" aria-labelledby="term-modal-title">
+				<div class="term-modal-header">
+					<div class="term-modal-dots" aria-hidden="true">
+						<span></span><span></span><span></span>
+					</div>
+					<span class="term-modal-title" id="term-modal-title">Output</span>
+					<button type="button" class="term-modal-close" aria-label="Close">&times;</button>
+				</div>
+				<div class="term-modal-body" id="term-modal-body"></div>
+			</div>
+		</div>
 		<main class="term-content">
 			<div class="term-load-scan" aria-hidden="true"></div>
 			<article class="about-shell">
-				<div class="hero-shell">
-					<div class="hero-pane">
-						<div class="hero-image">
-							<div class="hero-stack">
-								<div class="hero-canvas-wrap" aria-hidden="true">
-									<canvas class="hero-canvas" data-hero-src={AboutHeroImage.src}></canvas>
-								</div>
-							</div>
-							<div class="hero-frame" aria-hidden="true">
-								<span>hacker profile</span>
-								<span class="hero-frame-dot"></span>
-							</div>
-						</div>
-						<div class="hero-threat-bar" aria-hidden="true">
-							<span>open source active</span>
-							<span>build mode</span>
-						</div>
-					</div>
-				</div>
-
 				<div class="prose">
 					<div class="title about-title">
 						<div class="term-meta">$ profile booted | mode: builder</div>
@@ -595,7 +851,9 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 
 					<div class="term-response">
 						<div class="term-response-header">
-							<div class="term-response-dot" aria-hidden="true"></div>
+							<div class="term-window-dots" aria-hidden="true">
+								<span></span><span></span><span></span>
+							</div>
 							<span class="term-response-label">Output</span>
 						</div>
 						<div class="term-body">
@@ -647,51 +905,25 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 		<script is:inline>
 			(function() {
 				function init() {
-				// ── Terminal background canvas ──
+				// ── Terminal background: dir + 可输入 (点击背景聚焦，回车仅换行) ──
 				var bgCanvas = document.querySelector('.term-bg-canvas');
 				if (bgCanvas) {
 					var bgCtx = bgCanvas.getContext('2d');
-					var lines = [];
-					var logLines = [
-						'[sys] kernel 6.1.0-rc4 loaded',
-						'[net] eth0: link up 1000Mbps',
-						'[ssh] listening on 0.0.0.0:22',
-						'[fs]  /dev/sda1 mounted rw',
-						'[proc] pid 1 init started',
-						'[auth] pam_unix: session opened',
-						'[sys] entropy pool initialized',
-						'[net] firewall rules applied',
-						'[cron] job scheduler active',
-						'[sys] uptime: 847d 14h 22m',
-						'[mem] 16384MB available',
-						'[gpu] framebuffer /dev/fb0',
-						'[net] dns resolver ready',
-						'[sys] hostname: void-temple',
-						'[proc] 127 processes running',
-						'[fs]  swap: 8192MB configured',
-						'[net] tor circuit established',
-						'[auth] 2fa module loaded',
-						'[sys] audit subsystem ready',
-						'[net] vpn tunnel0 up',
-						'$ cat /etc/motd',
-						'>> welcome to the void',
-						'[io]  block device ready',
-						'[sys] watchdog timer set',
-						'[net] ipv6 enabled',
-						'[proc] cgroup v2 mounted',
-						'[sys] seccomp filter loaded',
-						'[fs]  tmpfs mounted /tmp',
-						'[net] arp table populated',
-						'$ whoami',
-						'>> root',
-						'[sys] load avg: 0.42 0.38 0.31',
-					];
-					var maxLines = 0;
 					var fontSize = 13;
 					var lineHeight = 18;
-					var scrollOffset = 0;
-					var lineTimer = 0;
-					var lineIndex = 0;
+					var dirLines = [
+						'~ $ ls -la',
+						'total 42',
+						'drwxr-xr-x  12 void  staff   384  Jan 12  about  blog  projects',
+						'drwxr-xr-x   8 void  staff   256  Jan 11  .config  .ssh  keys',
+						'-rw-r--r--   1 void  staff  2048  Jan 10  README.md  .env.gpg',
+						'-rwxr-xr-x   1 void  staff   512  Jan  9  deploy.sh  hack',
+						'~ $ cat .motd',
+						'>> welcome to the void | access granted',
+					];
+					var termFocused = false;
+					var termInput = '';
+					var termHistory = [];
 
 					function sizeBackground() {
 						var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -700,15 +932,8 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 						bgCanvas.style.width = window.innerWidth + 'px';
 						bgCanvas.style.height = window.innerHeight + 'px';
 						bgCtx.scale(dpr, dpr);
-						maxLines = Math.ceil(window.innerHeight / lineHeight) + 4;
 					}
 					sizeBackground();
-
-					// seed initial lines
-					for (var k = 0; k < maxLines; k++) {
-						lines.push(logLines[k % logLines.length]);
-					}
-					lineIndex = maxLines % logLines.length;
 
 					function renderBg(t) {
 						var w = window.innerWidth;
@@ -720,33 +945,86 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 						bgCtx.fillStyle = '#0a0a0a';
 						bgCtx.fillRect(0, 0, w, h);
 
-						// draw log lines
 						bgCtx.font = fontSize + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
-						var baseY = 20 - scrollOffset;
-						for (var i = 0; i < lines.length; i++) {
-							var y = baseY + i * lineHeight;
-							if (y < -lineHeight || y > h + lineHeight) continue;
-							// fade near edges
-							var alpha = 0.1;
-							if (y < 60) alpha *= y / 60;
-							if (y > h - 60) alpha *= (h - y) / 60;
-							if (alpha <= 0) continue;
-							bgCtx.fillStyle = 'rgba(0, 255, 65, ' + Math.max(0, alpha).toFixed(3) + ')';
-							bgCtx.fillText(lines[i], 20, y);
+						var padX = 24;
+						var baseY = 22;
+
+						// directory listing
+						for (var i = 0; i < dirLines.length; i++) {
+							var line = dirLines[i];
+							if (line.indexOf('~ $') === 0) {
+								bgCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+							} else if (line.indexOf('>>') === 0) {
+								bgCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+							} else if (line.indexOf('total') === 0 || line.indexOf('drwx') === 0 || line.indexOf('-rw') === 0) {
+								bgCtx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+							} else {
+								bgCtx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+							}
+							bgCtx.fillText(line, padX, baseY + i * lineHeight);
 						}
 
-						// scroll
-						scrollOffset += 0.3;
-						if (scrollOffset >= lineHeight) {
-							scrollOffset -= lineHeight;
-							lines.shift();
-							lines.push(logLines[lineIndex % logLines.length]);
-							lineIndex++;
+						var promptY = baseY + dirLines.length * lineHeight + 10;
+
+						// 用户输入历史 (回车产生的行)
+						for (var i = 0; i < termHistory.length; i++) {
+							bgCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+							bgCtx.fillText('~ $ ' + termHistory[i], padX, promptY + i * lineHeight);
+						}
+
+						// 当前行: prompt + 输入 + 光标
+						var currentY = promptY + termHistory.length * lineHeight;
+						bgCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+						bgCtx.fillText('~ $ ', padX, currentY);
+						var promptW = bgCtx.measureText('~ $ ').width;
+						bgCtx.fillText(termInput, padX + promptW, currentY);
+						var inputW = bgCtx.measureText(termInput).width;
+						var blink = Math.floor(t / 530) % 2;
+						if (blink && termFocused) {
+							bgCtx.fillStyle = 'rgba(0, 255, 100, 0.9)';
+							bgCtx.fillRect(padX + promptW + inputW, currentY - fontSize + 4, 8, fontSize - 2);
+						} else if (!termFocused && blink) {
+							bgCtx.fillStyle = 'rgba(0, 255, 100, 0.9)';
+							bgCtx.fillRect(padX + promptW + inputW, currentY - fontSize + 4, 8, fontSize - 2);
 						}
 
 						requestAnimationFrame(renderBg);
 					}
 					requestAnimationFrame(renderBg);
+
+					// 点击背景聚焦，点击内容失焦
+					document.addEventListener('click', function(e) {
+						var content = document.querySelector('.about-shell');
+						var header = document.querySelector('header');
+						var footer = document.querySelector('footer');
+						if (content && content.contains(e.target)) {
+							termFocused = false;
+						} else if (header && header.contains(e.target)) {
+							termFocused = false;
+						} else if (footer && footer.contains(e.target)) {
+							termFocused = false;
+						} else if (e.target.closest('.term-back-to-top, .term-regenerate')) {
+							termFocused = false;
+						} else {
+							termFocused = true;
+						}
+					});
+
+					// 键盘输入 (仅当聚焦时)
+					document.addEventListener('keydown', function(e) {
+						if (!termFocused) return;
+						if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+						e.preventDefault();
+						if (e.key === 'Enter') {
+							termHistory.push(termInput);
+							termInput = '';
+							if (termHistory.length > 8) termHistory.shift();
+						} else if (e.key === 'Backspace') {
+							termInput = termInput.slice(0, -1);
+						} else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && termInput.length < 80) {
+							termInput += e.key;
+						}
+					});
 
 					window.addEventListener('resize', function() {
 						sizeBackground();
@@ -801,200 +1079,230 @@ const pageDescription = 'Who I am, what I build, and the hacker ethos behind my 
 					});
 				}
 
-				// ── Hero canvas AI effects ──
-				function initHeroCanvas() {
-					var shell = document.querySelector('.hero-shell');
-					if (!shell) return;
-					var canvas = shell.querySelector('.hero-canvas');
-					var wrap = shell.querySelector('.hero-canvas-wrap');
-					if (!canvas || !wrap) return;
-					var src = canvas.getAttribute('data-hero-src');
-					if (!src) return;
-
-					var heroStart = 0;
-					var heroRaf = 0;
-					var baseCanvas = document.createElement('canvas');
-					var baseCtx = baseCanvas.getContext('2d');
-					var edgeCanvas = document.createElement('canvas');
-					var edgeCtx = edgeCanvas.getContext('2d');
-					var edgeReady = false;
-
-					var EDGE_PHASE = 1.8;
-					var REVEAL_PHASE = 2.5;
-					var INTRO_END = EDGE_PHASE + REVEAL_PHASE;
-
-					function sizeCanvas() {
-						var rect = shell.querySelector('.hero-stack').getBoundingClientRect();
-						var dpr = Math.min(window.devicePixelRatio || 1, 2);
-						canvas.width = Math.max(2, Math.round(rect.width * dpr));
-						canvas.height = Math.max(2, Math.round(rect.height * dpr));
-						canvas.style.width = rect.width + 'px';
-						canvas.style.height = rect.height + 'px';
-					}
-
-					function drawBase(ctx, img, w, h) {
-						var iw = img.width, ih = img.height;
-						var scale = Math.max(w / iw, h / ih);
-						var sw = w / scale, sh = h / scale;
-						var sx = (iw - sw) / 2, sy = (ih - sh) / 2;
-						ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
-					}
-
-					function buildEdge(img) {
-						var w = canvas.width, h = canvas.height;
-						edgeCanvas.width = w;
-						edgeCanvas.height = h;
-						baseCanvas.width = w;
-						baseCanvas.height = h;
-						drawBase(baseCtx, img, w, h);
-						drawBase(edgeCtx, img, w, h);
-						var src = edgeCtx.getImageData(0, 0, w, h);
-						var d = src.data;
-						var out = edgeCtx.createImageData(w, h);
-						var od = out.data;
-						for (var y = 1; y < h - 1; y++) {
-							for (var x = 1; x < w - 1; x++) {
-								var idx = function(px, py) { return ((py * w) + px) * 4; };
-								var i = idx(x, y);
-								function luma(px, py) {
-									var j = idx(px, py);
-									return d[j] * 0.299 + d[j+1] * 0.587 + d[j+2] * 0.114;
-								}
-								var gx = -luma(x-1,y-1) - 2*luma(x-1,y) - luma(x-1,y+1)
-								         + luma(x+1,y-1) + 2*luma(x+1,y) + luma(x+1,y+1);
-								var gy = -luma(x-1,y-1) - 2*luma(x,y-1) - luma(x+1,y-1)
-								         + luma(x-1,y+1) + 2*luma(x,y+1) + luma(x+1,y+1);
-								var mag = Math.min(255, Math.sqrt(gx * gx + gy * gy));
-								// green-tinted edges instead of cyan
-								od[i]   = 0;
-								od[i+1] = Math.min(255, mag * 1.0);
-								od[i+2] = Math.min(255, mag * 0.3);
-								od[i+3] = mag > 20 ? Math.min(255, mag * 1.5) : 0;
-							}
-						}
-						edgeCtx.putImageData(out, 0, 0);
-						edgeReady = true;
-					}
-
-					function heroRender(t) {
-						if (!heroStart) heroStart = t;
-						var elapsed = (t - heroStart) * 0.001;
-						var ctx = canvas.getContext('2d');
-						if (!ctx || !canvas.img) { heroRaf = requestAnimationFrame(heroRender); return; }
-						var w = canvas.width, h = canvas.height;
-
-						ctx.clearRect(0, 0, w, h);
-
-						if (elapsed < EDGE_PHASE && edgeReady) {
-							var edgeFade = Math.min(1, elapsed / 0.5);
-							ctx.fillStyle = '#050505';
-							ctx.fillRect(0, 0, w, h);
-							ctx.globalAlpha = edgeFade;
-							ctx.drawImage(edgeCanvas, 0, 0);
-							ctx.globalAlpha = 1;
-							var scanY = (elapsed / EDGE_PHASE) * h;
-							ctx.fillStyle = 'rgba(0, 255, 65, 0.3)';
-							ctx.fillRect(0, scanY - 1, w, 2);
-							var scanGlow = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
-							scanGlow.addColorStop(0, 'rgba(0, 255, 65, 0)');
-							scanGlow.addColorStop(0.5, 'rgba(0, 255, 65, 0.15)');
-							scanGlow.addColorStop(1, 'rgba(0, 255, 65, 0)');
-							ctx.fillStyle = scanGlow;
-							ctx.fillRect(0, scanY - 30, w, 60);
-
-						} else if (elapsed < INTRO_END) {
-							var revealT = (elapsed - EDGE_PHASE) / REVEAL_PHASE;
-							var maxBlock = 32;
-							var blockSize = Math.max(1, Math.round(maxBlock * (1 - revealT * revealT)));
-							if (blockSize > 1) {
-								var tmpCanvas = document.createElement('canvas');
-								var smallW = Math.max(1, Math.ceil(w / blockSize));
-								var smallH = Math.max(1, Math.ceil(h / blockSize));
-								tmpCanvas.width = smallW;
-								tmpCanvas.height = smallH;
-								var tmpCtx = tmpCanvas.getContext('2d');
-								tmpCtx.drawImage(baseCanvas, 0, 0, smallW, smallH);
-								ctx.imageSmoothingEnabled = false;
-								ctx.drawImage(tmpCanvas, 0, 0, smallW, smallH, 0, 0, w, h);
-								ctx.imageSmoothingEnabled = true;
-							} else {
-								ctx.drawImage(baseCanvas, 0, 0);
-							}
-							var tintAlpha = 0.18 * (1 - revealT);
-							ctx.globalCompositeOperation = 'screen';
-							ctx.fillStyle = 'rgba(0, 200, 50, ' + tintAlpha + ')';
-							ctx.fillRect(0, 0, w, h);
-							ctx.globalCompositeOperation = 'source-over';
-
-						} else {
-							ctx.drawImage(baseCanvas, 0, 0);
-							ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
-							for (var i = 0; i < h; i += 3) {
-								ctx.fillRect(0, i, w, 1);
-							}
-							var scanPos = ((elapsed * 40) % (h + 60)) - 30;
-							var barGrad = ctx.createLinearGradient(0, scanPos - 30, 0, scanPos + 30);
-							barGrad.addColorStop(0, 'rgba(0, 255, 65, 0)');
-							barGrad.addColorStop(0.5, 'rgba(0, 255, 65, 0.06)');
-							barGrad.addColorStop(1, 'rgba(0, 255, 65, 0)');
-							ctx.fillStyle = barGrad;
-							ctx.fillRect(0, scanPos - 30, w, 60);
-							if (Math.random() < 0.08) {
-								var glitchY = Math.random() * h;
-								var glitchH = 2 + Math.random() * 12;
-								var shiftX = (Math.random() - 0.5) * 12;
-								var strip = ctx.getImageData(0, Math.floor(glitchY), w, Math.ceil(glitchH));
-								var sd = strip.data;
-								var shiftPx = Math.round(shiftX) * 4;
-								if (shiftPx > 0) {
-									for (var j = sd.length - 4; j >= shiftPx; j -= 4) {
-										sd[j] = sd[j - shiftPx];
-									}
-								} else if (shiftPx < 0) {
-									for (var j = 0; j < sd.length + shiftPx; j += 4) {
-										sd[j] = sd[j - shiftPx];
-									}
-								}
-								ctx.putImageData(strip, 0, Math.floor(glitchY));
-							}
-							if (Math.random() < 0.03) {
-								var burstY = Math.random() * h * 0.8;
-								var burstH = 4 + Math.random() * 20;
-								var noise = ctx.createImageData(w, Math.ceil(burstH));
-								var nd = noise.data;
-								for (var j = 0; j < nd.length; j += 4) {
-									var v = Math.random() * 255;
-									nd[j] = 0;
-									nd[j+1] = v * 0.8;
-									nd[j+2] = v * 0.2;
-									nd[j+3] = 30 + Math.random() * 40;
-								}
-								ctx.putImageData(noise, 0, Math.floor(burstY));
-							}
-						}
-
-						heroRaf = requestAnimationFrame(heroRender);
-					}
-
-					var img = new Image();
-					img.onload = function() {
-						canvas.img = img;
-						sizeCanvas();
-						buildEdge(img);
-						wrap.classList.add('ready');
-						heroRaf = requestAnimationFrame(heroRender);
-					};
-					img.src = new URL(src, window.location.href).href;
-
-					window.addEventListener('resize', function() {
-						if (canvas.img) {
-							sizeCanvas();
-							buildEdge(canvas.img);
-						}
-					}, { passive: true });
-					window.addEventListener('beforeunload', function() { cancelAnimationFrame(heroRaf); }, { once: true });
+				// ── 文件夹弹窗 ──
+				var modalOverlay = document.getElementById('term-modal');
+				var modalBody = document.getElementById('term-modal-body');
+				var modalTitle = document.querySelector('.term-modal-title');
+				var decryptorInterval = null;
+				function randHex() {
+					var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+					return chars[Math.floor(Math.random() * chars.length)];
 				}
-				initHeroCanvas();
+				function randKeyLine(pairs) {
+					var s = [];
+					for (var i = 0; i < pairs; i++) {
+						s.push(randHex() + randHex());
+					}
+					return s.join(' ');
+				}
+				function randPass() {
+					var s = '';
+					for (var i = 0; i < 6; i++) s += randHex().toLowerCase();
+					s += '@' + randHex() + randHex() + randHex() + randHex() + randHex();
+					return s;
+				}
+				function startDecryptorFlash() {
+					if (decryptorInterval) clearInterval(decryptorInterval);
+					var keys = 0, sec = 1;
+					decryptorInterval = setInterval(function() {
+						if (!modalOverlay.classList.contains('open')) {
+							clearInterval(decryptorInterval);
+							decryptorInterval = null;
+							return;
+						}
+						keys += 1 + Math.floor(Math.random() * 3);
+						sec = Math.min(59, Math.floor(keys / 15) + 1);
+						var el = document.getElementById('dec-keys');
+						if (el) el.textContent = '[00:00:' + String(sec).padStart(2, '0') + '] ' + keys + ' keys tested';
+						el = document.getElementById('dec-pass');
+						if (el) el.textContent = randPass();
+						el = document.getElementById('dec-master1');
+						if (el) el.textContent = randKeyLine(8);
+						el = document.getElementById('dec-master2');
+						if (el) el.textContent = randKeyLine(8);
+						el = document.getElementById('dec-trans1');
+						if (el) el.textContent = randKeyLine(7);
+						el = document.getElementById('dec-trans2');
+						if (el) el.textContent = randKeyLine(7);
+						el = document.getElementById('dec-trans3');
+						if (el) el.textContent = randKeyLine(8);
+						el = document.getElementById('dec-trans4');
+						if (el) el.textContent = randKeyLine(8);
+					}, 180);
+				}
+				var helpCharCount = 0;
+				function buildHelpKeyboard() {
+					var rows = [
+						['`','1','2','3','4','5','6','7','8','9','0','-','=','Backspace'],
+						['Tab','Q','W','E','R','T','Y','U','I','O','P','[',']'],
+						['CapsLock','A','S','D','F','G','H','J','K','L',';',"'",'Enter'],
+						['Shift','Z','X','C','V','B','N','M',',','.','/','ShiftRight'],
+						['Ctrl','Alt','Space','AltRight','CtrlRight']
+					];
+					var codeMap = { '`':'Backquote','1':'Digit1','2':'Digit2','3':'Digit3','4':'Digit4','5':'Digit5','6':'Digit6','7':'Digit7','8':'Digit8','9':'Digit9','0':'Digit0','-':'Minus','=':'Equal','Backspace':'Backspace','Tab':'Tab','Q':'KeyQ','W':'KeyW','E':'KeyE','R':'KeyR','T':'KeyT','Y':'KeyY','U':'KeyU','I':'KeyI','O':'KeyO','P':'KeyP','[':'BracketLeft',']':'BracketRight','CapsLock':'CapsLock','A':'KeyA','S':'KeyS','D':'KeyD','F':'KeyF','G':'KeyG','H':'KeyH','J':'KeyJ','K':'KeyK','L':'KeyL',';':'Semicolon',"'":'Quote','Enter':'Enter','Shift':'ShiftLeft','ShiftRight':'ShiftRight','Z':'KeyZ','X':'KeyX','C':'KeyC','V':'KeyV','B':'KeyB','N':'KeyN','M':'KeyM',',':'Comma','.':'Period','/':'Slash','Ctrl':'ControlLeft','CtrlRight':'ControlRight','Alt':'AltLeft','AltRight':'AltRight','Space':'Space' };
+					var html = '<div class="term-vkeyboard-wrap" id="help-keyboard">';
+					html += '<div class="term-vkeyboard term-vkeyboard-main">';
+					rows.forEach(function(row) {
+						html += '<div class="term-vkeyboard-row">';
+						row.forEach(function(k) {
+							var code = codeMap[k] || k;
+							var cls = 'term-vkey';
+							if (k === 'Tab' || k === 'CapsLock' || k === 'Enter') cls += ' wide';
+							if (k === 'Space') cls += ' space';
+							if (k === 'Backspace') cls += ' acc backspace';
+							var label = k === 'Space' ? '&nbsp;' : (k === 'ShiftRight' ? 'Shift' : k === 'CtrlRight' ? 'Ctrl' : k === 'AltRight' ? 'Alt' : k === 'Backspace' ? 'Back ⌫' : k);
+							html += '<span class="' + cls + '" data-code="' + code + '" data-key="' + (k === 'ShiftRight' ? 'Shift' : k === 'CtrlRight' ? 'Ctrl' : k === 'AltRight' ? 'Alt' : k === 'Backspace' ? 'Backspace' : k).replace("'", "\\'") + '"' + (k === 'Backspace' ? ' title="Backspace or ESC"' : '') + '>' + label + '</span>';
+						});
+						html += '</div>';
+					});
+					html += '</div>';
+					html += '<div class="term-vkeyboard-side">';
+					html += '<div class="term-vkeyboard-side-block">';
+					html += '<div class="term-vkeyboard-side-row"><span class="term-vkey" data-code="Insert" data-key="Ins">Insert</span><span class="term-vkey nav-home" data-code="Home" data-key="Home">Home</span><span class="term-vkey" data-code="PageUp" data-key="PgUp">PgUp</span></div>';
+					html += '<div class="term-vkeyboard-side-row"><span class="term-vkey" data-code="Delete" data-key="Del">Delete</span><span class="term-vkey nav-end" data-code="End" data-key="End">End</span><span class="term-vkey" data-code="PageDown" data-key="PgDn">PgDn</span></div>';
+					html += '</div>';
+					html += '<div class="term-vkeyboard-side-row"><span class="term-vkey" data-code="Purge" data-key="Purge">Purge</span></div>';
+					html += '<div class="term-vkeyboard-arrows-wrap">';
+					html += '<div class="term-vkeyboard-arrows">';
+					html += '<span class="term-vkey arr-u" data-code="ArrowUp" data-key="↑">↑</span>';
+					html += '<span class="term-vkey arr-l" data-code="ArrowLeft" data-key="←">←</span>';
+					html += '<span class="term-vkey arr-r" data-code="ArrowRight" data-key="→">→</span>';
+					html += '<span class="term-vkey arr-d" data-code="ArrowDown" data-key="↓">↓</span>';
+					html += '</div>';
+					html += '</div></div></div>';
+					html += '<div class="term-vkeyboard-stats"><span class="term-vkeyboard-stats-label">Stats & Achievements</span><br>You typed: <span id="help-char-count">0</span> characters</div>';
+					return html;
+				}
+				function highlightKey(code) {
+					if (code === 'Escape') code = 'Backspace';
+					var el = modalBody.querySelector('.term-vkey[data-code="' + code + '"]');
+					if (!el) {
+						if (code === 'ShiftRight') el = modalBody.querySelector('.term-vkey[data-code="ShiftLeft"]');
+						else if (code === 'ControlRight') el = modalBody.querySelector('.term-vkey[data-code="ControlLeft"]');
+						else if (code === 'AltRight') el = modalBody.querySelector('.term-vkey[data-code="AltLeft"]');
+					}
+					if (el) {
+						el.classList.add('highlight');
+						setTimeout(function() { el.classList.remove('highlight'); }, 150);
+					}
+				}
+				function initHelpKeyboard() {
+					helpCharCount = 0;
+					var charEl = document.getElementById('help-char-count');
+					if (charEl) charEl.textContent = '0';
+					modalBody.querySelectorAll('.term-vkey').forEach(function(k) {
+						k.addEventListener('click', function() {
+							var code = k.getAttribute('data-code');
+							highlightKey(code);
+							var key = k.getAttribute('data-key');
+							var navKeys = ['Shift','Ctrl','Alt','CapsLock','Tab','Enter','Backspace','Space','Ins','Home','PgUp','Del','End','PgDn','Purge','↑','↓','←','→'];
+							if (key && navKeys.indexOf(key) === -1) {
+								helpCharCount++;
+								charEl = document.getElementById('help-char-count');
+								if (charEl) charEl.textContent = helpCharCount;
+							} else if (key === 'Space') {
+								helpCharCount++;
+								charEl = document.getElementById('help-char-count');
+								if (charEl) charEl.textContent = helpCharCount;
+							}
+						});
+					});
+				}
+				function handleHelpKeydown(e) {
+					if (!modalOverlay.classList.contains('open') || !modalBody.classList.contains('term-modal-keyboard')) return;
+					if (e.key === 'Escape') return;
+					e.preventDefault();
+					highlightKey(e.code);
+					if (e.key.length === 1) {
+						helpCharCount++;
+						var charEl = document.getElementById('help-char-count');
+						if (charEl) charEl.textContent = helpCharCount;
+					}
+				}
+				var scriptsTpl = document.getElementById('term-scripts-folders-tpl');
+				var modalContent = {
+					'dl-data': { title: 'Downloading...', body: '<div class="term-modal-download"><div class="modal-subtitle">Critical Data</div><div class="term-modal-progress" id="dl-progress"></div></div>', type: 'progress' },
+					'ai': { title: 'AI', body: '<pre>~ $ model --status\n\ninference: stable\ncontext: 8k tokens\nlatency: &lt; 200ms\n\n&gt;&gt; system online</pre>' },
+					'decryptor': { title: 'Password Decryptor', body: '<pre class="term-decryptor-pre">Calculating Hashes\n\n<span id="dec-keys">[00:00:01] 0 keys tested</span>\n\nCurrent passphrase: <span id="dec-pass">********</span>\n\nMaster key\n<span id="dec-master1"></span>\n<span id="dec-master2"></span>\n\nTransient key\n<span id="dec-trans1"></span>\n<span id="dec-trans2"></span>\n<span id="dec-trans3"></span>\n<span id="dec-trans4"></span></pre>', type: 'decryptor' },
+					'help': { title: 'Help', body: '', type: 'keyboard' },
+					'all-scripts': { title: '/root/bash/scripts', body: '', type: 'scripts' }
+				};
+				document.querySelectorAll('.term-folder[data-modal]').forEach(function(btn) {
+					btn.addEventListener('click', function() {
+						var id = btn.getAttribute('data-modal');
+						var data = modalContent[id];
+						if (data) {
+							var modalEl = modalOverlay.querySelector('.term-modal');
+							if (modalEl) modalEl.classList.remove('term-modal-wide');
+							modalTitle.textContent = data.title;
+							modalBody.innerHTML = data.body;
+							modalBody.className = 'term-modal-body' + (data.type === 'progress' ? ' term-modal-download' : '') + (data.type === 'keyboard' ? ' term-modal-keyboard' : '') + (data.type === 'scripts' ? ' term-modal-scripts-wrap' : '');
+							if (data.type === 'progress') {
+								var bar = document.getElementById('dl-progress');
+								if (bar) {
+									bar.innerHTML = '';
+									for (var i = 0; i < 48; i++) bar.appendChild(document.createElement('span'));
+									var idx = 0;
+									function fillNext() {
+										if (idx < 48) {
+											bar.children[idx].classList.add('filled');
+											idx++;
+											setTimeout(fillNext, 80 + Math.random() * 60);
+										}
+									}
+									fillNext();
+								}
+							} else if (data.type === 'decryptor') {
+								var el = document.getElementById('dec-keys');
+								if (el) el.textContent = '[00:00:01] 0 keys tested';
+								el = document.getElementById('dec-pass');
+								if (el) el.textContent = randPass();
+								el = document.getElementById('dec-master1');
+								if (el) el.textContent = randKeyLine(8);
+								el = document.getElementById('dec-master2');
+								if (el) el.textContent = randKeyLine(8);
+								el = document.getElementById('dec-trans1');
+								if (el) el.textContent = randKeyLine(7);
+								el = document.getElementById('dec-trans2');
+								if (el) el.textContent = randKeyLine(7);
+								el = document.getElementById('dec-trans3');
+								if (el) el.textContent = randKeyLine(8);
+								el = document.getElementById('dec-trans4');
+								if (el) el.textContent = randKeyLine(8);
+								startDecryptorFlash();
+							} else if (data.type === 'keyboard') {
+								modalBody.innerHTML = buildHelpKeyboard();
+								if (modalEl) modalEl.classList.add('term-modal-wide');
+								initHelpKeyboard();
+								document.addEventListener('keydown', handleHelpKeydown);
+							} else if (data.type === 'scripts' && scriptsTpl && scriptsTpl.content) {
+								modalBody.innerHTML = '';
+								modalBody.appendChild(scriptsTpl.content.cloneNode(true));
+								if (modalEl) modalEl.classList.add('term-modal-wide');
+							}
+							modalOverlay.classList.add('open');
+							modalOverlay.setAttribute('aria-hidden', 'false');
+						}
+					});
+				});
+				function closeModal() {
+					if (decryptorInterval) {
+						clearInterval(decryptorInterval);
+						decryptorInterval = null;
+					}
+					document.removeEventListener('keydown', handleHelpKeydown);
+					var modalEl = modalOverlay.querySelector('.term-modal');
+					if (modalEl) modalEl.classList.remove('term-modal-wide');
+					modalOverlay.classList.remove('open');
+					modalOverlay.setAttribute('aria-hidden', 'true');
+				}
+				document.querySelector('.term-modal-close').addEventListener('click', closeModal);
+				modalOverlay.addEventListener('click', function(e) {
+					if (e.target === modalOverlay) closeModal();
+				});
+				document.addEventListener('keydown', function(e) {
+					if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+				});
 
 				// ── Mouse glow ──
 				var glow = document.querySelector('.term-mouse-glow');

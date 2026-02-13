@@ -424,7 +424,7 @@ for (let i = 0; i < pts.length; i++) {
 		</div>
 		<Header />
 		<aside class="rq-tv" aria-hidden="true">
-			<canvas class="rq-tv-screen" width="320" height="240" data-rq-src="/images/redqueen-reference.jpg"></canvas>
+			<canvas class="rq-tv-screen" width="320" height="240" data-rq-src="/images/redqueen2.webp" data-rq-src2="/images/redqueen1.gif"></canvas>
 			<div class="rq-tv-badge">monitor feed<span class="rq-tv-dot"></span></div>
 		</aside>
 		<div class="mesh-read-progress" aria-hidden="true"></div>
@@ -600,17 +600,31 @@ for (let i = 0; i < pts.length; i++) {
 					var src = canvas.getAttribute('data-hero-src');
 					if (!src) return;
 
-					function draw() {
+					var heroStart = 0;
+					var heroRaf = 0;
+					// offscreen canvas for base image
+					var baseCanvas = document.createElement('canvas');
+					var baseCtx = baseCanvas.getContext('2d');
+					// offscreen canvas for edge detection
+					var edgeCanvas = document.createElement('canvas');
+					var edgeCtx = edgeCanvas.getContext('2d');
+					var edgeReady = false;
+
+					// Phase timing (seconds)
+					var EDGE_PHASE = 1.8;      // show edge detection
+					var REVEAL_PHASE = 2.5;     // progressive reveal (pixelated -> sharp)
+					var INTRO_END = EDGE_PHASE + REVEAL_PHASE; // after this, ongoing glitch
+
+					function sizeCanvas() {
 						var rect = shell.querySelector('.hero-stack').getBoundingClientRect();
 						var dpr = Math.min(window.devicePixelRatio || 1, 2);
 						canvas.width = Math.max(2, Math.round(rect.width * dpr));
 						canvas.height = Math.max(2, Math.round(rect.height * dpr));
 						canvas.style.width = rect.width + 'px';
 						canvas.style.height = rect.height + 'px';
-						var ctx = canvas.getContext('2d');
-						if (!ctx || !canvas.img) return;
-						var img = canvas.img;
-						var w = canvas.width, h = canvas.height;
+					}
+
+					function drawBase(ctx, img, w, h) {
 						var iw = img.width, ih = img.height;
 						var scale = Math.max(w / iw, h / ih);
 						var sw = w / scale, sh = h / scale;
@@ -618,18 +632,182 @@ for (let i = 0; i < pts.length; i++) {
 						ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
 					}
 
+					function buildEdge(img) {
+						var w = canvas.width, h = canvas.height;
+						edgeCanvas.width = w;
+						edgeCanvas.height = h;
+						baseCanvas.width = w;
+						baseCanvas.height = h;
+						drawBase(baseCtx, img, w, h);
+						drawBase(edgeCtx, img, w, h);
+						// Sobel edge detection
+						var src = edgeCtx.getImageData(0, 0, w, h);
+						var d = src.data;
+						var out = edgeCtx.createImageData(w, h);
+						var od = out.data;
+						for (var y = 1; y < h - 1; y++) {
+							for (var x = 1; x < w - 1; x++) {
+								var idx = function(px, py) { return ((py * w) + px) * 4; };
+								var i = idx(x, y);
+								// grayscale neighbors
+								function luma(px, py) {
+									var j = idx(px, py);
+									return d[j] * 0.299 + d[j+1] * 0.587 + d[j+2] * 0.114;
+								}
+								var gx = -luma(x-1,y-1) - 2*luma(x-1,y) - luma(x-1,y+1)
+								         + luma(x+1,y-1) + 2*luma(x+1,y) + luma(x+1,y+1);
+								var gy = -luma(x-1,y-1) - 2*luma(x,y-1) - luma(x+1,y-1)
+								         + luma(x-1,y+1) + 2*luma(x,y+1) + luma(x+1,y+1);
+								var mag = Math.min(255, Math.sqrt(gx * gx + gy * gy));
+								// cyan-tinted edges
+								od[i]   = Math.min(255, mag * 0.4);
+								od[i+1] = Math.min(255, mag * 0.85);
+								od[i+2] = Math.min(255, mag * 1.0);
+								od[i+3] = mag > 20 ? Math.min(255, mag * 1.5) : 0;
+							}
+						}
+						edgeCtx.putImageData(out, 0, 0);
+						edgeReady = true;
+					}
+
+					function heroRender(t) {
+						if (!heroStart) heroStart = t;
+						var elapsed = (t - heroStart) * 0.001;
+						var ctx = canvas.getContext('2d');
+						if (!ctx || !canvas.img) { heroRaf = requestAnimationFrame(heroRender); return; }
+						var w = canvas.width, h = canvas.height;
+
+						ctx.clearRect(0, 0, w, h);
+
+						if (elapsed < EDGE_PHASE && edgeReady) {
+							// Phase 1: Edge detection wireframe
+							var edgeFade = Math.min(1, elapsed / 0.5);
+							// dark background
+							ctx.fillStyle = 'rgba(8, 16, 28, 1)';
+							ctx.fillRect(0, 0, w, h);
+							// draw edges with fade-in
+							ctx.globalAlpha = edgeFade;
+							ctx.drawImage(edgeCanvas, 0, 0);
+							ctx.globalAlpha = 1;
+							// scanning line
+							var scanY = (elapsed / EDGE_PHASE) * h;
+							ctx.fillStyle = 'rgba(120, 220, 255, 0.3)';
+							ctx.fillRect(0, scanY - 1, w, 2);
+							var scanGlow = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
+							scanGlow.addColorStop(0, 'rgba(120, 220, 255, 0)');
+							scanGlow.addColorStop(0.5, 'rgba(120, 220, 255, 0.15)');
+							scanGlow.addColorStop(1, 'rgba(120, 220, 255, 0)');
+							ctx.fillStyle = scanGlow;
+							ctx.fillRect(0, scanY - 30, w, 60);
+
+						} else if (elapsed < INTRO_END) {
+							// Phase 2: Progressive reveal — pixelated to sharp
+							var revealT = (elapsed - EDGE_PHASE) / REVEAL_PHASE;
+							// pixel size: starts large, shrinks to 1
+							var maxBlock = 32;
+							var blockSize = Math.max(1, Math.round(maxBlock * (1 - revealT * revealT)));
+							// draw pixelated
+							if (blockSize > 1) {
+								var tmpCanvas = document.createElement('canvas');
+								var smallW = Math.max(1, Math.ceil(w / blockSize));
+								var smallH = Math.max(1, Math.ceil(h / blockSize));
+								tmpCanvas.width = smallW;
+								tmpCanvas.height = smallH;
+								var tmpCtx = tmpCanvas.getContext('2d');
+								tmpCtx.drawImage(baseCanvas, 0, 0, smallW, smallH);
+								ctx.imageSmoothingEnabled = false;
+								ctx.drawImage(tmpCanvas, 0, 0, smallW, smallH, 0, 0, w, h);
+								ctx.imageSmoothingEnabled = true;
+							} else {
+								ctx.drawImage(baseCanvas, 0, 0);
+							}
+							// fade out cyan tint
+							var tintAlpha = 0.18 * (1 - revealT);
+							ctx.globalCompositeOperation = 'screen';
+							ctx.fillStyle = 'rgba(100, 200, 255, ' + tintAlpha + ')';
+							ctx.fillRect(0, 0, w, h);
+							ctx.globalCompositeOperation = 'source-over';
+
+						} else {
+							// Phase 3: Full image with ongoing scan + glitch
+							ctx.drawImage(baseCanvas, 0, 0);
+
+							// Scanlines
+							ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+							for (var i = 0; i < h; i += 3) {
+								ctx.fillRect(0, i, w, 1);
+							}
+
+							// Moving scan bar
+							var scanPos = ((elapsed * 40) % (h + 60)) - 30;
+							var barGrad = ctx.createLinearGradient(0, scanPos - 30, 0, scanPos + 30);
+							barGrad.addColorStop(0, 'rgba(120, 220, 255, 0)');
+							barGrad.addColorStop(0.5, 'rgba(120, 220, 255, 0.06)');
+							barGrad.addColorStop(1, 'rgba(120, 220, 255, 0)');
+							ctx.fillStyle = barGrad;
+							ctx.fillRect(0, scanPos - 30, w, 60);
+
+							// RGB channel glitch (random, ~8% of frames)
+							if (Math.random() < 0.08) {
+								var glitchY = Math.random() * h;
+								var glitchH = 2 + Math.random() * 12;
+								var shiftX = (Math.random() - 0.5) * 12;
+								var strip = ctx.getImageData(0, Math.floor(glitchY), w, Math.ceil(glitchH));
+								// shift red channel
+								var sd = strip.data;
+								var shiftPx = Math.round(shiftX) * 4;
+								if (shiftPx > 0) {
+									for (var j = sd.length - 4; j >= shiftPx; j -= 4) {
+										sd[j] = sd[j - shiftPx];
+									}
+								} else if (shiftPx < 0) {
+									for (var j = 0; j < sd.length + shiftPx; j += 4) {
+										sd[j] = sd[j - shiftPx];
+									}
+								}
+								ctx.putImageData(strip, 0, Math.floor(glitchY));
+							}
+
+							// Brief static burst (~3% of frames)
+							if (Math.random() < 0.03) {
+								var burstY = Math.random() * h * 0.8;
+								var burstH = 4 + Math.random() * 20;
+								var noise = ctx.createImageData(w, Math.ceil(burstH));
+								var nd = noise.data;
+								for (var j = 0; j < nd.length; j += 4) {
+									var v = Math.random() * 255;
+									nd[j] = v * 0.5;
+									nd[j+1] = v * 0.8;
+									nd[j+2] = v;
+									nd[j+3] = 30 + Math.random() * 40;
+								}
+								ctx.putImageData(noise, 0, Math.floor(burstY));
+							}
+						}
+
+						heroRaf = requestAnimationFrame(heroRender);
+					}
+
 					var img = new Image();
 					img.onload = function() {
 						canvas.img = img;
+						sizeCanvas();
+						buildEdge(img);
 						wrap.classList.add('ready');
-						draw();
+						heroRaf = requestAnimationFrame(heroRender);
 					};
 					img.src = new URL(src, window.location.href).href;
 
-					window.addEventListener('resize', function() { if (canvas.img) draw(); }, { passive: true });
+					window.addEventListener('resize', function() {
+						if (canvas.img) {
+							sizeCanvas();
+							buildEdge(canvas.img);
+						}
+					}, { passive: true });
+					window.addEventListener('beforeunload', function() { cancelAnimationFrame(heroRaf); }, { once: true });
 				}
 				initHeroCanvas();
-				function initRedQueenTv() {
+			function initRedQueenTv() {
 					var tv = document.querySelector('.rq-tv-screen');
 					if (!tv) return;
 					var ctx = tv.getContext('2d');
@@ -637,77 +815,11 @@ for (let i = 0; i < pts.length; i++) {
 					var width = tv.width;
 					var height = tv.height;
 					var source = tv.getAttribute('data-rq-src') || '';
+					var source2 = tv.getAttribute('data-rq-src2') || '';
+					if (!source) return;
 					var raf = 0;
 					var start = performance.now();
-					var speakingUntil = 0;
-					var nextSpeakAt = 2.6 + Math.random() * 3.4;
-					var blinkingUntil = 0;
-					var nextBlinkAt = 1.2 + Math.random() * 2.4;
-					var wobbleUntil = 0;
-					var nextWobbleAt = 2.2 + Math.random() * 4.2;
-					var lookUntil = 0;
-					var nextLookAt = 1.6 + Math.random() * 3.8;
-					var lookOffset = 0;
-					var cutout = null;
-					var cutW = 0;
-					var cutH = 0;
-
-					function clamp(v, min, max) {
-						return Math.max(min, Math.min(max, v));
-					}
-
-					function buildCutout(img) {
-						var t = document.createElement('canvas');
-						t.width = img.width;
-						t.height = img.height;
-						var tctx = t.getContext('2d');
-						if (!tctx) return null;
-						tctx.drawImage(img, 0, 0);
-						var imageData = tctx.getImageData(0, 0, t.width, t.height);
-						var d = imageData.data;
-						var minX = t.width, minY = t.height, maxX = 0, maxY = 0;
-						for (var i = 0; i < d.length; i += 4) {
-							var r = d[i];
-							var g = d[i + 1];
-							var b = d[i + 2];
-							var a = d[i + 3];
-							if (a === 0) continue;
-							var luma = 0.299 * r + 0.587 * g + 0.114 * b;
-							var redBias = r - (g * 0.58 + b * 0.42);
-							var alpha = clamp((redBias + 34) * 3.2 + (luma - 38) * 1.4, 0, 255);
-							if (r < 36 && g < 36 && b < 40) alpha = 0;
-							if (alpha < 12) alpha = 0;
-							d[i] = clamp(r * 0.78 + 24, 0, 255);
-							d[i + 1] = clamp(g * 0.92 + 30, 0, 255);
-							d[i + 2] = clamp(b * 1.18 + 40, 0, 255);
-							d[i + 3] = Math.min(a, alpha);
-							if (d[i + 3] > 18) {
-								var px = (i / 4) % t.width;
-								var py = Math.floor((i / 4) / t.width);
-								if (px < minX) minX = px;
-								if (px > maxX) maxX = px;
-								if (py < minY) minY = py;
-								if (py > maxY) maxY = py;
-							}
-						}
-						tctx.putImageData(imageData, 0, 0);
-						if (maxX <= minX || maxY <= minY) return null;
-						var padX = Math.round((maxX - minX) * 0.08);
-						var padY = Math.round((maxY - minY) * 0.08);
-						minX = clamp(minX - padX, 0, t.width - 1);
-						maxX = clamp(maxX + padX, 0, t.width - 1);
-						minY = clamp(minY - padY, 0, t.height - 1);
-						maxY = clamp(maxY + padY, 0, t.height - 1);
-						cutW = maxX - minX + 1;
-						cutH = maxY - minY + 1;
-						var c = document.createElement('canvas');
-						c.width = cutW;
-						c.height = cutH;
-						var cctx = c.getContext('2d');
-						if (!cctx) return null;
-						cctx.drawImage(t, minX, minY, cutW, cutH, 0, 0, cutW, cutH);
-						return c;
-					}
+					var currentFrame = null;
 
 					function drawFallback(elapsed) {
 						ctx.clearRect(0, 0, width, height);
@@ -724,112 +836,8 @@ for (let i = 0; i < pts.length; i++) {
 						}
 					}
 
-					function drawPanel(t) {
-						var elapsed = (t - start) * 0.001;
-						var talking = elapsed < speakingUntil;
-						var wobbling = elapsed < wobbleUntil;
-						var blinking = elapsed < blinkingUntil;
-						var looking = elapsed < lookUntil;
-						if (elapsed > nextSpeakAt) {
-							speakingUntil = elapsed + 0.45 + Math.random() * 0.75;
-							nextSpeakAt = speakingUntil + 2.8 + Math.random() * 4.2;
-						}
-						if (elapsed > nextBlinkAt) {
-							blinkingUntil = elapsed + 0.14;
-							nextBlinkAt = blinkingUntil + 2.1 + Math.random() * 2.7;
-						}
-						if (elapsed > nextWobbleAt) {
-							wobbleUntil = elapsed + 0.45 + Math.random() * 0.65;
-							nextWobbleAt = wobbleUntil + 3.8 + Math.random() * 5.2;
-						}
-						if (elapsed > nextLookAt) {
-							lookUntil = elapsed + 0.85;
-							nextLookAt = lookUntil + 2.8 + Math.random() * 3.6;
-							lookOffset = (Math.random() - 0.5) * 1.6;
-						}
-						if (!cutout) {
-							drawFallback(elapsed);
-							raf = requestAnimationFrame(drawPanel);
-							return;
-						}
-
-						var centerX = width * 0.5;
-						var centerY = height * 0.55;
-						var bob = Math.sin(elapsed * 1.2) * 0.8;
-						var sway = wobbling ? Math.sin(elapsed * 9.2) * 2.1 : Math.sin(elapsed * 0.85) * 0.55;
-						var tilt = wobbling ? Math.sin(elapsed * 8.2) * 0.018 : Math.sin(elapsed * 0.7) * 0.007;
-						var mouthPower = talking ? (0.4 + Math.abs(Math.sin(elapsed * 18)) * 0.6) : 0;
-						var blinkT = blinking ? Math.abs(Math.sin(elapsed * 38)) : 0;
-						var eyeShift = looking ? lookOffset : 0;
-
-						ctx.clearRect(0, 0, width, height);
-
-						ctx.save();
-						ctx.translate(centerX + sway, centerY + bob);
-						ctx.rotate(tilt);
-
-						var targetW = width * 0.78;
-						var targetH = height * 0.88;
-						var ratio = Math.min(targetW / cutW, targetH / cutH);
-						var dw = cutW * ratio;
-						var dh = cutH * ratio;
-						var dx = -dw * 0.44;
-						var dy = -dh * 0.56;
-
-						var halo = ctx.createRadialGradient(dx + dw * 0.54, dy + dh * 0.36, 10, dx + dw * 0.54, dy + dh * 0.36, dw * 0.7);
-						halo.addColorStop(0, 'rgba(160, 232, 255, 0.26)');
-						halo.addColorStop(1, 'rgba(160, 232, 255, 0)');
-						ctx.fillStyle = halo;
-						ctx.fillRect(dx - 20, dy - 20, dw + 40, dh + 40);
-
-						ctx.globalAlpha = 0.92;
-						ctx.drawImage(cutout, dx, dy, dw, dh);
-						if (mouthPower > 0.02) {
-							var mSX = cutW * 0.43;
-							var mSY = cutH * 0.55;
-							var mSW = cutW * 0.2;
-							var mSH = cutH * 0.13;
-							var mDX = dx + dw * 0.43;
-							var mDY = dy + dh * 0.55;
-							var mouthOpen = 1 + mouthPower * 0.28;
-							ctx.globalAlpha = 0.6;
-							ctx.drawImage(
-								cutout,
-								mSX,
-								mSY,
-								mSW,
-								mSH,
-								mDX,
-								mDY + mouthPower * 1.8,
-								dw * 0.2,
-								dh * 0.13 * mouthOpen
-							);
-						}
-						ctx.globalAlpha = 1;
-
-						ctx.globalCompositeOperation = 'screen';
-						ctx.fillStyle = 'rgba(154, 230, 255, 0.14)';
-						ctx.fillRect(dx, dy, dw, dh);
-						ctx.globalCompositeOperation = 'source-over';
-
-						var eY = dy + dh * 0.34;
-						var eW = dw * 0.045;
-						var eH = dh * (0.02 - blinkT * 0.015);
-						ctx.fillStyle = 'rgba(210, 244, 255, 0.6)';
-						ctx.fillRect(dx + dw * 0.46 + eyeShift, eY, eW, Math.max(1, eH));
-						ctx.fillRect(dx + dw * 0.57 + eyeShift, eY + 0.4, eW, Math.max(1, eH));
-
-						ctx.strokeStyle = 'rgba(176, 234, 255, 0.56)';
-						ctx.lineWidth = 0.95;
-						ctx.beginPath();
-						ctx.moveTo(0, -84);
-						ctx.lineTo(0, 76);
-						ctx.moveTo(-95, -20);
-						ctx.lineTo(95, -20);
-						ctx.stroke();
-
-						ctx.restore();
-
+					function drawOverlay(elapsed) {
+						// scanlines
 						ctx.globalCompositeOperation = 'screen';
 						for (var i = 0; i < 7; i++) {
 							var y = (elapsed * 28 + i * 36) % height;
@@ -837,7 +845,12 @@ for (let i = 0; i < pts.length; i++) {
 							ctx.fillRect(0, y, width, 1);
 						}
 						ctx.globalCompositeOperation = 'source-over';
-
+						// cyan tint overlay
+						ctx.globalCompositeOperation = 'screen';
+						ctx.fillStyle = 'rgba(154, 230, 255, 0.10)';
+						ctx.fillRect(0, 0, width, height);
+						ctx.globalCompositeOperation = 'source-over';
+						// sweep light
 						var sweepX = (Math.sin(elapsed * 0.9) * 0.5 + 0.5) * width;
 						var sweep = ctx.createLinearGradient(sweepX - 80, 0, sweepX + 80, 0);
 						sweep.addColorStop(0, 'rgba(176, 230, 255, 0)');
@@ -845,18 +858,95 @@ for (let i = 0; i < pts.length; i++) {
 						sweep.addColorStop(1, 'rgba(176, 230, 255, 0)');
 						ctx.fillStyle = sweep;
 						ctx.fillRect(0, 0, width, height);
-
-						raf = requestAnimationFrame(drawPanel);
 					}
 
-					if (source) {
+					function drawFrame(frame) {
+						var fw = frame.displayWidth || frame.width;
+						var fh = frame.displayHeight || frame.height;
+						var scale = Math.max(width / fw, height / fh) * 1.4;
+						var dw = fw * scale;
+						var dh = fh * scale;
+						var dx = (width - dw) / 2 - 160;
+						var dy = (height - dh) / 2;
+						if (playlist[playlistIndex] && playlist[playlistIndex].type === 'image/gif') dy += 20;
+						ctx.save();
+						ctx.translate(width, 0);
+						ctx.scale(-1, 1);
+						ctx.drawImage(frame, dx, dy, dw, dh);
+						ctx.restore();
+					}
+
+					function renderLoop(t) {
+						var elapsed = (t - start) * 0.001;
+						ctx.clearRect(0, 0, width, height);
+						if (currentFrame) {
+							drawFrame(currentFrame);
+						} else {
+							drawFallback(elapsed);
+						}
+						drawOverlay(elapsed);
+						raf = requestAnimationFrame(renderLoop);
+					}
+
+					// Playlist: webp -> gif (hold 3s) -> gif (hold 3s) -> webp -> loop from 1
+					var playlist = [
+						{ url: '/images/redqueen2.webp', type: 'image/webp' },
+						{ url: '/images/redqueen1.gif', type: 'image/gif', holdLast: 1000 },
+						{ url: '/images/redqueen1.gif', type: 'image/gif', holdLast: 1000 },
+						{ url: '/images/redqueen2.webp', type: 'image/webp' }
+					];
+					var loopFrom = 1;
+					var playlistIndex = 0;
+
+					function playItem(index) {
+						playlistIndex = index;
+						var item = playlist[index];
+						if (!item || typeof ImageDecoder === 'undefined') return;
+						fetch(new URL(item.url, window.location.href).href)
+							.then(function(response) { return response.body; })
+							.then(function(body) {
+								var decoder = new ImageDecoder({ data: body, type: item.type });
+								var frameIndex = 0;
+								function decodeNext() {
+									decoder.decode({ frameIndex: frameIndex }).then(function(result) {
+										if (currentFrame && currentFrame.close) currentFrame.close();
+										currentFrame = result.image;
+										frameIndex++;
+										if (frameIndex >= decoder.tracks.selectedTrack.frameCount) {
+											// finished this item, advance
+											var nextIndex = index + 1;
+											if (nextIndex >= playlist.length) nextIndex = loopFrom;
+											var hold = item.holdLast || 0;
+											setTimeout(function() { playItem(nextIndex); }, hold);
+											return;
+										}
+										var delay = result.image.duration ? result.image.duration / 1000 : 33;
+										setTimeout(decodeNext, delay);
+									}).catch(function() {
+										frameIndex = 0;
+										setTimeout(decodeNext, 100);
+									});
+								}
+								decoder.tracks.ready.then(function() {
+									decodeNext();
+								});
+							}).catch(function(err) {
+								console.warn('Playlist item failed', item.url, err);
+								var nextIndex = index + 1;
+								if (nextIndex >= playlist.length) nextIndex = loopFrom;
+								playItem(nextIndex);
+							});
+					}
+
+					if (typeof ImageDecoder !== 'undefined') {
+						playItem(0);
+					} else {
 						var img = new Image();
-						img.onload = function() { cutout = buildCutout(img); };
-						img.onerror = function() { cutout = null; };
+						img.onload = function() { currentFrame = img; };
 						img.src = new URL(source, window.location.href).href;
 					}
 
-					drawPanel(performance.now());
+					renderLoop(performance.now());
 					window.addEventListener('beforeunload', function() { cancelAnimationFrame(raf); }, { once: true });
 				}
 				initRedQueenTv();

@@ -335,13 +335,13 @@ body.br-page .br-spotlight-tr {
 }
 @keyframes br-spotlight-sweep-tl {
   0% {
-    transform: rotate(90deg);
+    transform: rotate(50deg);
   }
   50% {
-    transform: rotate(-90deg);
+    transform: rotate(-50deg);
   }
   100% {
-    transform: rotate(90deg);
+    transform: rotate(50deg);
   }
 }
 @keyframes br-spotlight-sweep-tr {
@@ -350,7 +350,7 @@ body.br-page .br-spotlight-tr {
     transform: rotate(-60deg);
   }
   50% {
-    transform: rotate(90deg);
+    transform: rotate(60deg);
   }
 }
 body.br-page .br-flicker {
@@ -1025,7 +1025,11 @@ body.mesh-page .mesh-content .prose {
   position: relative;
   background:
     linear-gradient(180deg, rgba(10, 16, 28, 0.88), rgba(10, 12, 22, 0.74)),
-    radial-gradient(circle at 88% 16%, rgba(118, 176, 214, 0.14), transparent 44%);
+    radial-gradient(
+      circle at 88% 16%,
+      rgba(118, 176, 214, 0.14),
+      transparent 44%
+    );
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
   border-radius: 10px;
@@ -1531,8 +1535,11 @@ body.mesh-page .mesh-content .prose a.mesh-link-preview:hover::after {
 .mesh-response-wrap {
   position: relative;
   border: 1px solid rgba(152, 222, 255, 0.2);
-  background:
-    linear-gradient(180deg, rgba(10, 16, 28, 0.54), rgba(16, 8, 16, 0.4));
+  background: linear-gradient(
+    180deg,
+    rgba(10, 16, 28, 0.54),
+    rgba(16, 8, 16, 0.4)
+  );
   border-radius: 8px;
   padding: 0.75rem 0.9rem 0.45rem;
   box-shadow:

@@ -75,12 +75,6 @@ for (let i = 0; i < pts.length; i++) {
 				margin: 0 auto;
 				position: relative;
 				box-sizing: border-box;
-				border-radius: 12px;
-				overflow: hidden;
-				border: 1px solid rgba(156, 192, 218, 0.36);
-				box-shadow:
-					0 0 0 1px rgba(186, 222, 246, 0.14),
-					0 0 24px rgba(8, 18, 30, 0.58);
 			}
 			.hero-image {
 				width: 100%;
@@ -90,46 +84,35 @@ for (let i = 0; i < pts.length; i++) {
 				border-radius: 0;
 				overflow: hidden;
 			}
-			.hero-image::before {
-				content: "";
-				position: absolute;
-				inset: 0;
-				border-radius: 12px 12px 0 0;
-				pointer-events: none;
-				background:
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) left 12px top 12px / 30px 2px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) left 12px top 12px / 2px 30px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) right 12px top 12px / 30px 2px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) right 12px top 12px / 2px 30px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) left 12px bottom 12px / 30px 2px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) left 12px bottom 12px / 2px 30px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) right 12px bottom 12px / 30px 2px no-repeat,
-					linear-gradient(rgba(168, 212, 238, 0.84), rgba(168, 212, 238, 0.84)) right 12px bottom 12px / 2px 30px no-repeat,
-					repeating-linear-gradient(
-						90deg,
-						rgba(182, 220, 242, 0.24) 0 10px,
-						rgba(182, 220, 242, 0) 10px 18px
-					) left 0 top 0 / 100% 2px no-repeat,
-					repeating-linear-gradient(
-						90deg,
-						rgba(182, 220, 242, 0.24) 0 10px,
-						rgba(182, 220, 242, 0) 10px 18px
-					) left 0 bottom 0 / 100% 2px no-repeat;
+			.hero-pane {
+				position: relative;
+				border-radius: 12px;
+				overflow: hidden;
+				border: 1px solid rgba(156, 192, 218, 0.36);
 				box-shadow:
-					inset 0 0 0 1px rgba(192, 226, 248, 0.18),
-					inset 0 0 38px rgba(8, 24, 42, 0.32);
+					0 0 0 1px rgba(186, 222, 246, 0.14),
+					0 24px 48px rgba(8, 18, 30, 0.68),
+					0 0 34px rgba(8, 18, 30, 0.64);
 			}
-			.hero-image::after {
-				content: "";
+			.hero-stack {
+				position: relative;
+				aspect-ratio: 1020 / 510;
+				background: #0a1218;
+			}
+			.hero-canvas-wrap {
 				position: absolute;
 				inset: 0;
-				border-radius: 12px 12px 0 0;
-				pointer-events: none;
-				background: linear-gradient(
-					180deg,
-					rgba(8, 14, 24, 0.1) 0%,
-					rgba(8, 14, 24, 0.34) 100%
-				);
+				z-index: 1;
+				opacity: 0;
+				transition: opacity 260ms ease;
+			}
+			.hero-canvas-wrap.ready { opacity: 1; }
+			.hero-canvas {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				display: block;
 			}
 			.hero-frame {
 				position: absolute;
@@ -190,14 +173,6 @@ for (let i = 0; i < pts.length; i++) {
 					opacity: 0.35;
 					transform: scale(0.82);
 				}
-			}
-			.hero-image img {
-				display: block;
-				width: 100%;
-				margin: 0;
-				box-shadow: var(--box-shadow);
-				filter: brightness(0.86) saturate(0.9);
-				opacity: 0.8;
 			}
 			@media (max-width: 720px) {
 				.hero-frame {
@@ -380,21 +355,27 @@ for (let i = 0; i < pts.length; i++) {
 		<main class="mesh-content">
 			<div class="mesh-load-scan" aria-hidden="true"></div>
 				<article class="mesh-article">
-				{heroImage && (
-					<div class="hero-shell">
-						<div class="hero-image">
-							<Image width={1020} height={510} src={heroImage} alt="" />
-							<div class="hero-frame" aria-hidden="true">
-								<span>neural monitor</span>
-								<span class="hero-frame-dot"></span>
+					{heroImage && (
+						<div class="hero-shell">
+							<div class="hero-pane">
+								<div class="hero-image">
+									<div class="hero-stack">
+										<div class="hero-canvas-wrap" aria-hidden="true">
+											<canvas class="hero-canvas" data-hero-src={heroImage.src}></canvas>
+										</div>
+									</div>
+									<div class="hero-frame" aria-hidden="true">
+										<span>neural monitor</span>
+										<span class="hero-frame-dot"></span>
+									</div>
+								</div>
+								<div class="hero-threat-bar" aria-hidden="true">
+									<span>signal sync active</span>
+									<span>model online</span>
+								</div>
 							</div>
 						</div>
-						<div class="hero-threat-bar" aria-hidden="true">
-							<span>signal sync active</span>
-							<span>model online</span>
-						</div>
-					</div>
-				)}
+					)}
 				<div class="prose">
 						<div class="title mesh-title">
 							<div class="mesh-meta-terminal">
@@ -529,6 +510,44 @@ for (let i = 0; i < pts.length; i++) {
 						window.scrollTo({ top: 0, behavior: 'smooth' });
 					});
 				}
+				function initHeroCanvas() {
+					var shell = document.querySelector('.hero-shell');
+					if (!shell) return;
+					var canvas = shell.querySelector('.hero-canvas');
+					var wrap = shell.querySelector('.hero-canvas-wrap');
+					if (!canvas || !wrap) return;
+					var src = canvas.getAttribute('data-hero-src');
+					if (!src) return;
+
+					function draw() {
+						var rect = shell.querySelector('.hero-stack').getBoundingClientRect();
+						var dpr = Math.min(window.devicePixelRatio || 1, 2);
+						canvas.width = Math.max(2, Math.round(rect.width * dpr));
+						canvas.height = Math.max(2, Math.round(rect.height * dpr));
+						canvas.style.width = rect.width + 'px';
+						canvas.style.height = rect.height + 'px';
+						var ctx = canvas.getContext('2d');
+						if (!ctx || !canvas.img) return;
+						var img = canvas.img;
+						var w = canvas.width, h = canvas.height;
+						var iw = img.width, ih = img.height;
+						var scale = Math.max(w / iw, h / ih);
+						var sw = w / scale, sh = h / scale;
+						var sx = (iw - sw) / 2, sy = (ih - sh) / 2;
+						ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+					}
+
+					var img = new Image();
+					img.onload = function() {
+						canvas.img = img;
+						wrap.classList.add('ready');
+						draw();
+					};
+					img.src = new URL(src, window.location.href).href;
+
+					window.addEventListener('resize', function() { if (canvas.img) draw(); }, { passive: true });
+				}
+				initHeroCanvas();
 
 				// 鼠标跟随光斑
 				var glow = document.querySelector('.mesh-mouse-glow');

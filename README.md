@@ -1,112 +1,138 @@
 # Anglefeint Site
 
-Personal blog and portfolio built with Astro. Each page has a distinct sci-fi / cyberpunk aesthetic inspired by classic films.
+Astro 5 static site, with three distinct visual systems:
 
-## Tech Stack & Architecture
+- `/` Home: Matrix-style canvas rain
+- `/blog` Blog list: Blade Runner / cyberpunk atmosphere
+- `/blog/[slug]` Post detail: AI terminal mesh UI
+- `/about` About page: mesh-style hacker profile (non-article)
 
-- **Framework**: [Astro](https://astro.build) v5
-- **Content**: Markdown & MDX via [Content Collections](https://docs.astro.build/en/guides/content-collections/)
-- **Integrations**: MDX, Sitemap, RSS Feed
-- **Styling**: Vanilla CSS (`src/styles/global.css`), no Tailwind
-- **Build**: Static site generation (SSG)
+This README is written for **humans + AI coding assistants** to onboard quickly.
 
-### Project Structure
+## Stack
 
-```text
-├── public/
-├── src/
-│   ├── components/     # Header, Footer, BaseHead, etc.
-│   ├── content/blog/   # Markdown/MDX posts
-│   ├── layouts/        # BlogPost.astro (article + about)
-│   ├── pages/
-│   │   ├── index.astro           # Home
-│   │   ├── about.astro           # About (uses BlogPost layout)
-│   │   └── blog/
-│   │       ├── [...page].astro   # Blog list (paginated)
-│   │       └── [...slug].astro   # Article detail
-│   └── styles/global.css
-├── astro.config.mjs
-└── package.json
-```
+- Framework: `astro@5.17.1`
+- Integrations: `@astrojs/mdx`, `@astrojs/sitemap`, `@astrojs/rss`
+- Image pipeline: `astro:assets` + `sharp`
+- Content: Astro Content Collections (`src/content.config.ts`)
+- Styling: vanilla CSS in `src/styles/global.css` + scoped `<style>` in page/layout files
+- Output mode: static (`astro build`)
 
----
+## Routes
 
-## Page Aesthetics & Effects
+- `src/pages/index.astro`
+  - Home page, custom Matrix canvas background + page-scoped style variables.
+- `src/pages/blog/[...page].astro`
+  - Paginated list route.
+  - `getStaticPaths` uses Astro `paginate(posts, { pageSize: 9 })`.
+- `src/pages/blog/[...slug].astro`
+  - Post detail route.
+  - Loads all posts, computes related posts, renders through `src/layouts/BlogPost.astro`.
+  - Also derives fallback metrics from markdown body (read minutes / word count / token count / latency / confidence) when frontmatter fields are missing.
+- `src/pages/about.astro`
+  - Standalone About page using mesh visual language.
+- `src/pages/rss.xml.js`
+  - RSS feed from collection `blog`.
 
-### 1. Home (`/`) — Matrix (黑客帝国)
+## Content Model
 
-**Body class:** `page-home`
+Defined in `src/content.config.ts`:
 
-**Style:** Green digital rain, black background — inspired by _The Matrix_ (1999).
+Required fields:
 
-**Effects:**
+- `title: string`
+- `description: string`
+- `pubDate: date`
 
-- **Matrix Rain**: Full-screen canvas with falling green characters (`Matrix Code NFI` font)
-- Respects `prefers-reduced-motion` (disables animation when set)
-- Semi-transparent header/footer overlay
+Optional fields:
 
----
+- `updatedDate: date`
+- `heroImage: image`
+- `context: string`
+- `readMinutes: int`
+- `aiModel: string`
+- `aiMode: string`
+- `aiState: string`
+- `aiLatencyMs: int`
+- `aiConfidence: number (0..1)`
+- `wordCount: int`
+- `tokenCount: int`
 
-### 2. Blog List (`/blog/`) — Blade Runner (1982 & 2049) / Cyberpunk
+Blog content lives in `src/content/blog/*.{md,mdx}`.
 
-**Body class:** `br-page`
+## Key Files (Edit Map)
 
-**Style:** Noir cyberpunk — dark teal/blue, rain, neon haze, film-grain. References _Blade Runner_ (1982) and _Blade Runner 2049_ (2017).
+- `src/layouts/BlogPost.astro`
+  - Main article-detail UI and interactions.
+  - Includes hero canvas rendering, mesh background SVG network, stage toast, back-to-top, related posts, and left-side Red Queen mini monitor (`.rq-tv`).
+- `src/styles/global.css`
+  - Global theme baseline + full `br-page` and `mesh-page` visual systems.
+  - Also includes pagination/list card behavior, code block runtime header, AI chips, related cards, and back-to-top styling.
+- `src/components/Header.astro`
+  - Main nav + social links + `system: online` indicator.
+  - Status chip is visible on `.mesh-page`, hidden on `.about-page`.
+- `src/components/Footer.astro`
+  - Footer text/social links.
+- `src/pages/about.astro`
+  - About content structure and hero/status copy.
 
-**Effects:**
+## Visual Systems
 
-- **Rain**: Multi-type rain drops (normal, thin, fog, skew) with varied opacity and animation
-- **Spotlight**: Conic gradient sweeps from top-left and top-right (warm blue/cyan)
-- **Scanlines**: CRT-style horizontal lines (fade on header/footer hover)
-- **Vignette**: Darkened edges
-- **Haze**: Radial fog overlay
-- **Flicker**: Subtle screen flicker
-- **Dust particles**: 22 floating particles
-- **Load glitch**: Brief RGB chromatic glitch on load
-- **Card hover**: Glitch animation on post titles, image sweep overlay, sepia tint
+### Home (`body.page-home`)
 
----
+- Matrix rain canvas (`#matrix-bg`) with per-column glyph drops.
+- `prefers-reduced-motion` disables animation.
+- Mouse position updates CSS vars (`--matrix-mx`, `--matrix-my`) for radial highlight.
 
-### 3. Article Detail (`/blog/[slug]/`) & About (`/about`) — AI / Terminal Style
+### Blog list (`body.br-page`)
 
-**Body class:** `mesh-page`
+- Effects: rain, scanlines, dual spotlight sweep (`.br-spotlight-tl/.br-spotlight-tr`), haze, dust, flicker, vignette.
+- Card behavior: border glow on hover, title glitch, image scanline sweep.
+- Pagination style is defined in route-level `<style is:global>` plus shared `br-page` palette.
 
-**Style:** AI assistant / terminal aesthetic — dark blue-black, cyan/green accents, point-and-line network. Feels like an AI “response” interface.
+### Post detail (`body.mesh-page`)
 
-**Effects:**
+- Mesh background: gradients + noise + hex grid + SVG point network.
+- Article card: terminal metadata row, model chips, context line, output block, regenerate button.
+- Read progress + back-to-top + paragraph reveal + link preview tooltip.
+- Hero image: drawn via `<canvas class="hero-canvas">` from `data-hero-src`.
+- Left mini monitor (`.rq-tv`): canvas-based hologram effect using `public/images/redqueen-reference.jpg` as source, with lightweight cutout/tint/eye+mouth micro animation.
 
-- **Mesh Network**: SVG point cloud (58 nodes) with connecting lines, gentle drift animation
-- **Glow layers**: Radial gradient, haze, vignette, stripe, noise, hex grid
-- **Thought particles**: 12 floating dots
-- **Read progress bar**: Fixed top bar, purple gradient
-- **Back to top**: Fixed button (right margin center, 60% vertical)
-- **Mouse glow**: Radial glow follows cursor
-- **Depth blur**: Soft vignette blur at top/bottom
-- **Thinking dots**: Three pulsing dots (fade out after load)
-- **Response layout**: Terminal-style metadata (`$ published ... | ~N min read`), “Prompt → Response” framing
-- **Block cursor**: Blinking cursor at end of prose
-- **Link preview**: Hover tooltip on links (hostname/URL)
-- **Glitch on hover**: Light RGB separation on links and code blocks
-- **Paragraph reveal**: Intersection Observer scroll-in for paragraphs
-- **Related posts**: 3-card grid
-- **Fixed header**: Transparent overlay with blur (optional)
-- **Regenerate button**: Decorative “Regenerate” with scan animation
+## Components and Constants
 
----
+- `src/components/BaseHead.astro`
+  - Global CSS import, canonical URL, OG/Twitter metadata, RSS/sitemap links, font preloads.
+- `src/consts.ts`
+  - `SITE_TITLE`, `SITE_DESCRIPTION`.
 
-## Commands
+## Current Project Notes
 
-| Command             | Action                               |
-| :------------------ | :----------------------------------- |
-| `npm install`       | Install dependencies                 |
-| `npm run dev`       | Start dev server at `localhost:4321` |
-| `npm run build`     | Build production site to `./dist/`   |
-| `npm run preview`   | Preview build locally                |
-| `npm run astro ...` | Run Astro CLI commands               |
+- No lint/test scripts are defined in `package.json` currently.
+- Some text still uses starter-template copy (especially Home and default post content).
+- Footer still contains placeholder owner text: `Your name here`.
+- Red Queen monitor source image path is hardcoded in `BlogPost.astro`:
+  - `/images/redqueen-reference.jpg`
 
----
+## Run
 
-## Credit
+- `npm install`
+- `npm run dev`
+- `npm run build`
+- `npm run preview`
 
-- Based on [Astro Blog starter](https://github.com/withastro/astro/tree/main/examples/blog)
-- Theme inspired by [Bear Blog](https://github.com/HermanMartinus/bearblog/)
+## Fast Handoff Checklist (for AI assistants)
+
+When touching visuals, check these in order:
+
+- Route file for page-scoped style/scripts.
+- `src/layouts/BlogPost.astro` for post detail behavior and inline JS.
+- `src/styles/global.css` for cross-page theme classes (`.br-page`, `.mesh-page`).
+- `src/content.config.ts` if frontmatter/metadata behavior changes.
+- `src/pages/blog/[...slug].astro` if computed metrics behavior changes.
+
+When touching content behavior, verify:
+
+- Frontmatter schema compatibility.
+- RSS generation (`src/pages/rss.xml.js`).
+- Pagination behavior (`src/pages/blog/[...page].astro`).
+

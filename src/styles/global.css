@@ -495,10 +495,29 @@ body.br-page .br-dust-particle {
     opacity: 0.7;
   }
 }
+body.page-home header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+body.br-page header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
 body.br-page main {
 	position: relative;
   z-index: 7;
 	width: 960px;
+	padding-top: calc(3em + 56px);
 }
 body.br-page .title,
 body.br-page .date {
@@ -735,6 +754,9 @@ body.br-page .br-load-glitch {
   }
 }
 @media (max-width: 720px) {
+  body.br-page main {
+    padding-top: calc(1em + 56px);
+  }
   body.br-page ul {
     gap: 0.5em;
   }

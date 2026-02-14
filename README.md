@@ -1,11 +1,11 @@
 # Anglefeint Site
 
-Astro 5 static site, with three distinct visual systems:
+Astro 5 static site with four distinct visual systems:
 
 - `/` Home: Matrix-style canvas rain
 - `/blog` Blog list: Blade Runner / cyberpunk atmosphere
 - `/blog/[slug]` Post detail: AI terminal mesh UI
-- `/about` About page: mesh-style hacker profile (non-article)
+- `/about` About page: Anonymous-style terminal / hacker theme with interactive sidebar and modals
 
 This README is written for **humans + AI coding assistants** to onboard quickly.
 
@@ -20,119 +20,77 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 
 ## Routes
 
-- `src/pages/index.astro`
-  - Home page, custom Matrix canvas background + page-scoped style variables.
-- `src/pages/blog/[...page].astro`
-  - Paginated list route.
-  - `getStaticPaths` uses Astro `paginate(posts, { pageSize: 9 })`.
-- `src/pages/blog/[...slug].astro`
-  - Post detail route.
-  - Loads all posts, computes related posts, renders through `src/layouts/BlogPost.astro`.
-  - Also derives fallback metrics from markdown body (read minutes / word count / token count / latency / confidence) when frontmatter fields are missing.
-- `src/pages/about.astro`
-  - Standalone About page using mesh visual language.
-- `src/pages/rss.xml.js`
-  - RSS feed from collection `blog`.
+- `src/pages/index.astro` — Home page, Matrix canvas rain + radial highlight
+- `src/pages/blog/[...page].astro` — Paginated blog list (9 per page), Blade Runner effects
+- `src/pages/blog/[...slug].astro` — Post detail, mesh UI, related posts, computed metrics
+- `src/pages/about.astro` — Anonymous-style terminal page with sidebar, modals, virtual keyboard
+- `src/pages/rss.xml.js` — RSS feed from `blog` collection
 
 ## Content Model
 
 Defined in `src/content.config.ts`:
 
-Required fields:
+**Required:** `title`, `description`, `pubDate`  
+**Optional:** `updatedDate`, `heroImage`, `context`, `readMinutes`, `aiModel`, `aiMode`, `aiState`, `aiLatencyMs`, `aiConfidence`, `wordCount`, `tokenCount`
 
-- `title: string`
-- `description: string`
-- `pubDate: date`
+Blog content: `src/content/blog/*.{md,mdx}` (31 posts as of last update).
 
-Optional fields:
+## About Page (`/about`) — Anonymous-Style Terminal
 
-- `updatedDate: date`
-- `heroImage: image`
-- `context: string`
-- `readMinutes: int`
-- `aiModel: string`
-- `aiMode: string`
-- `aiState: string`
-- `aiLatencyMs: int`
-- `aiConfidence: number (0..1)`
-- `wordCount: int`
-- `tokenCount: int`
+The About page uses a dark terminal aesthetic with:
 
-Blog content lives in `src/content/blog/*.{md,mdx}`.
+- **Background:** Canvas directory listing, interactive typing at `~ $` (click margins to focus), scanlines, vignette
+- **Right sidebar:** Fixed folder bar (hidden on mobile < 900px) with five buttons:
+  - **DL Data** — Modal: "Downloading..." with animated progress bar
+  - **AI** — Modal: model status (inference, context, latency)
+  - **Decryptor** — Modal: live-updating hash/passphrase/keys
+  - **Help** — Modal: virtual keyboard (QWERTY + right-side nav keys: Insert/Home/PgUp, Delete/End/PgDn, Purge, arrows). Key highlight on press/click, "You typed: X characters" counter. Escape closes.
+  - **All Scripts** — Modal: folder grid of blog posts (`/root/bash/scripts`), each folder links to post detail
+- **Modals:** macOS-style window (red/yellow/green dots, white title bar), Escape or overlay click to close
 
 ## Key Files (Edit Map)
 
-- `src/layouts/BlogPost.astro`
-  - Main article-detail UI and interactions.
-  - Includes hero canvas rendering, mesh background SVG network, stage toast, back-to-top, related posts, and left-side Red Queen mini monitor (`.rq-tv`).
-- `src/styles/global.css`
-  - Global theme baseline + full `br-page` and `mesh-page` visual systems.
-  - Also includes pagination/list card behavior, code block runtime header, AI chips, related cards, and back-to-top styling.
-- `src/components/Header.astro`
-  - Main nav + social links + `system: online` indicator.
-  - Status chip is visible on `.mesh-page`, hidden on `.about-page`.
-- `src/components/Footer.astro`
-  - Footer text/social links.
-- `src/pages/about.astro`
-  - About content structure and hero/status copy.
+- `src/pages/about.astro` — About page, sidebar, modals, terminal canvas, folder logic, virtual keyboard (~1400 lines)
+- `src/layouts/BlogPost.astro` — Post detail layout, mesh network, hero canvas, Red Queen monitor (`.rq-tv`)
+- `src/styles/global.css` — Global theme, `br-page`, `mesh-page` visual systems
+- `src/components/Header.astro` — Nav, social links, `system: online` chip
+- `src/components/Footer.astro` — Footer text/social links
 
 ## Visual Systems
 
 ### Home (`body.page-home`)
 
-- Matrix rain canvas (`#matrix-bg`) with per-column glyph drops.
-- `prefers-reduced-motion` disables animation.
-- Mouse position updates CSS vars (`--matrix-mx`, `--matrix-my`) for radial highlight.
+- Matrix rain canvas, `prefers-reduced-motion` disables animation
+- Mouse position → CSS vars for radial highlight
 
 ### Blog list (`body.br-page`)
 
-- Effects: rain, scanlines, dual spotlight sweep (`.br-spotlight-tl/.br-spotlight-tr`), haze, dust, flicker, vignette.
-- Card behavior: border glow on hover, title glitch, image scanline sweep.
-- Pagination style is defined in route-level `<style is:global>` plus shared `br-page` palette.
+- Rain, scanlines, spotlight sweep, haze, dust, flicker, vignette
+- Card hover glow, title glitch, image scanline
 
 ### Post detail (`body.mesh-page`)
 
-- Mesh background: gradients + noise + hex grid + SVG point network.
-- Article card: terminal metadata row, model chips, context line, output block, regenerate button.
-- Read progress + back-to-top + paragraph reveal + link preview tooltip.
-- Hero image: drawn via `<canvas class="hero-canvas">` from `data-hero-src`.
-- Left mini monitor (`.rq-tv`): canvas-based hologram effect using `public/images/redqueen-reference.jpg` as source, with lightweight cutout/tint/eye+mouth micro animation.
+- Mesh background: gradients, noise, hex grid, SVG point network (58 nodes)
+- Hero canvas, read progress, back-to-top, paragraph reveal
+- Red Queen mini monitor: `public/images/redqueen-reference.jpg`
 
-## Components and Constants
+### About (`body.term-page`)
 
-- `src/components/BaseHead.astro`
-  - Global CSS import, canonical URL, OG/Twitter metadata, RSS/sitemap links, font preloads.
-- `src/consts.ts`
-  - `SITE_TITLE`, `SITE_DESCRIPTION`.
-
-## Current Project Notes
-
-- No lint/test scripts are defined in `package.json` currently.
-- Some text still uses starter-template copy (especially Home and default post content).
-- Footer still contains placeholder owner text: `Your name here`.
-- Red Queen monitor source image path is hardcoded in `BlogPost.astro`:
-  - `/images/redqueen-reference.jpg`
+- Black background, green accents, CRT scanlines
+- Sidebar modals, virtual keyboard, folder grid for blog posts
 
 ## Run
 
-- `npm install`
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
+```bash
+npm install
+npm run dev      # localhost:4321
+npm run build
+npm run preview
+```
 
-## Fast Handoff Checklist (for AI assistants)
+## Fast Handoff (AI Assistants)
 
-When touching visuals, check these in order:
-
-- Route file for page-scoped style/scripts.
-- `src/layouts/BlogPost.astro` for post detail behavior and inline JS.
-- `src/styles/global.css` for cross-page theme classes (`.br-page`, `.mesh-page`).
-- `src/content.config.ts` if frontmatter/metadata behavior changes.
-- `src/pages/blog/[...slug].astro` if computed metrics behavior changes.
-
-When touching content behavior, verify:
-
-- Frontmatter schema compatibility.
-- RSS generation (`src/pages/rss.xml.js`).
-- Pagination behavior (`src/pages/blog/[...page].astro`).
+**Visuals:** Route file → `BlogPost.astro` → `global.css` → `content.config.ts`  
+**Content:** Frontmatter schema, RSS (`rss.xml.js`), pagination (`[...page].astro`)  
+**About modals:** `modalContent` object in `about.astro` script; folder grid from `getCollection('blog')` + template `#term-scripts-folders-tpl`
 

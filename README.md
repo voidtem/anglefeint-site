@@ -44,7 +44,7 @@ The About page uses a dark terminal aesthetic with:
 
 - **Background:** Canvas directory listing, interactive typing at `~ $` (click margins to focus), scanlines, vignette
 - **Sliding lines:** Title bar sweep (`term-title-bar`) and load scan (`term-load-scan`) use palette #0B0F14 + #FF0033 + #9CA3AF
-- **Header:** Nav active underline is grey (`--chrome-active`)
+- **Header:** Nav active underline is grey (`--chrome-active`: #9CA3AF / `rgba(156,163,175,0.9)`)
 - **Right sidebar:** Fixed folder bar (hidden on mobile < 900px) with five buttons:
   - **DL Data** — Modal: "Downloading..." with animated progress bar
   - **AI** — Modal: model status (inference, context, latency)
@@ -126,7 +126,7 @@ The About page uses a dark terminal aesthetic with:
 ### About (`body.term-page`)
 
 - Black background, CRT scanlines, vignette
-- **Palette:** Green for sidebar/link hover (`--chrome-link-hover`); grey for header nav underline (`--chrome-active`); sliding lines use #0B0F14 + #FF0033 + #9CA3AF (dark, red, gray)
+- **Palette:** Green for sidebar/link hover (`--chrome-link-hover`); grey (#9CA3AF) for header nav underline (`--chrome-active`); sliding lines use #0B0F14 + #FF0033 + #9CA3AF (dark, red, gray)
 - **Sliding line effects:** `term-title-bar` (below title) — 3px bar with sweep animation; `term-load-scan` (top of content) — 2px line from top→bottom on load. Both use red/gray gradient.
 - Sidebar modals, virtual keyboard, folder grid for blog posts
 

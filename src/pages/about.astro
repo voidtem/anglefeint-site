@@ -34,7 +34,7 @@ const scriptsFoldersHtml = blogPosts
 				--chrome-border: rgba(255, 255, 255, 0.2);
 				--chrome-link: rgba(255, 255, 255, 0.9);
 				--chrome-link-hover: rgba(0, 255, 100, 0.95);
-				--chrome-active: rgba(0, 255, 100, 0.8);
+				--chrome-active: rgba(255, 255, 255, 0.5);
 				--chrome-text-muted: rgba(255, 255, 255, 0.5);
 			}
 			body.term-page::-webkit-scrollbar { width: 6px; }
@@ -260,9 +260,10 @@ const scriptsFoldersHtml = blogPosts
 				width: 35%;
 				background: linear-gradient(
 					90deg,
-					rgba(255, 255, 255, 0),
-					rgba(0, 255, 100, 0.6),
-					rgba(255, 255, 255, 0)
+					rgba(11, 15, 20, 0.4),
+					rgba(255, 0, 51, 0.7),
+					rgba(156, 163, 175, 0.6),
+					rgba(11, 15, 20, 0.4)
 				);
 				animation: term-bar-sweep 3.8s linear infinite;
 			}
@@ -452,8 +453,8 @@ const scriptsFoldersHtml = blogPosts
 				left: 0;
 				right: 0;
 				height: 2px;
-				background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), rgba(0, 255, 100, 0.5), transparent);
-				box-shadow: 0 0 12px rgba(0, 255, 100, 0.3);
+				background: linear-gradient(90deg, rgba(11, 15, 20, 0.3), rgba(255, 0, 51, 0.7), rgba(156, 163, 175, 0.6), rgba(11, 15, 20, 0.3));
+				box-shadow: 0 0 12px rgba(255, 0, 51, 0.4);
 				animation: term-scan 0.8s ease-out forwards;
 				pointer-events: none;
 				z-index: 20;

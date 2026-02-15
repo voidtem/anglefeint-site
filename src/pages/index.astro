@@ -1,294 +1,70 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
-import { getCollection } from 'astro:content';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-
-const latestPosts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-	.slice(0, 3);
+import { LOCALE_LABELS, SUPPORTED_LOCALES } from '../i18n/config';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<link href="https://db.onlinewebfonts.com/c/ff2a407fe06752facf8828a86955e988?family=Matrix+Code+NFI" rel="stylesheet" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Angle Feint | Languages</title>
 		<style>
-			:global(body.page-home) {
-				--matrix-green: rgba(96, 255, 128, 0.92);
-				--matrix-green-soft: rgba(96, 255, 128, 0.65);
-				--matrix-border: rgba(96, 255, 128, 0.24);
-				--chrome-bg: rgba(0, 6, 0, 0.74);
-				--chrome-border: rgba(96, 255, 128, 0.24);
-				--chrome-link: rgba(176, 255, 192, 0.95);
-				--chrome-link-hover: rgba(210, 255, 220, 0.98);
-				--chrome-active: rgba(96, 255, 128, 0.9);
-				--chrome-text-muted: rgba(148, 216, 160, 0.74);
-			}
-			#matrix-bg {
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				z-index: -1;
-				pointer-events: none;
-			}
-			:global(body.page-home)::before {
-				content: "";
-				position: fixed;
-				inset: 0;
-				z-index: 1;
-				pointer-events: none;
-				background: repeating-linear-gradient(
-					0deg,
-					rgba(0, 0, 0, 0) 0px,
-					rgba(0, 0, 0, 0) 2px,
-					rgba(0, 0, 0, 0.22) 3px,
-					rgba(0, 0, 0, 0.22) 4px
-				);
-				opacity: 0.28;
-			}
-			:global(body.page-home)::after {
-				content: "";
-				position: fixed;
-				inset: 0;
-				z-index: 2;
-				pointer-events: none;
-				background:
-					radial-gradient(circle at var(--matrix-mx, 50%) var(--matrix-my, 50%), rgba(96, 255, 128, 0.12), transparent 45%),
-					radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.42) 100%);
-			}
-			:global(body.page-home main) {
-				position: relative;
-				z-index: 4;
-				background: rgba(0, 8, 0, 0.62);
-				border: 1px solid var(--matrix-border);
-				border-radius: 10px;
-				padding: calc(3em + 56px) 2rem 2.2rem;
-				margin-top: 1.2rem;
-				margin-bottom: 1.4rem;
-				box-shadow:
-					0 0 18px rgba(96, 255, 128, 0.15),
-					inset 0 0 30px rgba(18, 70, 30, 0.26);
-				backdrop-filter: blur(2px);
-			}
-			:global(body.page-home h1) {
-				color: var(--matrix-green);
-				letter-spacing: 0.04em;
-				text-shadow:
-					0 0 14px rgba(96, 255, 128, 0.35),
-					0 0 30px rgba(96, 255, 128, 0.12);
-				font-size: clamp(2rem, 5vw, 3rem);
-			}
-			:global(body.page-home h1)::before {
-				content: "INITIALIZE";
-				display: block;
-				margin-bottom: 0.65rem;
-				font-size: 0.34em;
-				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-				color: var(--matrix-green-soft);
-				letter-spacing: 0.2em;
-			}
-			:global(body.page-home p),
-			:global(body.page-home li) {
-				color: rgba(220, 255, 228, 0.88);
-				text-shadow: 0 0 10px rgba(96, 255, 128, 0.08);
-			}
-			:global(body.page-home ul) {
-				list-style: none;
-				padding-left: 0;
-				margin-left: 0;
-			}
-			:global(body.page-home li) {
-				position: relative;
-				padding-left: 1.1rem;
-			}
-			:global(body.page-home li)::before {
-				content: ">";
-				position: absolute;
-				left: 0;
-				color: var(--matrix-green-soft);
-				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-			}
-			:global(body.page-home a) {
-				color: var(--matrix-green);
-				text-decoration-color: rgba(96, 255, 128, 0.5);
-				text-underline-offset: 2px;
-			}
-			:global(body.page-home a:hover) {
-				color: rgba(172, 255, 188, 0.98);
-			}
-			:global(body.page-home code) {
-				background: rgba(16, 54, 24, 0.7);
-				color: rgba(182, 255, 195, 0.95);
-				border: 1px solid rgba(96, 255, 128, 0.2);
-			}
-			.home-hero-copy {
-				margin-bottom: 1.1rem;
-			}
-			.home-section-title {
-				font-size: 0.88rem;
-				letter-spacing: 0.16em;
-				text-transform: uppercase;
-				color: var(--matrix-green-soft);
-				margin: 1.2rem 0 0.65rem;
-			}
-			.home-latest {
-				border-top: 1px solid rgba(96, 255, 128, 0.2);
-				padding-top: 0.9rem;
-			}
-			.home-post-list {
-				list-style: none;
-				padding: 0;
+			body {
 				margin: 0;
+				min-height: 100vh;
+				display: grid;
+				place-items: center;
+				background: #070b12;
+				color: #dfe9f3;
+				font-family: "Atkinson", ui-sans-serif, system-ui, sans-serif;
 			}
-			.home-post-list li {
-				padding: 0.55rem 0;
-				border-bottom: 1px solid rgba(96, 255, 128, 0.12);
+			.wrap {
+				width: min(680px, calc(100% - 2rem));
+				padding: 1.5rem;
+				border: 1px solid rgba(120, 170, 220, 0.3);
+				border-radius: 12px;
+				background: rgba(6, 14, 24, 0.8);
+				box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 			}
-			.home-post-list li:last-child {
-				border-bottom: none;
+			h1 {
+				margin: 0 0 0.6rem 0;
+				font-size: 1.6rem;
 			}
-			.home-post-title {
-				font-weight: 700;
+			p {
+				margin: 0 0 1rem 0;
+				opacity: 0.86;
 			}
-			.home-post-meta {
-				font-size: 0.82rem;
-				color: rgba(178, 246, 192, 0.8);
+			.list {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+				gap: 0.5rem;
 			}
-			@media (max-width: 720px) {
-				:global(body.page-home main) {
-					padding: calc(1em + 56px) 1rem 1.4rem;
-					margin-top: 0.9rem;
-					margin-bottom: 1rem;
-				}
+			a {
+				display: inline-block;
+				text-align: center;
+				padding: 0.55rem 0.7rem;
+				border: 1px solid rgba(132, 214, 255, 0.3);
+				border-radius: 999px;
+				text-decoration: none;
+				color: #eaf4ff;
+				background: rgba(84, 150, 220, 0.12);
+			}
+			a:hover {
+				background: rgba(112, 186, 242, 0.22);
 			}
 		</style>
 	</head>
-	<body class="page-home">
-		<canvas id="matrix-bg" aria-hidden="true"></canvas>
-		<Header />
-		<main>
+	<body>
+		<main class="wrap">
 			<h1>Angle Feint</h1>
-			<p class="home-hero-copy">
-				I build cinematic web interfaces and write about AI-era craft, system architecture, and how I understand the world.
-			</p>
-
-			<section class="home-latest">
-				<h2 class="home-section-title">Latest Posts</h2>
-				<ul class="home-post-list">
-					{latestPosts.map((post) => (
-						<li>
-							<a class="home-post-title" href={`/blog/${post.id}/`}>{post.data.title}</a>
-							<div class="home-post-meta">
-								<FormattedDate date={post.data.pubDate} />
-								{post.data.description && <> · {post.data.description}</>}
-							</div>
-						</li>
-					))}
-				</ul>
-				<p><a href="/blog/">View all posts</a></p>
-			</section>
+			<p>Select your language.</p>
+			<div class="list">
+				{
+					SUPPORTED_LOCALES.map((locale) => (
+						<a href={`/${locale}/`}>{LOCALE_LABELS[locale]}</a>
+					))
+				}
+			</div>
 		</main>
-		<Footer />
 	</body>
-		<script>
-		const chars = '!"#$%&\'()*+,-./:;<=>?[\\]^_{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const canvas = document.getElementById('matrix-bg') as HTMLCanvasElement;
-		if (!canvas) throw new Error('Matrix canvas not found');
-		if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			canvas.style.display = 'none';
-		} else {
-			let animationId: number;
-			let lastTime = 0;
-			const ctx = canvas.getContext('2d')!;
-			type Col = { y: number; drops: { y: number; c: string }[] };
-			const cols: Col[] = [];
-			const fontSize = 22;
-			const speed = 80;
-			const trailLen = 18;
-			let w = 0;
-			let h = 0;
-
-			function resize() {
-				const dpr = window.devicePixelRatio || 1;
-				w = window.innerWidth;
-				h = window.innerHeight;
-				canvas.width = Math.round(w * dpr);
-				canvas.height = Math.round(h * dpr);
-				canvas.style.width = w + 'px';
-				canvas.style.height = h + 'px';
-				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-				cols.length = 0;
-				for (let i = 0; i < Math.ceil(w / fontSize); i++) {
-					const y = Math.random() * h;
-					const row = Math.floor(y / fontSize);
-					cols[i] = {
-						y,
-						drops: [{ y: row * fontSize, c: chars[Math.floor(Math.random() * chars.length)] }],
-					};
-				}
-			}
-
-			function draw(now: number) {
-				const dt = lastTime ? (now - lastTime) / 200 : 0;
-				lastTime = now;
-
-				ctx.fillStyle = '#000';
-				ctx.fillRect(0, 0, w, h);
-				ctx.font = `${fontSize}px "Matrix Code NFI", monospace`;
-
-				for (let i = 0; i < cols.length; i++) {
-					const col = cols[i];
-					const x = Math.round(i * fontSize);
-
-					const prevRow = Math.floor(col.y / fontSize);
-					col.y += speed * dt;
-					const currRow = Math.floor(col.y / fontSize);
-
-					for (let r = prevRow + 1; r <= currRow; r++) {
-						const dropY = r * fontSize;
-						col.drops.unshift({
-							y: dropY,
-							c: chars[Math.floor(Math.random() * chars.length)],
-						});
-					}
-					while (col.drops.length > trailLen) col.drops.pop();
-
-					for (let j = col.drops.length - 1; j >= 0; j--) {
-						const opacity = j === 0 ? 1 : 0.2 + 0.6 * (1 - j / trailLen);
-						ctx.fillStyle = `rgba(0, 255, 65, ${opacity})`;
-						ctx.fillText(col.drops[j].c, x, col.drops[j].y);
-					}
-
-					if (col.y > h && Math.random() > 0.975) {
-						col.y = 0;
-						col.drops = [{ y: 0, c: chars[Math.floor(Math.random() * chars.length)] }];
-					}
-				}
-				animationId = requestAnimationFrame(draw);
-			}
-
-			resize();
-			animationId = requestAnimationFrame(draw);
-			window.addEventListener('resize', resize);
-
-			document.addEventListener('visibilitychange', () => {
-				if (document.hidden) {
-					cancelAnimationFrame(animationId);
-				} else {
-					lastTime = 0;
-					animationId = requestAnimationFrame(draw);
-				}
-			});
-		}
-		document.addEventListener('mousemove', (event) => {
-			document.body.style.setProperty('--matrix-mx', `${event.clientX}px`);
-			document.body.style.setProperty('--matrix-my', `${event.clientY}px`);
-		});
-	</script>
 </html>

@@ -1,9 +1,14 @@
 ---
 const today = new Date();
+interface Props {
+	tagline?: string;
+}
+
+const { tagline = 'Signal from VoidTemple.' } = Astro.props as Props;
 ---
 
 <footer>
-	&copy; {today.getFullYear()} Angle Feint. Signal from VoidTemple.
+	&copy; {today.getFullYear()} Angle Feint. {tagline}
 	<div class="social-links">
 		<a href="https://m.webtoo.ls/@astro" target="_blank">
 			<span class="sr-only">Follow Astro on Mastodon</span>

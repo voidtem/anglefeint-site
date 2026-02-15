@@ -509,13 +509,13 @@ body.br-page header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 3;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }
 body.br-page main {
 	position: relative;
-  z-index: 7;
+  z-index: 2;
 	width: 960px;
 	padding-top: calc(3em + 56px);
 }

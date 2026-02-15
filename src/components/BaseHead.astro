@@ -5,6 +5,7 @@ import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_AUTHOR, SITE_TITLE, SITE_URL } from '../consts';
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, isLocale, localePath, stripLocaleFromPath } from '../i18n/config';
 
 interface Props {
 	title: string;
@@ -38,6 +39,14 @@ const {
 const imageURL = new URL(image.src, siteURL).toString();
 const robotsContent = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
 const isArticle = pageType === 'article';
+const pathParts = Astro.url.pathname.split('/').filter(Boolean);
+const currentLocale = pathParts.length > 0 && isLocale(pathParts[0]) ? pathParts[0] : DEFAULT_LOCALE;
+const rssURL = new URL(`/${currentLocale}/rss.xml`, siteURL);
+const localeSubpath = stripLocaleFromPath(Astro.url.pathname, currentLocale);
+const alternatePaths = SUPPORTED_LOCALES.map((locale) => ({
+	locale,
+	href: new URL(localePath(locale, localeSubpath), siteURL).toString(),
+}));
 
 const websiteSchema = {
 	'@context': 'https://schema.org',
@@ -94,7 +103,7 @@ const jsonLdSchemas = [websiteSchema, personSchema, articleSchema, ...extraSchem
 	rel="alternate"
 	type="application/rss+xml"
 	title={SITE_TITLE}
-	href={new URL('rss.xml', siteURL)}
+	href={rssURL}
 />
 <meta name="generator" content={Astro.generator} />
 <meta name="robots" content={robotsContent} />
@@ -106,6 +115,12 @@ const jsonLdSchemas = [websiteSchema, personSchema, articleSchema, ...extraSchem
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{
+	alternatePaths.map((alternate) => (
+		<link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
+	))
+}
+<link rel="alternate" hreflang="x-default" href={new URL('/', siteURL)} />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>

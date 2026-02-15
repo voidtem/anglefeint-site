@@ -1,0 +1,185 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { getCollection } from 'astro:content';
+import {
+	DEFAULT_LOCALE,
+	SUPPORTED_LOCALES,
+	type Locale,
+	blogIdToSlugAnyLocale,
+	isLocale,
+	localePath,
+} from '../../i18n/config';
+import { getMessages } from '../../i18n/messages';
+import { postsForLocale } from '../../i18n/posts';
+
+export const getStaticPaths = (async () =>
+	SUPPORTED_LOCALES.map((lang) => ({
+		params: { lang },
+	}))) satisfies GetStaticPaths;
+
+const langParam = Astro.params.lang ?? DEFAULT_LOCALE;
+const locale: Locale = isLocale(langParam) ? langParam : DEFAULT_LOCALE;
+const messages = getMessages(locale);
+
+const pageTitle = messages.about.title;
+const pageDescription = messages.about.description;
+const allPosts = await getCollection('blog');
+const blogPosts = postsForLocale(allPosts, locale)
+	.map((p) => ({ slug: blogIdToSlugAnyLocale(p.id), title: p.data.title ?? p.id }));
+
+const scriptsFoldersHtml = blogPosts
+	.map(
+		(p) =>
+			`<a href="${localePath(locale, `/blog/${p.slug}`)}" class="term-script-folder"><svg class="term-script-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h8l2 2h10v12H2V4z"/></svg><span class="term-script-folder-label">${String(p.title).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')}</span></a>`
+	)
+	.join('');
+---
+
+<html lang={locale}>
+	<head>
+		<BaseHead title={pageTitle} description={pageDescription} />
+		<link rel="stylesheet" href="/styles/about-page.css" />
+	</head>
+
+	<body class="term-page about-page">
+		<div class="term-bg" aria-hidden="true">
+			<canvas class="term-bg-canvas"></canvas>
+			<div class="term-scanlines"></div>
+			<div class="term-vignette"></div>
+			<div class="term-flicker"></div>
+			<div class="term-glow"></div>
+		</div>
+		<Header
+			locale={locale}
+			labels={{
+				home: messages.nav.home,
+				blog: messages.nav.blog,
+				about: messages.nav.about,
+				status: messages.nav.status,
+				language: messages.langLabel,
+			}}
+		/>
+		<div class="term-progress" aria-hidden="true"></div>
+		<button type="button" class="term-back-to-top" aria-label="Back to top" title="Back to top">↑</button>
+		<div class="term-toast" aria-live="polite" aria-atomic="true"></div>
+		<div class="term-mouse-glow" aria-hidden="true"></div>
+		<nav class="term-sidebar" aria-label="Quick access">
+			<button type="button" class="term-folder" data-modal="dl-data" aria-label="DL Data">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>DL Data</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="ai" aria-label="AI">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>AI</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="decryptor" aria-label="Decryptor">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>Decryptor</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="help" aria-label="Help">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>Help</span>
+			</button>
+			<button type="button" class="term-folder" data-modal="all-scripts" aria-label="All Scripts">
+				<svg class="term-folder-icon" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M2 4h8l2 2h10v12H2V4z" />
+				</svg>
+				<span>All Scripts</span>
+			</button>
+		</nav>
+		<template id="term-scripts-folders-tpl">
+			<div class="term-modal-scripts">
+				<div class="term-modal-scripts-path">/root/bash/scripts</div>
+				<div class="term-modal-scripts-grid" set:html={scriptsFoldersHtml}></div>
+			</div>
+		</template>
+		<div class="term-modal-overlay" id="term-modal" aria-hidden="true">
+			<div class="term-modal" role="dialog" aria-modal="true" aria-labelledby="term-modal-title">
+				<div class="term-modal-header">
+					<div class="term-modal-dots" aria-hidden="true">
+						<span></span><span></span><span></span>
+					</div>
+					<span class="term-modal-title" id="term-modal-title">Output</span>
+					<button type="button" class="term-modal-close" aria-label="Close">&times;</button>
+				</div>
+				<div class="term-modal-body" id="term-modal-body"></div>
+			</div>
+		</div>
+		<main class="term-content">
+			<div class="term-load-scan" aria-hidden="true"></div>
+			<article class="about-shell">
+				<div class="prose">
+					<div class="title about-title">
+						<div class="term-meta">$ profile booted | mode: builder</div>
+						<h1>{messages.about.title}</h1>
+						<hr />
+						<div class="term-title-bar" aria-hidden="true"></div>
+					</div>
+
+					<div class="term-response">
+						<div class="term-response-header">
+							<div class="term-window-dots" aria-hidden="true">
+								<span></span><span></span><span></span>
+							</div>
+							<span class="term-response-label">Output</span>
+						</div>
+						<div class="term-body">
+							<h2 class="about-section-title">01 / {messages.about.who}</h2>
+							<p>
+								I am a product-minded engineer who treats software as craft: clear intent,
+								fast iteration, and accountable execution.
+							</p>
+
+							<h2 class="about-section-title">02 / {messages.about.what}</h2>
+							<p>
+								I build web systems with Astro, TypeScript, and modern CSS, focused on
+								content platforms, interface quality, and AI-era user experiences that remain
+								performant and understandable.
+							</p>
+
+							<h2 class="about-section-title">03 / {messages.about.ethos}</h2>
+							<div class="about-manifest">
+								<ul>
+									<li>Curiosity before certainty: test assumptions early.</li>
+									<li>Craft before noise: ship clean interfaces and readable systems.</li>
+									<li>Open collaboration: document decisions so teams can move together.</li>
+									<li>Autonomy with accountability: own outcomes, not just output.</li>
+								</ul>
+							</div>
+
+							<h2 class="about-section-title">04 / {messages.about.now}</h2>
+							<p>
+								Currently building a publish-ready Astro cyberpunk theme with configurable
+								visual modes, stronger accessibility defaults, and reusable page variants.
+							</p>
+
+							<h2 class="about-section-title">05 / {messages.about.contact}</h2>
+							<p>
+								Open to collaboration on frontend architecture, theme systems, and product UX.
+								Reach me via <a href="mailto:hello@example.com">email</a> or connect on
+								<a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>.
+							</p>
+
+							<blockquote class="about-signature">&gt; ship small, learn fast</blockquote>
+							<span class="term-cursor" aria-hidden="true"></span>
+						</div>
+					</div>
+					<button type="button" class="term-regenerate" aria-label={messages.about.regenerate}>{messages.about.regenerate}</button>
+				</div>
+			</article>
+		</main>
+		<Footer tagline={messages.footer.tagline} />
+		<script src="/scripts/about-effects.js" defer></script>
+	</body>
+</html>

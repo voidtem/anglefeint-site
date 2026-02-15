@@ -11,10 +11,9 @@ import { getMessages } from '../i18n/messages';
 interface Props {
 	locale: Locale;
 	latestPosts: CollectionEntry<'blog'>[];
-	homeHref?: string;
 }
 
-const { locale, latestPosts, homeHref } = Astro.props;
+const { locale, latestPosts } = Astro.props;
 const messages = getMessages(locale);
 ---
 
@@ -29,7 +28,6 @@ const messages = getMessages(locale);
 		<canvas id="matrix-bg" aria-hidden="true"></canvas>
 		<Header
 			locale={locale}
-			homeHref={homeHref}
 			labels={{
 				home: messages.nav.home,
 				blog: messages.nav.blog,

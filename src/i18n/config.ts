@@ -38,3 +38,9 @@ export function blogIdToSlugAnyLocale(id: string): string {
 	if (parts.length > 1 && isLocale(parts[0])) return parts.slice(1).join('/');
 	return id;
 }
+
+/** URL path for a locale's version of a page. For default locale home, returns / instead of /en/. */
+export function alternatePathForLocale(locale: Locale, subpath: string): string {
+	if (locale === DEFAULT_LOCALE && (subpath === '/' || subpath === '')) return '/';
+	return localePath(locale, subpath);
+}

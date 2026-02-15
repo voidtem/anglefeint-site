@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import HomePage from '../../layouts/HomePage.astro';
+import { SITE_URL } from '../../consts';
 import {
 	DEFAULT_LOCALE,
 	SUPPORTED_LOCALES,
@@ -17,8 +18,25 @@ export const getStaticPaths = (async () =>
 
 const langParam = Astro.params.lang ?? DEFAULT_LOCALE;
 const locale: Locale = isLocale(langParam) ? langParam : DEFAULT_LOCALE;
-const allPosts = await getCollection('blog');
-const latestPosts = postsForLocale(allPosts, locale).slice(0, 3);
+// /en/ redirects to / (root is canonical for English home)
+const isEnRedirect = locale === DEFAULT_LOCALE;
+const latestPosts = isEnRedirect ? [] : postsForLocale(await getCollection('blog'), locale).slice(0, 3);
+const siteURL = Astro.site ?? SITE_URL;
 ---
 
-<HomePage locale={locale} latestPosts={latestPosts} />
+{isEnRedirect ? (
+	<html lang="en">
+		<head>
+			<meta charset="utf-8" />
+			<meta name="robots" content="noindex, follow" />
+			<meta http-equiv="refresh" content="0;url=/" />
+			<link rel="canonical" href={new URL('/', siteURL)} />
+			<title>Redirecting...</title>
+		</head>
+		<body>
+			<p>Redirecting to <a href="/">home</a>…</p>
+		</body>
+	</html>
+) : (
+	<HomePage locale={locale} latestPosts={latestPosts} />
+)}

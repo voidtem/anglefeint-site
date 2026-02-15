@@ -6,6 +6,7 @@ import {
 	LOCALE_LABELS,
 	type Locale,
 	SUPPORTED_LOCALES,
+	alternatePathForLocale,
 	isLocale,
 	stripLocaleFromPath,
 } from '../i18n/config';
@@ -31,13 +32,16 @@ const labels = {
 	status: props.labels?.status ?? 'system: online',
 	language: props.labels?.language ?? 'Language',
 };
-const localized = (path: '/' | '/blog/' | '/about/') => `/${locale}${path}`;
-const homeHref = props.homeHref ?? localized('/');
 const currentSubpath = stripLocaleFromPath(Astro.url.pathname, locale);
+const homeHref = props.homeHref ?? alternatePathForLocale(locale, '/');
 const buildLocaleHref = (targetLocale: Locale) => {
-	if (currentSubpath.startsWith('/blog/')) return `/${targetLocale}/blog/`;
-	if (currentSubpath.startsWith('/about')) return `/${targetLocale}/about/`;
-	return `/${targetLocale}/`;
+	// Language switcher: blog/about go to section index, not specific page
+	const sectionSubpath = currentSubpath.startsWith('/blog/')
+		? '/blog/'
+		: currentSubpath.startsWith('/about')
+			? '/about/'
+			: currentSubpath || '/';
+	return alternatePathForLocale(targetLocale, sectionSubpath);
 };
 const localeOptions = SUPPORTED_LOCALES.map((targetLocale) => ({
 	locale: targetLocale,
@@ -53,8 +57,8 @@ const localeOptions = SUPPORTED_LOCALES.map((targetLocale) => ({
 		</div>
 		<div class="internal-links">
 			<HeaderLink href={homeHref}>{labels.home}</HeaderLink>
-			<HeaderLink href={localized('/blog/')}>{labels.blog}</HeaderLink>
-			<HeaderLink href={localized('/about/')}>{labels.about}</HeaderLink>
+			<HeaderLink href={alternatePathForLocale(locale, '/blog/')}>{labels.blog}</HeaderLink>
+			<HeaderLink href={alternatePathForLocale(locale, '/about/')}>{labels.about}</HeaderLink>
 		</div>
 		<div class="nav-right">
 			<div class="social-links">
@@ -130,12 +134,11 @@ const localeOptions = SUPPORTED_LOCALES.map((targetLocale) => ({
 	}
 	nav {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
 		gap: 0.6rem;
 		min-height: 56px;
-		max-width: 1180px;
-		margin: 0 auto;
+		width: 100%;
 	}
 	.nav-left {
 		justify-self: start;

@@ -256,10 +256,11 @@ body.br-page .br-rain-drop {
     transform: translateY(100vh);
   }
 }
-body.br-page .br-scanlines {
+body.mesh-page .br-scanlines {
 	position: fixed;
 	inset: 0;
   contain: layout paint;
+  z-index: 12;
   background: repeating-linear-gradient(
     0deg,
     transparent,
@@ -268,11 +269,10 @@ body.br-page .br-scanlines {
     rgba(0, 0, 0, 0.55) 4px
   );
   pointer-events: none;
-  z-index: 4;
   opacity: 0.78;
   transition: opacity 0.3s ease;
 }
-body.br-page .br-scanlines::after {
+body.mesh-page .br-scanlines::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -286,8 +286,8 @@ body.br-page .br-scanlines::after {
   pointer-events: none;
   opacity: 0.8;
 }
-body.br-page:has(header:hover) .br-scanlines,
-body.br-page:has(footer:hover) .br-scanlines {
+body.mesh-page:has(header:hover) .br-scanlines,
+body.mesh-page:has(footer:hover) .br-scanlines {
   opacity: 0;
 }
 body.br-page .br-spotlight {
@@ -509,7 +509,7 @@ body.br-page header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 3;
+  z-index: 6;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }
@@ -1297,7 +1297,7 @@ body.mesh-page header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 11;
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }

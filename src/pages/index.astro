@@ -1,5 +1,7 @@
 ---
-import { LOCALE_LABELS, SUPPORTED_LOCALES } from '../i18n/config';
+import { SUPPORTED_LOCALES } from '../i18n/config';
+
+const fallback = 'en';
 ---
 
 <!doctype html>
@@ -7,64 +9,32 @@ import { LOCALE_LABELS, SUPPORTED_LOCALES } from '../i18n/config';
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Angle Feint | Languages</title>
-		<style>
-			body {
-				margin: 0;
-				min-height: 100vh;
-				display: grid;
-				place-items: center;
-				background: #070b12;
-				color: #dfe9f3;
-				font-family: "Atkinson", ui-sans-serif, system-ui, sans-serif;
+		<title>Redirecting...</title>
+		<meta name="robots" content="noindex, nofollow" />
+		<script define:vars={{ supportedLocales: SUPPORTED_LOCALES, fallback }}>
+			const supported = new Set(supportedLocales);
+
+			function pickLocale() {
+				const langs = Array.isArray(navigator.languages) && navigator.languages.length > 0
+					? navigator.languages
+					: [navigator.language || fallback];
+
+				for (const raw of langs) {
+					if (!raw) continue;
+					const normalized = String(raw).toLowerCase();
+					const primary = normalized.split('-')[0];
+					if (supported.has(primary)) return primary;
+				}
+				return fallback;
 			}
-			.wrap {
-				width: min(680px, calc(100% - 2rem));
-				padding: 1.5rem;
-				border: 1px solid rgba(120, 170, 220, 0.3);
-				border-radius: 12px;
-				background: rgba(6, 14, 24, 0.8);
-				box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-			}
-			h1 {
-				margin: 0 0 0.6rem 0;
-				font-size: 1.6rem;
-			}
-			p {
-				margin: 0 0 1rem 0;
-				opacity: 0.86;
-			}
-			.list {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-				gap: 0.5rem;
-			}
-			a {
-				display: inline-block;
-				text-align: center;
-				padding: 0.55rem 0.7rem;
-				border: 1px solid rgba(132, 214, 255, 0.3);
-				border-radius: 999px;
-				text-decoration: none;
-				color: #eaf4ff;
-				background: rgba(84, 150, 220, 0.12);
-			}
-			a:hover {
-				background: rgba(112, 186, 242, 0.22);
-			}
-		</style>
+
+			const locale = pickLocale();
+			window.location.replace(`/${locale}/`);
+		</script>
 	</head>
 	<body>
-		<main class="wrap">
-			<h1>Angle Feint</h1>
-			<p>Select your language.</p>
-			<div class="list">
-				{
-					SUPPORTED_LOCALES.map((locale) => (
-						<a href={`/${locale}/`}>{LOCALE_LABELS[locale]}</a>
-					))
-				}
-			</div>
-		</main>
+		<noscript>
+			<p>JavaScript is required for automatic language routing. Continue to <a href="/en/">English</a>.</p>
+		</noscript>
 	</body>
 </html>

@@ -18,6 +18,17 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 - Locale switching is user-driven via the header dropdown.
 - Unsupported browser languages do not affect routing because no auto-detection redirect is used.
 
+## Configuration
+
+| File | Purpose |
+|------|---------|
+| `src/config/site.ts` | Site identity: `SITE_TITLE`, `SITE_URL`, `SITE_AUTHOR`, `SITE_DESCRIPTION`. Override via env: `PUBLIC_SITE_URL`, `PUBLIC_SITE_TITLE`, etc. |
+| `src/config/social.ts` | Footer social links. Edit `SOCIAL_LINKS` array; use `icon: 'github' | 'twitter' | 'mastodon'` for built-in icons. |
+| `src/config/theme.ts` | `BLOG_PAGE_SIZE`, `HOME_LATEST_COUNT`, `ENABLE_ABOUT_PAGE`. |
+| `.env.example` | Env var template. Copy to `.env` and set `PUBLIC_SITE_URL` etc. for deployment. |
+
+`src/consts.ts` re-exports from config for backwards compatibility.
+
 ## Stack
 
 - Framework: `astro@5.17.1`
@@ -72,9 +83,12 @@ The About page uses a dark terminal aesthetic with:
 - `src/components/Header.astro` — Locale-aware nav, language dropdown, optional `homeHref` override
 - `src/layouts/HomePage.astro` — Shared home layout used by `/` and `/:lang/`
 - `src/layouts/BlogPost.astro` — Post detail layout, mesh network, hero canvas, Red Queen monitor (`.rq-tv`)
+- `src/config/site.ts` — Site identity (env-overridable)
+- `src/config/social.ts` — Footer social links
+- `src/config/theme.ts` — Theme options (page size, etc.)
 - `src/i18n/config.ts` — Locale list, path helpers
 - `src/i18n/messages.ts` — UI strings per locale
-- `src/i18n/posts.ts` — Locale post selection + page size constants
+- `src/i18n/posts.ts` — Locale post selection + page size from `THEME`
 - `src/styles/global.css` — Global theme, fixed header for `page-home`/`br-page`/`mesh-page`, `br-page` and `mesh-page` visual systems
 - `src/components/Footer.astro` — Footer text/social links
 

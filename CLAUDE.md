@@ -23,17 +23,21 @@ Blog posts live in `src/content/blog/` as `.md`/`.mdx` files. Schema is defined 
 ### Page Themes
 
 - **Home (`/`)** — Matrix falling characters (canvas), body class `page-home`
-- **Blog list (`/blog/`)** — Blade Runner cyberpunk (rain, scanlines, dust), body class `br-page`
-- **Article (`/blog/[slug]`)** — AI terminal mesh (58 nodes), read progress, Red Queen monitor, body class `mesh-page`
-- **About (`/about`)** — Anonymous-style terminal (black/green), body class `term-page`. Right sidebar with folder buttons opening modals: DL Data, AI, Decryptor, Help (virtual keyboard), All Scripts (folder grid of blog posts).
+- **Blog list (`/:lang/blog/`)** — Blade Runner cyberpunk (rain, dust), body class `br-page`
+- **Article (`/:lang/blog/[slug]`)** — AI terminal mesh (58 nodes), read progress, Red Queen monitor, br-scanlines, body class `mesh-page`
+- **About (`/:lang/about`)** — Anonymous-style terminal (black/green), body class `term-page`. Right sidebar with folder buttons opening modals: DL Data, AI, Decryptor, Help (virtual keyboard), All Scripts (folder grid of blog posts).
 
 ### Key Files
 
-- `src/pages/about.astro` — About page (~1400 lines): terminal canvas, sidebar, modals (progress, decryptor, virtual keyboard, folder grid), `getCollection('blog')` for All Scripts.
-- `src/layouts/BlogPost.astro` — Post detail layout (~940 lines): mesh, progress bar, related posts, Red Queen monitor.
-- `src/pages/blog/[...page].astro` — Paginated blog list (9 per page).
-- `src/pages/index.astro` — Home with Matrix canvas.
-- `src/consts.ts`, `src/components/BaseHead.astro` — Site constants, meta, fonts.
+- `src/config/site.ts` — Site identity (SITE_TITLE, SITE_URL, etc.); env-overridable via PUBLIC_* vars
+- `src/config/social.ts` — Footer social links (SOCIAL_LINKS array)
+- `src/config/theme.ts` — BLOG_PAGE_SIZE, HOME_LATEST_COUNT, ENABLE_ABOUT_PAGE
+- `src/consts.ts` — Re-exports from config (backwards compat)
+- `src/pages/[lang]/about.astro` — About page: terminal canvas, sidebar, modals, `getCollection('blog')` for All Scripts
+- `src/layouts/BlogPost.astro` — Post detail layout: mesh, progress bar, related posts, Red Queen monitor
+- `src/pages/[lang]/blog/[...page].astro` — Paginated blog list (THEME.BLOG_PAGE_SIZE)
+- `src/pages/index.astro` — Root home; `src/pages/[lang]/index.astro` — Localized home (en redirects to /)
+- `src/components/BaseHead.astro` — Meta, hreflang, OG, JSON-LD
 
 ### Patterns
 

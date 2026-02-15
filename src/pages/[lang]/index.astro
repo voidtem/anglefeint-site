@@ -2,7 +2,8 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import HomePage from '../../layouts/HomePage.astro';
-import { SITE_URL } from '../../consts';
+import { SITE_URL } from '../../config/site';
+import { THEME } from '../../config/theme';
 import {
 	DEFAULT_LOCALE,
 	SUPPORTED_LOCALES,
@@ -20,7 +21,7 @@ const langParam = Astro.params.lang ?? DEFAULT_LOCALE;
 const locale: Locale = isLocale(langParam) ? langParam : DEFAULT_LOCALE;
 // /en/ redirects to / (root is canonical for English home)
 const isEnRedirect = locale === DEFAULT_LOCALE;
-const latestPosts = isEnRedirect ? [] : postsForLocale(await getCollection('blog'), locale).slice(0, 3);
+const latestPosts = isEnRedirect ? [] : postsForLocale(await getCollection('blog'), locale).slice(0, THEME.HOME_LATEST_COUNT);
 const siteURL = Astro.site ?? SITE_URL;
 ---
 

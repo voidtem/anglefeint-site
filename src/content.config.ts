@@ -22,6 +22,10 @@ const blog = defineCollection({
 				aiConfidence: z.number().min(0).max(1).optional(),
 				wordCount: z.number().int().nonnegative().optional(),
 				tokenCount: z.number().int().nonnegative().optional(),
+				author: z.string().optional(),
+				tags: z.array(z.string()).optional(),
+				canonicalTopic: z.string().optional(),
+				sourceLinks: z.array(z.string().url()).optional(),
 			}),
 });
 

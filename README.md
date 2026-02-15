@@ -57,7 +57,7 @@ The About page uses a dark terminal aesthetic with:
 
 - `src/pages/about.astro` — About page, sidebar, modals, terminal canvas, folder logic, virtual keyboard (~1400 lines)
 - `src/layouts/BlogPost.astro` — Post detail layout, mesh network, hero canvas, Red Queen monitor (`.rq-tv`)
-- `src/styles/global.css` — Global theme, `br-page`, `mesh-page` visual systems
+- `src/styles/global.css` — Global theme, fixed header for `page-home`/`br-page`/`mesh-page`, `br-page` and `mesh-page` visual systems
 - `src/components/Header.astro` — Nav, social links, `system: online` chip
 - `src/components/Footer.astro` — Footer text/social links
 
@@ -67,6 +67,8 @@ The About page uses a dark terminal aesthetic with:
 
 **Type:** Landing page  
 **Style:** Matrix green-on-black terminal aesthetic, monospace accents, glass-panel main content.
+
+**Layout:** Header is fixed (`body.page-home header` in `global.css`); main has `padding-top: calc(3em + 56px)` for offset.
 
 **CSS effects:**
 - `::before` — CRT-style scanlines (`repeating-linear-gradient`)
@@ -85,6 +87,8 @@ The About page uses a dark terminal aesthetic with:
 **Type:** Paginated list (9 posts per page)  
 **Style:** Blade Runner / cyberpunk — blue/magenta/amber gradients, dirty-white rain, fog, dust.
 
+**Layout:** Header is fixed (`body.br-page header` in `global.css`); main has `padding-top: calc(3em + 56px)` for offset.
+
 **CSS effects:**
 - `.br-rain-drop` — 4 variants: normal, thin, fog (blur), skew; vertical fall animation; randomized left/delay/duration
 - `.br-scanlines` — double-layer horizontal scanlines; fade on header/footer hover
@@ -102,6 +106,8 @@ The About page uses a dark terminal aesthetic with:
 
 **Type:** Article / detail page  
 **Style:** AI terminal mesh — dark blue/pink gradients, SVG node network, GPU/circuit styling.
+
+**Layout:** Header is fixed (`body.mesh-page header` in `global.css`); `.mesh-content` has `padding-top: calc(3em + 56px)` for offset.
 
 **CSS effects:**
 - `.mesh-bg` — layered: `mesh-glow` (gradient shift), haze, vignette, stripe, noise (SVG filter), hex grid, thought particles
@@ -125,6 +131,8 @@ The About page uses a dark terminal aesthetic with:
 
 ### About (`body.term-page`)
 
+**Layout:** Header is fixed (`body.term-page header` in `about.astro`); `.term-content` has `padding-top: calc(3em + 56px)` for offset.
+
 - Black background, CRT scanlines, vignette
 - **Palette:** Green for sidebar/link hover (`--chrome-link-hover`); grey (#9CA3AF) for header nav underline (`--chrome-active`); sliding lines use #0B0F14 + #FF0033 + #9CA3AF (dark, red, gray)
 - **Sliding line effects:** `term-title-bar` (below title) — 3px bar with sweep animation; `term-load-scan` (top of content) — 2px line from top→bottom on load. Both use red/gray gradient.
@@ -144,4 +152,5 @@ npm run preview
 **Visuals:** Route file → `BlogPost.astro` → `global.css` → `content.config.ts`  
 **Content:** Frontmatter schema, RSS (`rss.xml.js`), pagination (`[...page].astro`)  
 **About modals:** `modalContent` object in `about.astro` script; folder grid from `getCollection('blog')` + template `#term-scripts-folders-tpl`  
-**About sliding lines:** `.term-title-bar::after` (sweep), `.term-load-scan` (load scan); palette vars in `body.term-page` CSS
+**About sliding lines:** `.term-title-bar::after` (sweep), `.term-load-scan` (load scan); palette vars in `body.term-page` CSS  
+**Fixed header:** All four pages use `position: fixed` on header; content offset via `padding-top: calc(3em + 56px)` (mobile: `calc(1em + 56px)`). Rules in `global.css` (page-home, br-page, mesh-page) and `about.astro` (term-page).

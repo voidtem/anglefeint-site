@@ -12,6 +12,7 @@ import {
 
 interface Props {
 	locale?: Locale;
+	homeHref?: string;
 	labels?: {
 		home: string;
 		blog: string;
@@ -31,6 +32,7 @@ const labels = {
 	language: props.labels?.language ?? 'Language',
 };
 const localized = (path: '/' | '/blog/' | '/about/') => `/${locale}${path}`;
+const homeHref = props.homeHref ?? localized('/');
 const currentSubpath = stripLocaleFromPath(Astro.url.pathname, locale);
 const buildLocaleHref = (targetLocale: Locale) => {
 	if (currentSubpath.startsWith('/blog/')) return `/${targetLocale}/blog/`;
@@ -47,10 +49,10 @@ const localeOptions = SUPPORTED_LOCALES.map((targetLocale) => ({
 <header>
 	<nav>
 		<div class="nav-left">
-			<h2><a href={localized('/')}>{SITE_TITLE}</a></h2>
+			<h2><a href={homeHref}>{SITE_TITLE}</a></h2>
 		</div>
 		<div class="internal-links">
-			<HeaderLink href={localized('/')}>{labels.home}</HeaderLink>
+			<HeaderLink href={homeHref}>{labels.home}</HeaderLink>
 			<HeaderLink href={localized('/blog/')}>{labels.blog}</HeaderLink>
 			<HeaderLink href={localized('/about/')}>{labels.about}</HeaderLink>
 		</div>

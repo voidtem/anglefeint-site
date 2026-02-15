@@ -33,10 +33,6 @@ export function stripLocaleFromPath(pathname: string, locale: Locale): string {
 	return withoutLocale || '/';
 }
 
-export function blogIdToSlug(id: string, locale: Locale): string {
-	return id.startsWith(`${locale}/`) ? id.slice(locale.length + 1) : id;
-}
-
 export function blogIdToSlugAnyLocale(id: string): string {
 	const parts = id.split('/');
 	if (parts.length > 1 && isLocale(parts[0])) return parts.slice(1).join('/');

@@ -1,20 +1,13 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
 import { getCollection } from 'astro:content';
-import { SITE_TITLE } from '../../consts';
+import HomePage from '../../layouts/HomePage.astro';
 import {
 	DEFAULT_LOCALE,
 	SUPPORTED_LOCALES,
 	type Locale,
-	blogIdToSlugAnyLocale,
 	isLocale,
-	localePath,
 } from '../../i18n/config';
-import { getMessages } from '../../i18n/messages';
 import { postsForLocale } from '../../i18n/posts';
 
 export const getStaticPaths = (async () =>
@@ -24,62 +17,8 @@ export const getStaticPaths = (async () =>
 
 const langParam = Astro.params.lang ?? DEFAULT_LOCALE;
 const locale: Locale = isLocale(langParam) ? langParam : DEFAULT_LOCALE;
-const messages = getMessages(locale);
-
 const allPosts = await getCollection('blog');
 const latestPosts = postsForLocale(allPosts, locale).slice(0, 3);
 ---
 
-<!doctype html>
-<html lang={locale}>
-	<head>
-		<BaseHead title={SITE_TITLE} description={messages.siteDescription} />
-		<link rel="stylesheet" href="/styles/home-page.css" />
-		<link rel="preload" href="/fonts/ff2a407fe06752facf8828a86955e988.woff2" as="font" type="font/woff2" crossorigin />
-	</head>
-	<body class="page-home">
-		<canvas id="matrix-bg" aria-hidden="true"></canvas>
-		<Header
-			locale={locale}
-			labels={{
-				home: messages.nav.home,
-				blog: messages.nav.blog,
-				about: messages.nav.about,
-				status: messages.nav.status,
-				language: messages.langLabel,
-			}}
-		/>
-		<main>
-			<h1>Angle Feint</h1>
-			<p class="home-hero-copy">
-				{messages.home.hero}
-			</p>
-
-			<section class="home-latest">
-				<h2 class="home-section-title">{messages.home.latest}</h2>
-				<ul class="home-post-list">
-					{
-						latestPosts.length > 0 ? (
-							latestPosts.map((post) => (
-								<li>
-									<a class="home-post-title" href={localePath(locale, `/blog/${blogIdToSlugAnyLocale(post.id)}`)}>
-										{post.data.title}
-									</a>
-									<div class="home-post-meta">
-										<FormattedDate date={post.data.pubDate} />
-										{post.data.description && <> · {post.data.description}</>}
-									</div>
-								</li>
-							))
-						) : (
-							<li>{messages.home.noPosts}</li>
-						)
-					}
-				</ul>
-				<p><a href={localePath(locale, '/blog/')}>{messages.home.viewAll}</a></p>
-			</section>
-		</main>
-		<Footer tagline={messages.footer.tagline} />
-		<script src="/scripts/home-matrix.js" defer></script>
-	</body>
-</html>
+<HomePage locale={locale} latestPosts={latestPosts} />

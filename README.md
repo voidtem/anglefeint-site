@@ -2,12 +2,21 @@
 
 Astro 5 static site with four distinct visual systems:
 
-- `/` Home: Matrix-style canvas rain
-- `/blog` Blog list: Blade Runner / cyberpunk atmosphere
-- `/blog/[slug]` Post detail: AI terminal mesh UI
-- `/about` About page: Anonymous-style terminal / hacker theme with interactive sidebar and modals
+- `/` Home (default English): Matrix-style canvas rain
+- `/:lang/` localized home (`en`, `ja`, `ko`, `es`, `zh`)
+- `/:lang/blog` Blog list: Blade Runner / cyberpunk atmosphere
+- `/:lang/blog/[slug]` Post detail: AI terminal mesh UI
+- `/:lang/about` About page: Anonymous-style terminal / hacker theme with interactive sidebar and modals
 
 This README is written for **humans + AI coding assistants** to onboard quickly.
+
+## I18n Routing Policy
+
+- `/` always serves English content (no browser-language auto redirect).
+- `/en/` also serves English content.
+- `/:lang/` (where `lang` is `en`, `ja`, `ko`, `es`, `zh`) serves that locale only when explicitly visited.
+- Locale switching is user-driven via the header dropdown.
+- Unsupported browser languages do not affect routing because no auto-detection redirect is used.
 
 ## Stack
 
@@ -20,11 +29,12 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 
 ## Routes
 
-- `src/pages/index.astro` — Home page, Matrix canvas rain + radial highlight
-- `src/pages/blog/[...page].astro` — Paginated blog list (9 per page), Blade Runner effects
-- `src/pages/blog/[...slug].astro` — Post detail, mesh UI, related posts, computed metrics
-- `src/pages/about.astro` — Anonymous-style terminal page with sidebar, modals, virtual keyboard
-- `src/pages/rss.xml.js` — RSS feed from `blog` collection
+- `src/pages/index.astro` — English home at `/`
+- `src/pages/[lang]/index.astro` — Localized home routes
+- `src/pages/[lang]/blog/[...page].astro` — Localized paginated blog list (9 per page), Blade Runner effects
+- `src/pages/[lang]/blog/[...slug].astro` — Localized post detail, mesh UI, related posts, computed metrics
+- `src/pages/[lang]/about.astro` — Localized Anonymous-style terminal page with sidebar, modals, virtual keyboard
+- `src/pages/[lang]/rss.xml.js` — Per-locale RSS feed from `blog` collection
 
 ## Content Model
 
@@ -33,12 +43,12 @@ Defined in `src/content.config.ts`:
 **Required:** `title`, `description`, `pubDate`  
 **Optional:** `updatedDate`, `heroImage`, `context`, `readMinutes`, `aiModel`, `aiMode`, `aiState`, `aiLatencyMs`, `aiConfidence`, `wordCount`, `tokenCount`
 
-Blog content: `src/content/blog/*.{md,mdx}`.
+Blog content: `src/content/blog/<locale>/*.{md,mdx}` (for example `src/content/blog/en/*.md`).
 
-Current repo snapshot includes **32 posts** (count from `find src/content/blog -maxdepth 1 -type f | wc -l`).
+Current repo snapshot includes **32 posts** (count from `find src/content/blog -type f | wc -l`).
 Prefer running the command again instead of relying on this number.
 
-## About Page (`/about`) — Anonymous-Style Terminal
+## About Page (`/:lang/about`) — Anonymous-Style Terminal
 
 The About page uses a dark terminal aesthetic with:
 
@@ -55,10 +65,17 @@ The About page uses a dark terminal aesthetic with:
 
 ## Key Files (Edit Map)
 
-- `src/pages/about.astro` — About page, sidebar, modals, terminal canvas, folder logic, virtual keyboard (~1400 lines)
+- `src/pages/index.astro` — Root English home (`/`)
+- `src/pages/[lang]/index.astro` — Locale home entrypoint (`/:lang/`)
+- `src/pages/[lang]/about.astro` — About page, sidebar, modals, terminal canvas, folder logic, virtual keyboard
+- `src/components/BaseHead.astro` — Canonical/OG metadata + `hreflang` + locale RSS alternate links
+- `src/components/Header.astro` — Locale-aware nav, language dropdown, optional `homeHref` override
+- `src/layouts/HomePage.astro` — Shared home layout used by `/` and `/:lang/`
 - `src/layouts/BlogPost.astro` — Post detail layout, mesh network, hero canvas, Red Queen monitor (`.rq-tv`)
+- `src/i18n/config.ts` — Locale list, path helpers
+- `src/i18n/messages.ts` — UI strings per locale
+- `src/i18n/posts.ts` — Locale post selection + page size constants
 - `src/styles/global.css` — Global theme, fixed header for `page-home`/`br-page`/`mesh-page`, `br-page` and `mesh-page` visual systems
-- `src/components/Header.astro` — Nav, social links, `system: online` chip
 - `src/components/Footer.astro` — Footer text/social links
 
 ## Visual Systems
@@ -82,7 +99,7 @@ The About page uses a dark terminal aesthetic with:
 - `prefers-reduced-motion` → canvas hidden
 - `visibilitychange` → pause animation when tab hidden
 
-### Blog list (`body.br-page`) — `src/pages/blog/[...page].astro`
+### Blog list (`body.br-page`) — `src/pages/[lang]/blog/[...page].astro`
 
 **Type:** Paginated list (9 posts per page)  
 **Style:** Blade Runner / cyberpunk — blue/magenta/amber gradients, dirty-white rain, fog, dust.
@@ -102,7 +119,7 @@ The About page uses a dark terminal aesthetic with:
 **JS effects:**
 - None — all effects are CSS-only (keyframes, transitions)
 
-### Post detail (`body.mesh-page`) — `src/layouts/BlogPost.astro` + `src/pages/blog/[...slug].astro`
+### Post detail (`body.mesh-page`) — `src/layouts/BlogPost.astro` + `src/pages/[lang]/blog/[...slug].astro`
 
 **Type:** Article / detail page  
 **Style:** AI terminal mesh — dark blue/pink gradients, SVG node network, GPU/circuit styling.
@@ -150,7 +167,7 @@ npm run preview
 ## Fast Handoff (AI Assistants)
 
 **Visuals:** Route file → `BlogPost.astro` → `global.css` → `content.config.ts`  
-**Content:** Frontmatter schema, RSS (`rss.xml.js`), pagination (`[...page].astro`)  
+**Content:** Frontmatter schema, locale RSS (`src/pages/[lang]/rss.xml.js`), pagination (`src/pages/[lang]/blog/[...page].astro`)  
 **About modals:** `modalContent` object in `about.astro` script; folder grid from `getCollection('blog')` + template `#term-scripts-folders-tpl`  
 **About sliding lines:** `.term-title-bar::after` (sweep), `.term-load-scan` (load scan); palette vars in `body.term-page` CSS  
 **Fixed header:** All four pages use `position: fixed` on header; content offset via `padding-top: calc(3em + 56px)` (mobile: `calc(1em + 56px)`). Rules in `global.css` (page-home, br-page, mesh-page) and `about.astro` (term-page).

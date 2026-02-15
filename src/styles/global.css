@@ -515,7 +515,7 @@ body.br-page header {
 }
 body.br-page main {
 	position: relative;
-  z-index: 2;
+  z-index: 5;
 	width: 960px;
 	padding-top: calc(3em + 56px);
 }

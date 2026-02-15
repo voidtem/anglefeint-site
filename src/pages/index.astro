@@ -1,40 +1,12 @@
 ---
-import { SUPPORTED_LOCALES } from '../i18n/config';
+import { getCollection } from 'astro:content';
+import HomePage from '../layouts/HomePage.astro';
+import { DEFAULT_LOCALE } from '../i18n/config';
+import { postsForLocale } from '../i18n/posts';
 
-const fallback = 'en';
+const locale = DEFAULT_LOCALE;
+const allPosts = await getCollection('blog');
+const latestPosts = postsForLocale(allPosts, locale).slice(0, 3);
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Redirecting...</title>
-		<meta name="robots" content="noindex, nofollow" />
-		<script define:vars={{ supportedLocales: SUPPORTED_LOCALES, fallback }}>
-			const supported = new Set(supportedLocales);
-
-			function pickLocale() {
-				const langs = Array.isArray(navigator.languages) && navigator.languages.length > 0
-					? navigator.languages
-					: [navigator.language || fallback];
-
-				for (const raw of langs) {
-					if (!raw) continue;
-					const normalized = String(raw).toLowerCase();
-					const primary = normalized.split('-')[0];
-					if (supported.has(primary)) return primary;
-				}
-				return fallback;
-			}
-
-			const locale = pickLocale();
-			window.location.replace(`/${locale}/`);
-		</script>
-	</head>
-	<body>
-		<noscript>
-			<p>JavaScript is required for automatic language routing. Continue to <a href="/en/">English</a>.</p>
-		</noscript>
-	</body>
-</html>
+<HomePage locale={locale} latestPosts={latestPosts} homeHref="/" />

@@ -4,3 +4,4 @@
 export * from './site';
 export * from './social';
 export * from './theme';
+export * from './about';

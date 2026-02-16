@@ -10,6 +10,37 @@ Astro 5 theme-ready static site with four distinct visual systems:
 
 This README is written for **humans + AI coding assistants** to onboard quickly.
 
+## Recent Updates
+
+- Social links are now driven by `src/config/social.ts` in both Header and Footer.
+- About route/nav now respect `THEME.ENABLE_ABOUT_PAGE`.
+- About profile copy, modal content, and terminal effect text moved to `src/config/about.ts`.
+- About runtime script reads injected JSON config from `src/pages/[lang]/about.astro`.
+
+## Style System
+
+This theme is intentionally multi-atmosphere. Each route has a distinct visual language:
+
+1. Home (`/`) — Matrix
+2. Blog List (`/:lang/blog`) — Cyberpunk / Blade Runner
+3. Blog Detail (`/:lang/blog/[slug]`) — AI Interface
+4. About (`/:lang/about`) — Hacker / Anonymous
+
+The visual shift is designed to match user intent:
+
+1. Landing = signal discovery
+2. Archive = neon browsing
+3. Article = machine-reading focus
+4. About = terminal identity/profile
+
+Primary customization entry points:
+
+1. `src/config/theme.ts` — behavior toggles, pagination, optional About routes
+2. `src/config/about.ts` — About copy, modal labels/content, terminal effect text
+3. `src/config/social.ts` — header/footer social links
+4. `public/styles/home-page.css` + `public/styles/blog-post.css` + `public/styles/about-page.css` — page atmosphere styling
+5. `src/styles/global.css` — shared tokens/layout/chrome
+
 ## I18n Routing Policy
 
 - `/` is the canonical English home (no browser-language auto redirect).
@@ -25,6 +56,7 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 | `src/config/site.ts` | Site identity: `SITE_TITLE`, `SITE_URL`, `SITE_AUTHOR`, `SITE_DESCRIPTION`. Override via env: `PUBLIC_SITE_URL`, `PUBLIC_SITE_TITLE`, etc. |
 | `src/config/social.ts` | Header + footer social links. Edit `SOCIAL_LINKS` array; use `icon: 'github' | 'twitter' | 'mastodon'` for built-in icons. |
 | `src/config/theme.ts` | `BLOG_PAGE_SIZE`, `HOME_LATEST_COUNT`, `ENABLE_ABOUT_PAGE` (when false, About nav and routes are disabled). |
+| `src/config/about.ts` | About page profile content, sidebar labels, modal copy, and terminal effect text. |
 | `.env.example` | Env var template. Copy to `.env` and set `PUBLIC_SITE_URL` etc. for deployment. |
 
 `src/consts.ts` re-exports from config for backwards compatibility.
@@ -35,9 +67,10 @@ Before publishing your own fork/deployment:
 
 1. Update `.env` from `.env.example` with your site URL/title/author/description.
 2. Replace `SOCIAL_LINKS` in `src/config/social.ts` (used by both header and footer).
-3. Set `ENABLE_ABOUT_PAGE` in `src/config/theme.ts` if you want to ship without About routes.
-4. Replace starter post files in `src/content/blog/<locale>/`.
-5. Verify canonical domain in production (`PUBLIC_SITE_URL`) before `npm run build`.
+3. Edit `src/config/about.ts` to replace profile copy, contact links, and modal text.
+4. Set `ENABLE_ABOUT_PAGE` in `src/config/theme.ts` if you want to ship without About routes.
+5. Replace starter post files in `src/content/blog/<locale>/`.
+6. Verify canonical domain in production (`PUBLIC_SITE_URL`) before `npm run build`.
 
 ## SEO
 
@@ -104,6 +137,7 @@ The About page uses a dark terminal aesthetic with:
 - `src/config/site.ts` — Site identity (env-overridable)
 - `src/config/social.ts` — Header/footer social links
 - `src/config/theme.ts` — Theme options (page size, etc.)
+- `src/config/about.ts` — About page content + modal/effect config
 - `src/i18n/config.ts` — Locale list, path helpers
 - `src/i18n/messages.ts` — UI strings per locale
 - `src/i18n/posts.ts` — Locale post selection + page size from `THEME`

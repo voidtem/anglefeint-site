@@ -1,12 +1,21 @@
 			(function() {
 				function init() {
+				var runtimeConfig = {};
+				var runtimeConfigEl = document.getElementById('term-runtime-config');
+				if (runtimeConfigEl && runtimeConfigEl.textContent) {
+					try {
+						runtimeConfig = JSON.parse(runtimeConfigEl.textContent);
+					} catch (_err) {
+						runtimeConfig = {};
+					}
+				}
 				// ── Terminal background: dir + 可输入 (点击背景聚焦，回车仅换行) ──
 				var bgCanvas = document.querySelector('.term-bg-canvas');
 				if (bgCanvas) {
 					var bgCtx = bgCanvas.getContext('2d');
 					var fontSize = 13;
 					var lineHeight = 18;
-					var dirLines = [
+					var fallbackDirLines = [
 						'~ $ ls -la',
 						'total 42',
 						'drwxr-xr-x  12 void  staff   384  Jan 12  about  blog  projects',
@@ -16,6 +25,9 @@
 						'~ $ cat .motd',
 						'>> welcome to the void | access granted',
 					];
+					var dirLines = runtimeConfig.effects && Array.isArray(runtimeConfig.effects.backgroundLines) && runtimeConfig.effects.backgroundLines.length > 0
+						? runtimeConfig.effects.backgroundLines
+						: fallbackDirLines;
 					var termFocused = false;
 					var termInput = '';
 					var termHistory = [];
@@ -129,6 +141,14 @@
 				// ── Progress bar + toasts + back-to-top ──
 				var progress = document.querySelector('.term-progress');
 				var toast = document.querySelector('.term-toast');
+				var fallbackToasts = {
+					p30: 'context parsed',
+					p60: 'inference stable',
+					p90: 'output finalized',
+				};
+				var toastMessages = runtimeConfig.effects && runtimeConfig.effects.scrollToasts
+					? runtimeConfig.effects.scrollToasts
+					: fallbackToasts;
 				var stageSeen = { p30: false, p60: false, p90: false };
 				var toastTimer = 0;
 				var hasScrolled = false;
@@ -153,15 +173,15 @@
 						if (!hasScrolled) return;
 						if (!stageSeen.p30 && p >= 0.3) {
 							stageSeen.p30 = true;
-							showToast('context parsed');
+							showToast(toastMessages.p30 || fallbackToasts.p30);
 						}
 						if (!stageSeen.p60 && p >= 0.6) {
 							stageSeen.p60 = true;
-							showToast('inference stable');
+							showToast(toastMessages.p60 || fallbackToasts.p60);
 						}
 						if (!stageSeen.p90 && p >= 0.9) {
 							stageSeen.p90 = true;
-							showToast('output finalized');
+							showToast(toastMessages.p90 || fallbackToasts.p90);
 						}
 					}
 					onScroll();
@@ -178,6 +198,7 @@
 				var modalOverlay = document.getElementById('term-modal');
 				var modalBody = document.getElementById('term-modal-body');
 				var modalTitle = document.querySelector('.term-modal-title');
+				var decryptorKeysLabel = runtimeConfig.decryptorKeysLabel || 'keys tested';
 				var decryptorInterval = null;
 				function randHex() {
 					var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -208,7 +229,7 @@
 						keys += 1 + Math.floor(Math.random() * 3);
 						sec = Math.min(59, Math.floor(keys / 15) + 1);
 						var el = document.getElementById('dec-keys');
-						if (el) el.textContent = '[00:00:' + String(sec).padStart(2, '0') + '] ' + keys + ' keys tested';
+						if (el) el.textContent = '[00:00:' + String(sec).padStart(2, '0') + '] ' + keys + ' ' + decryptorKeysLabel;
 						el = document.getElementById('dec-pass');
 						if (el) el.textContent = randPass();
 						el = document.getElementById('dec-master1');
@@ -227,6 +248,10 @@
 				}
 				var helpCharCount = 0;
 				function buildHelpKeyboard() {
+					var keyboardConfig = runtimeConfig.keyboard || {};
+					var statsLabel = keyboardConfig.statsLabel || 'Stats & Achievements';
+					var typedPrefix = keyboardConfig.typedPrefix || 'You typed:';
+					var typedSuffix = keyboardConfig.typedSuffix || 'characters';
 					var rows = [
 						['`','1','2','3','4','5','6','7','8','9','0','-','=','Backspace'],
 						['Tab','Q','W','E','R','T','Y','U','I','O','P','[',']'],
@@ -265,7 +290,7 @@
 					html += '<span class="term-vkey arr-d" data-code="ArrowDown" data-key="↓">↓</span>';
 					html += '</div>';
 					html += '</div></div></div>';
-					html += '<div class="term-vkeyboard-stats"><span class="term-vkeyboard-stats-label">Stats & Achievements</span><br>You typed: <span id="help-char-count">0</span> characters</div>';
+					html += '<div class="term-vkeyboard-stats"><span class="term-vkeyboard-stats-label">' + statsLabel + '</span><br>' + typedPrefix + ' <span id="help-char-count">0</span> ' + typedSuffix + '</div>';
 					return html;
 				}
 				function highlightKey(code) {
@@ -315,13 +340,14 @@
 					}
 				}
 				var scriptsTpl = document.getElementById('term-scripts-folders-tpl');
-				var modalContent = {
+				var fallbackModalContent = {
 					'dl-data': { title: 'Downloading...', body: '<div class="term-modal-download"><div class="modal-subtitle">Critical Data</div><div class="term-modal-progress" id="dl-progress"></div></div>', type: 'progress' },
 					'ai': { title: 'AI', body: '<pre>~ $ model --status\n\ninference: stable\ncontext: 8k tokens\nlatency: &lt; 200ms\n\n&gt;&gt; system online</pre>' },
 					'decryptor': { title: 'Password Decryptor', body: '<pre class="term-decryptor-pre">Calculating Hashes\n\n<span id="dec-keys">[00:00:01] 0 keys tested</span>\n\nCurrent passphrase: <span id="dec-pass">********</span>\n\nMaster key\n<span id="dec-master1"></span>\n<span id="dec-master2"></span>\n\nTransient key\n<span id="dec-trans1"></span>\n<span id="dec-trans2"></span>\n<span id="dec-trans3"></span>\n<span id="dec-trans4"></span></pre>', type: 'decryptor' },
 					'help': { title: 'Help', body: '', type: 'keyboard' },
 					'all-scripts': { title: '/root/bash/scripts', body: '', type: 'scripts' }
 				};
+				var modalContent = runtimeConfig.modalContent || fallbackModalContent;
 				document.querySelectorAll('.term-folder[data-modal]').forEach(function(btn) {
 					btn.addEventListener('click', function() {
 						var id = btn.getAttribute('data-modal');
@@ -349,7 +375,7 @@
 								}
 							} else if (data.type === 'decryptor') {
 								var el = document.getElementById('dec-keys');
-								if (el) el.textContent = '[00:00:01] 0 keys tested';
+								if (el) el.textContent = '[00:00:01] 0 ' + decryptorKeysLabel;
 								el = document.getElementById('dec-pass');
 								if (el) el.textContent = randPass();
 								el = document.getElementById('dec-master1');

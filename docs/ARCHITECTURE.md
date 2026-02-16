@@ -45,6 +45,7 @@
 
 ## Key Layout and Components
 
+- **Sticky footer:** `body` uses flex column with `min-height: 100vh`; `main` uses `flex: 1` so footer stays at viewport bottom on short pages (2K/4K, blog with no articles).
 - Home layout: `src/layouts/HomePage.astro`
 - Post layout: `src/layouts/BlogPost.astro`
 - Shared chrome: `src/components/Header.astro`, `src/components/Footer.astro`

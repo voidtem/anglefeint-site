@@ -129,7 +129,8 @@
 			}
 			.rq-tv {
 				position: fixed;
-				left: clamp(0.6rem, 1.8vw, 1.4rem);
+				/* Proportional to viewport: 20% of left gutter (page width - content 720px) / 2 */
+				left: max(1rem, (100vw - 720px) / 2 * 0.2);
 				top: 25vh;
 				width: clamp(144px, 11vw, 196px);
 				aspect-ratio: 4 / 3;

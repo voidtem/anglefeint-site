@@ -173,7 +173,11 @@ const aboutRuntimeConfigJson = JSON.stringify(aboutRuntimeConfig).replace(/</g, 
 						<span></span><span></span><span></span>
 					</div>
 					<span class="term-modal-title" id="term-modal-title">Output</span>
-					<button type="button" class="term-modal-close" aria-label="Close">&times;</button>
+					<button type="button" class="term-modal-close" aria-label="Close">
+						<svg class="term-modal-close-icon" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+							<path d="M6 6l12 12M18 6L6 18" />
+						</svg>
+					</button>
 				</div>
 				<div class="term-modal-body" id="term-modal-body"></div>
 			</div>

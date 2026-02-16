@@ -17,6 +17,7 @@ A cinematic, multi-atmosphere Astro theme for personal publishing.
 - Per-locale RSS feeds
 - Sitemap + robots support
 - Config-driven theme options and profile content
+- Sticky footer (viewport-bottom on short pages, 2K/4K friendly)
 
 ## Quick Start
 

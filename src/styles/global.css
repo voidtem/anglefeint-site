@@ -52,12 +52,17 @@ body {
 	color: rgb(var(--text));
 	font-size: 20px;
 	line-height: 1.7;
+	/* Sticky footer: flex column, main grows to push footer to viewport bottom */
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 main {
 	width: 720px;
 	max-width: calc(100% - 2em);
 	margin: auto;
 	padding: 3em 1em;
+	flex: 1 1 auto;
 }
 h1,
 h2,
@@ -294,7 +299,7 @@ body.mesh-page footer:hover .mesh-scanlines {
   opacity: 0;
 }
 body.br-page .br-spotlight {
-  position: fixed;
+	position: fixed;
   top: 0;
   left: 0;
   width: calc(hypot(100vw, 100vh) * 1.3 / 1.41421356);
@@ -305,7 +310,7 @@ body.br-page .br-spotlight {
 }
 body.br-page .br-spotlight-tl {
   position: absolute;
-  inset: 0;
+	inset: 0;
   transform-origin: 0 0;
   background: conic-gradient(
     from 180deg at 0 0,

@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import themeRedqueen1 from '../assets/theme/red-queen/theme-redqueen1.webp';
+import themeRedqueen2 from '../assets/theme/red-queen/theme-redqueen2.gif';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
@@ -149,9 +151,10 @@ for (let i = 0; i < pts.length; i++) {
 				language: messages.langLabel,
 			}}
 		/>
-		<aside class="rq-tv" aria-hidden="true">
-			<canvas class="rq-tv-screen" width="320" height="240" data-rq-src="/images/redqueen2.webp" data-rq-src2="/images/redqueen1.gif"></canvas>
+		<aside class="rq-tv rq-tv-collapsed">
+			<div class="rq-tv-stage" data-rq-src={themeRedqueen1.src} data-rq-src2={themeRedqueen2.src}></div>
 			<div class="rq-tv-badge">monitor feed<span class="rq-tv-dot"></span></div>
+			<button type="button" class="rq-tv-toggle" aria-label="Replay monitor feed" aria-expanded="false">▶</button>
 		</aside>
 		<div class="mesh-read-progress" aria-hidden="true"></div>
 		<button type="button" class="mesh-back-to-top" aria-label="Back to top" title="Back to top">↑</button>
@@ -266,6 +269,6 @@ for (let i = 0; i < pts.length; i++) {
 			</nav>
 		</main>
 		<Footer tagline={messages.footer.tagline} scanlines />
-		<script src="/scripts/blogpost-effects.js" defer></script>
-	</body>
-</html>
+			<script is:inline src="/scripts/blogpost-effects.js" defer></script>
+		</body>
+	</html>

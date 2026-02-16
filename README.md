@@ -9,6 +9,28 @@ A cinematic, multi-atmosphere Astro theme for personal publishing.
 - Blog post (`/:lang/blog/[slug]`): AI-interface reading layout
 - About (`/:lang/about`): optional hacker-style profile page
 
+## Screenshots
+
+### Home
+
+![Home preview](public/images/theme-previews/preview-home.png)
+
+### Blog List
+
+![Blog list preview](public/images/theme-previews/preview-blog-list.png)
+
+### Blog Post (Monitor Open)
+
+![Blog post open preview](public/images/theme-previews/preview-blog-post-open.png)
+
+### Blog Post (Monitor Collapsed)
+
+![Blog post collapsed preview](public/images/theme-previews/preview-blog-post-collapsed.png)
+
+### About
+
+![About preview](public/images/theme-previews/preview-about.png)
+
 ## Features
 
 - Astro 5 static site output
@@ -69,9 +91,10 @@ public/
 
 - Architecture: `docs/ARCHITECTURE.md`
 - Visual systems: `docs/VISUAL_SYSTEMS.md`
+- Submission checklist: `docs/THEME_SUBMISSION_CHECKLIST.md`
 - Theme listing draft: `ASTRO_THEME_LISTING.md`
 - AI coding assistant guide: `AGENTS.md`
 
 ## License
 
-MIT (recommended if you publish as a public theme).
+Licensed under the MIT License. See `LICENSE`.

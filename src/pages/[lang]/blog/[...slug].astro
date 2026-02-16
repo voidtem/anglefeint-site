@@ -1,6 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BlogPost from '../../../layouts/BlogPost.astro';
 import {
 	DEFAULT_LOCALE,
@@ -27,8 +27,6 @@ export const getStaticPaths = (async () => {
 		});
 	});
 }) satisfies GetStaticPaths;
-type Props = { post: CollectionEntry<'blog'>; related: CollectionEntry<'blog'>[]; locale: Locale };
-
 const { post, related, locale } = Astro.props;
 const lang = (Astro.params.lang ?? locale ?? DEFAULT_LOCALE) as string;
 const resolvedLocale: Locale = isLocale(lang) ? lang : DEFAULT_LOCALE;

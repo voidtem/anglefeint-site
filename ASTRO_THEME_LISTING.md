@@ -39,5 +39,5 @@ Designed for creators who want a bold editorial identity instead of one flat vis
 
 ## Demo + Setup Links (fill before submit)
 
-- Live Demo: `<YOUR_DEMO_URL>`
-- Get Started / Repository: `<YOUR_REPO_URL>`
+- Live Demo: `PENDING_URL`
+- Get Started / Repository: `PENDING_URL`

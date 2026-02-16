@@ -80,7 +80,7 @@ const rainDrops = Array.from({ length: 48 }, (_, i) => {
 		type,
 	};
 });
-const dustParticles = Array.from({ length: 22 }, (_, i) => ({
+const dustParticles = Array.from({ length: 22 }, () => ({
 	left: `${Math.random() * 100}%`,
 	top: `${Math.random() * 100}%`,
 	size: 4 + Math.random() * 4,

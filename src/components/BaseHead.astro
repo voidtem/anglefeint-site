@@ -3,7 +3,7 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
+import FallbackImage from '../assets/theme/placeholders/theme-placeholder-1.jpg';
 import { SITE_AUTHOR, SITE_TITLE, SITE_URL } from '../consts';
 import {
 	DEFAULT_LOCALE,
@@ -170,8 +170,8 @@ const jsonLdSchemas = [websiteSchema, personSchema, articleSchema, ...extraSchem
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
 
-{
-	jsonLdSchemas.map((schemaItem) => (
-		<script type="application/ld+json" set:html={JSON.stringify(schemaItem)} />
-	))
-}
+	{
+		jsonLdSchemas.map((schemaItem) => (
+			<script is:inline type="application/ld+json" set:html={JSON.stringify(schemaItem)} />
+		))
+	}

@@ -10,6 +10,7 @@ import { DEFAULT_LOCALE, type Locale, isLocale, localePath, blogIdToSlugAnyLocal
 import { getMessages } from '../i18n/messages';
 
 type Props = CollectionEntry<'blog'>['data'] & {
+	locale?: string;
 	related?: CollectionEntry<'blog'>[];
 };
 
@@ -139,6 +140,7 @@ for (let i = 0; i < pts.length; i++) {
 		</div>
 		<Header
 			locale={resolvedLocale}
+			scanlines
 			labels={{
 				home: messages.nav.home,
 				blog: messages.nav.blog,
@@ -147,7 +149,6 @@ for (let i = 0; i < pts.length; i++) {
 				language: messages.langLabel,
 			}}
 		/>
-		<div class="br-scanlines" aria-hidden="true"></div>
 		<aside class="rq-tv" aria-hidden="true">
 			<canvas class="rq-tv-screen" width="320" height="240" data-rq-src="/images/redqueen2.webp" data-rq-src2="/images/redqueen1.gif"></canvas>
 			<div class="rq-tv-badge">monitor feed<span class="rq-tv-dot"></span></div>
@@ -264,7 +265,7 @@ for (let i = 0; i < pts.length; i++) {
 				</a>
 			</nav>
 		</main>
-		<Footer tagline={messages.footer.tagline} />
+		<Footer tagline={messages.footer.tagline} scanlines />
 		<script src="/scripts/blogpost-effects.js" defer></script>
 	</body>
 </html>

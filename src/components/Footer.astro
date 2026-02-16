@@ -5,9 +5,11 @@ import { SOCIAL_LINKS } from '../config/social';
 const today = new Date();
 interface Props {
 	tagline?: string;
+	/** Show Blade Runner scanlines overlay on mesh-page (header/footer only) */
+	scanlines?: boolean;
 }
 
-const { tagline = 'Signal from VoidTemple.' } = Astro.props as Props;
+const { tagline = 'Signal from VoidTemple.', scanlines = false } = Astro.props as Props;
 ---
 
 <footer>
@@ -46,6 +48,7 @@ const { tagline = 'Signal from VoidTemple.' } = Astro.props as Props;
 			))}
 		</div>
 	)}
+	{scanlines && <div class="mesh-scanlines" aria-hidden="true"></div>}
 </footer>
 <style>
 	footer {

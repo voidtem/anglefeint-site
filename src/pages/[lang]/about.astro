@@ -4,6 +4,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import { getCollection } from 'astro:content';
+import { THEME } from '../../config/theme';
 import {
 	DEFAULT_LOCALE,
 	SUPPORTED_LOCALES,
@@ -16,9 +17,11 @@ import { getMessages } from '../../i18n/messages';
 import { postsForLocale } from '../../i18n/posts';
 
 export const getStaticPaths = (async () =>
-	SUPPORTED_LOCALES.map((lang) => ({
-		params: { lang },
-	}))) satisfies GetStaticPaths;
+	THEME.ENABLE_ABOUT_PAGE
+		? SUPPORTED_LOCALES.map((lang) => ({
+				params: { lang },
+			}))
+		: []) satisfies GetStaticPaths;
 
 const langParam = Astro.params.lang ?? DEFAULT_LOCALE;
 const locale: Locale = isLocale(langParam) ? langParam : DEFAULT_LOCALE;

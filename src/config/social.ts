@@ -1,5 +1,5 @@
 /**
- * Social links shown in Footer. Set to [] to hide.
+ * Social links shown in Header + Footer. Set to [] to hide.
  * Replace with your own links when using as a theme.
  */
 export interface SocialLink {

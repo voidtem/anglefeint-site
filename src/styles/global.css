@@ -256,11 +256,13 @@ body.br-page .br-rain-drop {
     transform: translateY(100vh);
   }
 }
-body.mesh-page .br-scanlines {
-	position: fixed;
-	inset: 0;
+/* Mesh-page: scanlines only on header and footer; fade on hover */
+body.mesh-page header .mesh-scanlines,
+body.mesh-page footer .mesh-scanlines {
+  position: absolute;
+  inset: 0;
   contain: layout paint;
-  z-index: 12;
+  z-index: 1;
   background: repeating-linear-gradient(
     0deg,
     transparent,
@@ -272,7 +274,8 @@ body.mesh-page .br-scanlines {
   opacity: 0.78;
   transition: opacity 0.3s ease;
 }
-body.mesh-page .br-scanlines::after {
+body.mesh-page header .mesh-scanlines::after,
+body.mesh-page footer .mesh-scanlines::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -286,8 +289,8 @@ body.mesh-page .br-scanlines::after {
   pointer-events: none;
   opacity: 0.8;
 }
-body.mesh-page:has(header:hover) .br-scanlines,
-body.mesh-page:has(footer:hover) .br-scanlines {
+body.mesh-page header:hover .mesh-scanlines,
+body.mesh-page footer:hover .mesh-scanlines {
   opacity: 0;
 }
 body.br-page .br-spotlight {

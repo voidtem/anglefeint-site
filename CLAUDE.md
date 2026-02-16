@@ -14,7 +14,7 @@ No test or lint commands are configured.
 
 ## Architecture
 
-This is a static site built with **Astro 5** using content collections, MDX, and vanilla CSS. No Tailwind — all styling uses CSS custom properties and component-scoped `<style>` blocks.
+This is a static site built with **Astro 5** using content collections, MDX, and vanilla CSS. No Tailwind — styling is split across global CSS, external page CSS files, and scoped `<style>` blocks.
 
 ### Content Pipeline
 
@@ -24,17 +24,17 @@ Blog posts live in `src/content/blog/` as `.md`/`.mdx` files. Schema is defined 
 
 - **Home (`/`)** — Matrix falling characters (canvas), body class `page-home`; `/en/` redirects to `/` with noindex
 - **Blog list (`/:lang/blog/`)** — Blade Runner cyberpunk (rain, dust), body class `br-page` (no br-scanlines)
-- **Article (`/:lang/blog/[slug]`)** — AI terminal mesh (58 nodes), read progress, Red Queen monitor, br-scanlines, body class `mesh-page`
-- **About (`/:lang/about`)** — Anonymous-style terminal (black/green), body class `term-page`. Right sidebar with folder buttons opening modals: DL Data, AI, Decryptor, Help (virtual keyboard), All Scripts (folder grid of blog posts).
+- **Article (`/:lang/blog/[slug]`)** — AI terminal mesh (58 nodes), read progress, Red Queen monitor, mesh-scanlines on header/footer only (fade on hover), body class `mesh-page`. Hero canvas + Red Queen TV: CRT horizontal retrace/dropout (occasional black line flash, starts 6s after load, ~2.5% frames).
+- **About (`/:lang/about`)** — Anonymous-style terminal (black/green), body class `term-page`. Right sidebar with folder buttons opening modals: DL Data, AI, Decryptor, Help (virtual keyboard), All Scripts (folder grid of blog posts). Generated only when `ENABLE_ABOUT_PAGE` is `true`.
 
 ### Key Files
 
 - `src/config/site.ts` — Site identity (SITE_TITLE, SITE_URL, etc.); env-overridable via PUBLIC_* vars
-- `src/config/social.ts` — Footer social links (SOCIAL_LINKS array)
-- `src/config/theme.ts` — BLOG_PAGE_SIZE, HOME_LATEST_COUNT, ENABLE_ABOUT_PAGE
+- `src/config/social.ts` — Header/footer social links (SOCIAL_LINKS array)
+- `src/config/theme.ts` — BLOG_PAGE_SIZE, HOME_LATEST_COUNT, ENABLE_ABOUT_PAGE (disables About nav/routes when false)
 - `src/consts.ts` — Re-exports from config (backwards compat)
 - `src/pages/[lang]/about.astro` — About page: terminal canvas, sidebar, modals, `getCollection('blog')` for All Scripts
-- `src/layouts/BlogPost.astro` — Post detail layout: mesh, progress bar, related posts, Red Queen monitor
+- `src/layouts/BlogPost.astro` — Post detail layout: mesh, progress bar, related posts, Red Queen monitor; CRT dropout in `public/scripts/blogpost-effects.js` (hero + Red Queen TV)
 - `src/pages/[lang]/blog/[...page].astro` — Paginated blog list (THEME.BLOG_PAGE_SIZE)
 - `src/pages/index.astro` — Root home; `src/pages/[lang]/index.astro` — Localized home (/en/ redirects to /)
 - `src/pages/robots.txt.ts` — Dynamic robots.txt with sitemap URL
@@ -48,5 +48,5 @@ Blog posts live in `src/content/blog/` as `.md`/`.mdx` files. Schema is defined 
 
 - Animations respect `prefers-reduced-motion` media query.
 - Images are optimized via `sharp` and Astro's `Image` component (stored in `src/assets/`).
-- Global styles in `src/styles/global.css`; page-specific styles are inline within each `.astro` file.
+- Global styles in `src/styles/global.css`; page-specific styles live in `public/styles/*.css` plus scoped styles in `.astro` files.
 - Site is purely static (no API endpoints, no SSR).

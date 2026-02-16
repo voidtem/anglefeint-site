@@ -234,6 +234,14 @@
 								ctx.restore();
 							}
 
+							// CRT horizontal retrace/dropout: occasional black line, starts 6s after load
+							if (elapsed >= 6 && Math.random() < 0.025) {
+								var dropoutY = Math.floor(Math.random() * h);
+								var dropoutH = 2 + Math.floor(Math.random() * 2);
+								ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+								ctx.fillRect(0, dropoutY, w, dropoutH);
+							}
+
 							// Brief static burst (~3% of frames)
 							if (Math.random() < 0.03) {
 								var burstY = Math.random() * h * 0.8;
@@ -348,6 +356,13 @@
 						sweep.addColorStop(1, 'rgba(176, 230, 255, 0)');
 						ctx.fillStyle = sweep;
 						ctx.fillRect(0, 0, width, height);
+						// CRT horizontal retrace/dropout: occasional black line, starts 6s after load
+						if (elapsed >= 6 && Math.random() < 0.025) {
+							ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+							var dropoutY = Math.floor(Math.random() * height);
+							var dropoutH = 2 + Math.floor(Math.random() * 2);
+							ctx.fillRect(0, dropoutY, width, dropoutH);
+						}
 					}
 
 					function drawFrame(frame) {

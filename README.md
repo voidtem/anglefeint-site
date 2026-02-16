@@ -1,12 +1,12 @@
 # Anglefeint Site
 
-Astro 5 static site with four distinct visual systems:
+Astro 5 theme-ready static site with four distinct visual systems:
 
 - `/` Home (default English): Matrix-style canvas rain
 - `/:lang/` localized home (`en`, `ja`, `ko`, `es`, `zh`)
 - `/:lang/blog` Blog list: Blade Runner / cyberpunk atmosphere
 - `/:lang/blog/[slug]` Post detail: AI terminal mesh UI
-- `/:lang/about` About page: Anonymous-style terminal / hacker theme with interactive sidebar and modals
+- `/:lang/about` About page (optional): Anonymous-style terminal / hacker theme with interactive sidebar and modals
 
 This README is written for **humans + AI coding assistants** to onboard quickly.
 
@@ -23,11 +23,21 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 | File | Purpose |
 |------|---------|
 | `src/config/site.ts` | Site identity: `SITE_TITLE`, `SITE_URL`, `SITE_AUTHOR`, `SITE_DESCRIPTION`. Override via env: `PUBLIC_SITE_URL`, `PUBLIC_SITE_TITLE`, etc. |
-| `src/config/social.ts` | Footer social links. Edit `SOCIAL_LINKS` array; use `icon: 'github' | 'twitter' | 'mastodon'` for built-in icons. |
-| `src/config/theme.ts` | `BLOG_PAGE_SIZE`, `HOME_LATEST_COUNT`, `ENABLE_ABOUT_PAGE`. |
+| `src/config/social.ts` | Header + footer social links. Edit `SOCIAL_LINKS` array; use `icon: 'github' | 'twitter' | 'mastodon'` for built-in icons. |
+| `src/config/theme.ts` | `BLOG_PAGE_SIZE`, `HOME_LATEST_COUNT`, `ENABLE_ABOUT_PAGE` (when false, About nav and routes are disabled). |
 | `.env.example` | Env var template. Copy to `.env` and set `PUBLIC_SITE_URL` etc. for deployment. |
 
 `src/consts.ts` re-exports from config for backwards compatibility.
+
+## Theme Setup Checklist
+
+Before publishing your own fork/deployment:
+
+1. Update `.env` from `.env.example` with your site URL/title/author/description.
+2. Replace `SOCIAL_LINKS` in `src/config/social.ts` (used by both header and footer).
+3. Set `ENABLE_ABOUT_PAGE` in `src/config/theme.ts` if you want to ship without About routes.
+4. Replace starter post files in `src/content/blog/<locale>/`.
+5. Verify canonical domain in production (`PUBLIC_SITE_URL`) before `npm run build`.
 
 ## SEO
 
@@ -41,7 +51,7 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 - Integrations: `@astrojs/mdx`, `@astrojs/sitemap`, `@astrojs/rss`
 - Image pipeline: `astro:assets` + `sharp`
 - Content: Astro Content Collections (`src/content.config.ts`)
-- Styling: vanilla CSS in `src/styles/global.css` + scoped `<style>` in page/layout files
+- Styling: vanilla CSS in `src/styles/global.css` + external page CSS in `public/styles/*.css` + scoped `<style>` where needed
 - Output mode: static (`astro build`)
 
 ## Routes
@@ -50,7 +60,7 @@ This README is written for **humans + AI coding assistants** to onboard quickly.
 - `src/pages/[lang]/index.astro` — Localized home routes; `/en/` redirects to `/`
 - `src/pages/[lang]/blog/[...page].astro` — Localized paginated blog list (9 per page), Blade Runner effects
 - `src/pages/[lang]/blog/[...slug].astro` — Localized post detail, mesh UI, related posts, computed metrics
-- `src/pages/[lang]/about.astro` — Localized Anonymous-style terminal page with sidebar, modals, virtual keyboard
+- `src/pages/[lang]/about.astro` — Localized Anonymous-style terminal page with sidebar, modals, virtual keyboard (only generated if `THEME.ENABLE_ABOUT_PAGE === true`)
 - `src/pages/[lang]/rss.xml.js` — Per-locale RSS feed from `blog` collection
 - `src/pages/robots.txt.ts` — Dynamic robots.txt with correct sitemap URL (Sitemap points to `/sitemap-index.xml`)
 
@@ -92,7 +102,7 @@ The About page uses a dark terminal aesthetic with:
 - `src/layouts/HomePage.astro` — Shared home layout used by `/` and `/:lang/`
 - `src/layouts/BlogPost.astro` — Post detail layout, mesh network, hero canvas, Red Queen monitor (`.rq-tv`)
 - `src/config/site.ts` — Site identity (env-overridable)
-- `src/config/social.ts` — Footer social links
+- `src/config/social.ts` — Header/footer social links
 - `src/config/theme.ts` — Theme options (page size, etc.)
 - `src/i18n/config.ts` — Locale list, path helpers
 - `src/i18n/messages.ts` — UI strings per locale
@@ -149,7 +159,7 @@ The About page uses a dark terminal aesthetic with:
 
 **CSS effects:**
 - `.mesh-bg` — layered: `mesh-glow` (gradient shift), haze, vignette, stripe, noise (SVG filter), hex grid, thought particles
-- `.br-scanlines` — double-layer horizontal scanlines on post detail; fade on header/footer hover (z-index above mesh-bg)
+- `.mesh-scanlines` — scanlines overlay only on header and footer (inside Header/Footer components); fades on header/footer hover
 - `.mesh-network` — SVG 58 nodes + edges, `mesh-line-pulse` (dash offset), `mesh-dot-float` / `mesh-dot-breathe`
 - `.mesh-read-progress` — fixed top bar, width from `--read-progress`
 - `.mesh-load-scan` — gradient line top→bottom on load / regenerate
@@ -161,8 +171,8 @@ The About page uses a dark terminal aesthetic with:
 
 **JS effects:**
 - Read progress: `scroll` → `--read-progress`, back-to-top visibility; toast at 30/60/90% (“context parsed”, “inference stable”, “output finalized”)
-- Hero canvas: load image → Sobel edge detection → fade-in edge view → scanning line → pixelated reveal → full image + scanlines + occasional RGB glitch / static burst
-- Red Queen TV: `ImageDecoder` playlist (webp → gif → gif → webp), fallback to static image
+- Hero canvas: load image → Sobel edge detection → fade-in edge view → scanning line → pixelated reveal → full image + scanlines + occasional RGB glitch / static burst + **CRT horizontal retrace/dropout** (random black line flash at random Y, ~2.5% of frames, **starts 6s after load**)
+- Red Queen TV: `ImageDecoder` playlist (webp → gif → gif → webp), fallback to static image; same **CRT dropout** effect (6s delay, then looping)
 - Mouse glow: `mousemove` → `--mouse-x` / `--mouse-y` via `requestAnimationFrame`
 - Link preview: `data-preview` on prose links, hover tooltip
 - Paragraph reveal: IntersectionObserver adds `.mesh-para-visible` on scroll
@@ -170,7 +180,7 @@ The About page uses a dark terminal aesthetic with:
 
 ### About (`body.term-page`)
 
-**Layout:** Header is fixed (`body.term-page header` in `about.astro`); `.term-content` has `padding-top: calc(3em + 56px)` for offset.
+**Layout:** Header is fixed (`body.term-page header` in `public/styles/about-page.css`); `.term-content` has `padding-top: calc(3em + 56px)` for offset.
 
 - Black background, CRT scanlines, vignette
 - **Palette:** Green for sidebar/link hover (`--chrome-link-hover`); grey (#9CA3AF) for header nav underline (`--chrome-active`); sliding lines use #0B0F14 + #FF0033 + #9CA3AF (dark, red, gray)
@@ -188,8 +198,8 @@ npm run preview
 
 ## Fast Handoff (AI Assistants)
 
-**Visuals:** Route file → `BlogPost.astro` → `global.css` → `content.config.ts`  
+**Visuals:** Route file → `BlogPost.astro` → `global.css` → `content.config.ts`; hero/Red Queen CRT dropout in `public/scripts/blogpost-effects.js` (6s delay, then random black line)  
 **Content:** Frontmatter schema, locale RSS (`src/pages/[lang]/rss.xml.js`), pagination (`src/pages/[lang]/blog/[...page].astro`)  
-**About modals:** `modalContent` object in `about.astro` script; folder grid from `getCollection('blog')` + template `#term-scripts-folders-tpl`  
+**About modals:** `modalContent` object in `public/scripts/about-effects.js`; folder grid from `getCollection('blog')` + template `#term-scripts-folders-tpl`  
 **About sliding lines:** `.term-title-bar::after` (sweep), `.term-load-scan` (load scan); palette vars in `body.term-page` CSS  
-**Fixed header:** All four pages use `position: fixed` on header; content offset via `padding-top: calc(3em + 56px)` (mobile: `calc(1em + 56px)`). Rules in `global.css` (page-home, br-page, mesh-page) and `about.astro` (term-page).
+**Fixed header:** All four pages use `position: fixed` on header; content offset via `padding-top: calc(3em + 56px)` (mobile: `calc(1em + 56px)`). Rules in `global.css` (page-home, br-page, mesh-page) and `public/styles/about-page.css` (term-page).

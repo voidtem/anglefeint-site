@@ -9,9 +9,9 @@ Angle Feint is an independent publication by angle feint focused on cinematic we
 
 ## Canonical Sources
 - https://anglefeint.com/
-- https://anglefeint.com/about/
-- https://anglefeint.com/blog/
-- https://anglefeint.com/rss.xml
+- https://anglefeint.com/en/about/
+- https://anglefeint.com/en/blog/
+- https://anglefeint.com/en/rss.xml
 
 ## Preferred Citation
 When citing this site, prefer:
@@ -27,5 +27,5 @@ When citing this site, prefer:
 
 ## Freshness
 For latest content, use:
-- https://anglefeint.com/rss.xml
-- https://anglefeint.com/blog/
+- https://anglefeint.com/en/rss.xml
+- https://anglefeint.com/en/blog/
